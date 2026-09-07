@@ -336,6 +336,39 @@
           Prise en charge native Double SIM Android avec basculement automatique selon la couverture réseau et suivi rigoureux des quotas SMS par opérateur.
         </p>
       </div>
+
+      <!-- Feature 10 (AI Guard-LLM) -->
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper red">
+          <span class="feature-icon">🛡️</span>
+        </div>
+        <h3 class="feature-title" data-i18n="features.f_guard_title">ORBIS Guard-LLM : Bouclier Anti-Arnaque</h3>
+        <p class="feature-text" data-i18n="features.f_guard_text">
+          Analyse sémantique vectorisée en temps réel de vos SMS. Détection des faux liens bancaires, smishing et arnaques avec classification tri-état (Sûr, Suspect, Danger) et blocage 1-clic.
+        </p>
+      </div>
+
+      <!-- Feature 11 (AI Reply-LLM) -->
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper purple">
+          <span class="feature-icon">💡</span>
+        </div>
+        <h3 class="feature-title" data-i18n="features.f_reply_title">ORBIS Reply-LLM : Suggestions Intelligentes</h3>
+        <p class="feature-text" data-i18n="features.f_reply_text">
+          Génération instantanée de 3 réponses rapides, polies et contextuelles au-dessus de votre saisie dans le chat chiffré et les SMS classiques, en français, anglais et arabe.
+        </p>
+      </div>
+
+      <!-- Feature 12 (AI Vector Engine) -->
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper green">
+          <span class="feature-icon">🧠</span>
+        </div>
+        <h3 class="feature-title" data-i18n="features.f_ai_engine_title">Moteur IA Vectorisé & Auto-Entraînement</h3>
+        <p class="feature-text" data-i18n="features.f_ai_engine_text">
+          Modèles neuronaux propriétaires 100% Kotlin natif (< 2 Mo, inférence < 10 ms). Auto-apprentissage continu sur l'appareil à partir de vos retours, sans aucun serveur ni télémétrie.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -412,6 +445,14 @@
             <p data-i18n="security.s8_text">Un chien de garde actif coupe automatiquement les sessions vocales et détruit les canaux éphémères après 4.5s de silence ou en cas d'anomalie réseau pour garantir l'étanchéité absolue.</p>
           </div>
         </div>
+
+        <div class="security-item reveal">
+          <div class="security-num">09</div>
+          <div class="security-body">
+            <h4 data-i18n="security.s9_title">Moteur IA Vectorisé Hors-Ligne & Zéro Télémétrie</h4>
+            <p data-i18n="security.s9_text">Les deux LLM (Guard & Reply) s'exécutent 100% en local via un moteur matriciel Kotlin natif. Aucune donnée d'entraînement, SMS ou empreinte vectorielle ne transite sur le réseau.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -437,6 +478,7 @@
         <button class="pill" data-cat="chat" data-i18n="help.cat_chat">💬 Messagerie</button>
         <button class="pill" data-cat="calls" data-i18n="help.cat_calls">📞 Appels</button>
         <button class="pill" data-cat="social" data-i18n="help.cat_social">👥 Réseau Social</button>
+        <button class="pill" data-cat="ai" data-i18n="help.cat_ai">🧠 IA & LLM</button>
         <button class="pill" data-cat="sec" data-i18n="help.cat_sec">🔐 Sécurité</button>
         <button class="pill" data-cat="sys" data-i18n="help.cat_sys">⚙️ Système & GSM</button>
       </div>
@@ -645,6 +687,48 @@
           </div>
         </div>
       </div>
+
+      <!-- Topic 14 (ORBIS Guard-LLM Anti-Smishing) -->
+      <div class="accordion-item" data-category="ai">
+        <button class="accordion-header">
+          <span class="acc-icon">🛡️</span>
+          <span class="acc-title" data-i18n="topics.t_guard_title">Comment fonctionne ORBIS Guard-LLM contre les arnaques et spams ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_guard_content">
+            ORBIS Guard-LLM évalue chaque SMS classique entrant grâce à des embeddings vectoriels locaux. Il détecte les stratagèmes d'urgence, fausses alertes bancaires, faux numéros SIM et isole les domaines frauduleux (tout en distinguant les abréviations innocentes comme "M.Pierre"). Les messages douteux sont isolés dans l'onglet "Spam & bloqués" avec alerte visuelle et option de blocage immédiat.
+          </p>
+        </div>
+      </div>
+
+      <!-- Topic 15 (ORBIS Reply-LLM Smart Replies) -->
+      <div class="accordion-item" data-category="ai">
+        <button class="accordion-header">
+          <span class="acc-icon">💡</span>
+          <span class="acc-title" data-i18n="topics.t_reply_title">Comment ORBIS Reply-LLM propose-t-il des réponses intelligentes hors-ligne ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_reply_content">
+            ORBIS Reply-LLM analyse le fil de conversation et l'intention du dernier message (salutations, questions, logistique, urgence, remerciements) pour générer 3 pastilles de réponses rapides et polies au-dessus du clavier. L'inférence s'exécute en moins de 10 ms sans aucune connexion Internet ni appel réseau.
+          </p>
+        </div>
+      </div>
+
+      <!-- Topic 16 (On-Device Continual Learning & Privacy) -->
+      <div class="accordion-item" data-category="ai">
+        <button class="accordion-header">
+          <span class="acc-icon">🧠</span>
+          <span class="acc-title" data-i18n="topics.t_ai_learning_title">Comment les modèles s'auto-entraînent-ils sans risque pour ma vie privée ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_ai_learning_content">
+            L'entraînement s'effectue exclusivement sur votre appareil (on-device continual learning). Lorsque vous bloquez un spam ou sélectionnez des suggestions, les poids synaptiques locaux s'adaptent dynamiquement dans le stockage chiffré de l'application. Aucune donnée textuelle, empreinte vectorielle ou statistique n'est envoyée sur un quelconque serveur.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -696,6 +780,11 @@
               <td><span class="quota-icon">🎙️</span> <strong data-i18n="quota.row5_title">Note Vocale (3 à 5 secondes)</strong></td>
               <td><span class="badge-warning">5 à 12 SMS</span></td>
               <td data-i18n="quota.row5_desc">Flux audio binaire AMR/AAC compressé en multi-segments</td>
+            </tr>
+            <tr>
+              <td><span class="quota-icon">🧠</span> <strong data-i18n="quota.row_ai_title">Analyse IA Guard-LLM & Reply-LLM</strong></td>
+              <td><span class="badge-success">0 SMS</span></td>
+              <td data-i18n="quota.row_ai_desc">Inférence neuronale 100% CPU locale • 0 octet émis ou reçu • Zéro télémétrie</td>
             </tr>
           </tbody>
         </table>

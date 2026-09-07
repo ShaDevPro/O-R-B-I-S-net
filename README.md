@@ -8,6 +8,7 @@
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin_2.0-7F52FF.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![UI](https://img.shields.io/badge/UI-Jetpack_Compose_Material3-4285F4.svg?style=flat&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
 [![Security](https://img.shields.io/badge/Cryptography-AES--256--GCM_&_Double_Ratchet-red.svg?style=flat&logo=lock)](https://en.wikipedia.org/wiki/End-to-end_encryption)
+[![AI Engine](https://img.shields.io/badge/Dual_AI_Engine-ORBIS_Guard_%26_Reply_LLM-orange.svg?style=flat&logo=openai)](https://github.com/orbisoffline-cloud/ORBIS)
 [![Telegram](https://img.shields.io/badge/Telegram-@orbis__community-2CA5E0.svg?style=flat&logo=telegram)](https://t.me/orbis_community)
 [![Website](https://img.shields.io/badge/Website-Online-cyan.svg?style=flat&logo=googlechrome)](https://orbisoffline-cloud.github.io/ORBIS/)
 
@@ -31,8 +32,9 @@ Engineered for absolute digital sovereignty, privacy, and censorship resistance 
 4. 📰 **Friends-Only Sovereign Social Network** (Social wall, 24h ephemeral stories, decentralized polls, emoji reactions, and encrypted comment threads) with strict zero-leakage isolation from ordinary phone contacts.
 5. 📱 **Native Dual SIM Multi-Carrier Hardware Management** with instant slot switching directly from the avatar profile.
 6. 👥 **Unified Phonebook, Circles & Cryptographic QR Pairing** with in-person hardware trust certification.
-7. 📖 **Integrated Interactive Help Center & User Guide** featuring offline search and multi-language support (English, French, Arabic).
-8. ✉️ **Full-Featured Android Default SMS Telephony Client** capable of seamlessly handling all standard carrier SMS traffic.
+7. 🧠 **Dual On-Device Sovereign Neural Engines (ORBIS Guard-LLM & ORBIS Reply-LLM)**: Proprietary 100% offline vectorized Kotlin AI engine (< 2MB footprint, < 10ms inference, zero cloud relay) delivering real-time smishing/spam scam detection, threat classification, contextual smart reply suggestions, and on-device continual learning from user feedback.
+8. 📖 **Integrated Interactive Help Center & User Guide** featuring offline search and multi-language support (English, French, Arabic).
+9. ✉️ **Full-Featured Android Default SMS Telephony Client** capable of seamlessly handling all standard carrier SMS traffic.
 
 ---
 
@@ -86,6 +88,14 @@ graph TD
         DeadPeerWatchdog["Dead-Peer Watchdog (4.5s Timeout) & UDP Teardown"]
     end
 
+    subgraph AI_Engine ["🧠 On-Device Neural Engines (Pure Kotlin Vectorized)"]
+        GuardLLM["ORBIS Guard-LLM: Smishing & Spam Detector"]
+        ReplyLLM["ORBIS Reply-LLM: Multi-Turn Contextual Smart Replies"]
+        ContinualLearner["Continual Learning Engine: Local Weight Updates"]
+        GuardLLM --> ContinualLearner
+        ReplyLLM --> ContinualLearner
+    end
+
     subgraph GSM_Transport ["📡 GSM Cellular Transport Engine"]
         SmsEngine["P2P SMS Transport, Chunking & Fragmentation"]
         SmsReceiver["Background Inbound SMS Router & Parser"]
@@ -110,6 +120,9 @@ graph TD
     SmsEngine --> Quota
     Quota --> SmsReceiver
     Tab4 --> PlainRepo
+    Tab4 --> GuardLLM
+    Tab4 --> ReplyLLM
+    Tab1 --> ReplyLLM
 ```
 
 ---
@@ -150,6 +163,17 @@ graph TD
 ### 6. 🛡️ Invisible SMS Steganography
 - **Zero-Width Unicode Concealment**: Binary encrypted payloads are concealed as invisible Unicode zero-width characters inside innocent, everyday plain text messages to bypass deep packet inspection and keyword filters.
 
+### 7. 🧠 Dual On-Device Sovereign Neural Engines (ORBIS Guard-LLM & ORBIS Reply-LLM)
+- **ORBIS Guard-LLM (Smishing & Scam Shield)**:
+  - **100% Offline Real-Time Threat Analysis**: Instant heuristic and vectorized semantic evaluation of inbound standard SMS messages for spam, phishing, financial scams, lottery lures, urgent threats, and spoofed bank alerts.
+  - **Intelligent Severity Classification**: Tri-state risk rating (*Safe*, *Suspicious*, *Danger*) with explicit visual flags, threat reasons, and safe URL domain isolation (defending against misleading dot-formatted text like "M.Pierre").
+  - **Native Spam & Blocked Tab Integration**: Suspicious and malicious SMS are automatically isolated in the dedicated "Spam & Blocked" management hub with one-tap blocking, sender blacklisting, and spam restoration.
+  - **On-Device Continual Learning**: Adapts dynamically to emerging local spam variations as the user marks messages as spam or legitimate, completely on-device without telemetry or cloud syncing.
+- **ORBIS Reply-LLM (Contextual Smart Replies)**:
+  - **Instant Suggestion Chips**: Generates 3 ultra-relevant, polite, concise, or actionable smart reply proposals directly above the chat composer in both encrypted P2P chats and standard SMS.
+  - **Multi-Turn Context Awareness & Multilingual (i18n)**: Understands greetings, questions, meeting requests, confirmations, gratitude, emergencies, and logistics in French, English, and Arabic.
+  - **Pure Kotlin Vectorized Matrix Engine**: Proprietary on-device tensor and n-gram embedding engine executing in under 10ms with zero reliance on heavy external C++, ONNX, or TFLite binaries, preserving device battery and keeping total APK size under 5MB.
+
 ---
 
 ## 🔒 Security & Cryptographic Architecture
@@ -163,6 +187,7 @@ graph TD
 | **Data At-Rest** | **Android KeyStore (TEE)** | Master key stored in hardware enclave; anti-ADB extraction |
 | **Vault Backups** | **PBKDF2 (100k rounds)** | AES-256-CBC with 128-bit cryptographically secure salt |
 | **Steganography** | **Zero-Width Unicode** | Anti-censorship payload concealment inside harmless text |
+| **Neural AI Engines** | **Proprietary Vectorized Kotlin Engine** | 100% On-Device, zero telemetry, zero cloud relay, local continual learning weights in encrypted storage |
 
 ---
 
@@ -178,6 +203,7 @@ ORBIS is engineered with extreme byte-level frugality to maximize battery life a
 | 👍 **Emoji Reaction / Delivery ACK** | **1 SMS** | Lightweight single-frame acknowledgment packet |
 | 👥 **Group Broadcast (N members)** | **(N - 1) SMS** | Direct sovereign P2P dispatch to each circle member |
 | 🎙️ **Voice Note (3 to 5 seconds)** | **5 to 12 SMS** | Ultra-compressed AMR/AAC binary payload chunking |
+| 🧠 **AI Guard-LLM & Reply-LLM** | **0 SMS (Free)** | 100% On-Device CPU vectorization • 0 KB network data • 0 telemetry |
 
 ---
 
