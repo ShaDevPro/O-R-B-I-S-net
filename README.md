@@ -188,6 +188,9 @@ graph TD
 | **Vault Backups** | **PBKDF2 (100k rounds)** | AES-256-CBC with 128-bit cryptographically secure salt |
 | **Steganography** | **Zero-Width Unicode** | Anti-censorship payload concealment inside harmless text |
 | **Neural AI Engines** | **Proprietary Vectorized Kotlin Engine** | 100% On-Device, zero telemetry, zero cloud relay, local continual learning weights in encrypted storage |
+| **AI Hardware Benchmark** | **Real-Time Telemetry & Granular Control** | Live on-device sub-millisecond latency (< 1ms), throughput, RAM footprint, models disabled by default |
+| **Physical Duress Defense** | **Duress PIN & Decoy Profile** | Entering emergency PIN unlocks harmless decoy sandbox and silently purges cryptographic session keys |
+| **Biometric & OS Sandbox** | **BiometricPrompt & Zero Internet Permission** | Hardware TEE biometric gating, core engine operating without internet permission (`INTERNET = false`) |
 
 ---
 
