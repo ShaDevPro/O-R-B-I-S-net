@@ -797,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Direct Download & QR Code Dynamic Configuration
   // =========================================================================
   const ORBISNET_CONFIG = {
-    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/v1.1.0/OrbisNet.apk",
+    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.1.0/O.R.B.I.S.apk",
     githubRepoUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net",
     version: "1.1.0",
     build: 110,
@@ -813,6 +813,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (directBtn) {
       directBtn.href = url;
     }
+    document.querySelectorAll('a[download]').forEach(a => {
+      a.href = url;
+    });
   }
 
   // Initialize with official release URL
