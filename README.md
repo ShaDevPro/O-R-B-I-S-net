@@ -1,276 +1,274 @@
-# 🌐 OrbisNet — Sovereign Nostr & GSM Hybrid Network (P2P Messenger & Social Platform)
+# 🌐 OrbisNet — Le Réseau Hybride Souverain Nostr & GSM (Messagerie & Réseau Social P2P)
 
-[![Release](https://img.shields.io/badge/Release-v1.1.0_Stable-blue.svg?style=flat&logo=github)](https://github.com/orbisoffline-cloud/ORBIS/releases/tag/ORBIS-v1.1.0)
-[![Package](https://img.shields.io/badge/Package-com.sha.orbisnet-0284c7.svg?style=flat&logo=android)](https://github.com/orbisoffline-cloud/ORBIS)
-[![Protocol](https://img.shields.io/badge/Protocol-Nostr_(wss)_%2B_GSM_SMS-purple.svg?style=flat&logo=nostr)](https://nostr.com)
-[![Cryptography](https://img.shields.io/badge/Cryptography-BIP--340_Schnorr_&_AES--256--GCM-red.svg?style=flat&logo=lock)](https://en.wikipedia.org/wiki/End-to-end_encryption)
-[![Platform](https://img.shields.io/badge/Platform-100%25_Android_Exclusive-3DDC84.svg?style=flat&logo=android)](https://android.com)
-[![Apple iOS](https://img.shields.io/badge/Apple_iOS-NOT_SUPPORTED-critical.svg?style=flat&logo=apple)](#-prerequisites--platform-compatibility)
-[![Kotlin](https://img.shields.io/badge/Language-Kotlin_2.0-7F52FF.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
-[![UI](https://img.shields.io/badge/UI-Jetpack_Compose_Material3-4285F4.svg?style=flat&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
-[![AI Engine](https://img.shields.io/badge/Dual_AI_Engine-Orbis_Guard_%26_Reply_LLM-orange.svg?style=flat&logo=openai)](https://github.com/orbisoffline-cloud/ORBIS)
-[![Edge Backend](https://img.shields.io/badge/Edge_Console-Vercel_Hosted-black.svg?style=flat&logo=vercel)](https://orbis-net.vercel.app)
-[![Telegram](https://img.shields.io/badge/Telegram-@orbis__community-2CA5E0.svg?style=flat&logo=telegram)](https://t.me/orbis_community)
-[![Website](https://img.shields.io/badge/Website-Online-cyan.svg?style=flat&logo=googlechrome)](https://orbisoffline-cloud.github.io/ORBIS/)
+[![Release](https://img.shields.io/badge/Version-v1.1.0_Stable-0284c7.svg?style=flat&logo=github)](https://github.com/ShaDevPro/O-R-B-I-S-net/releases)
+[![Package](https://img.shields.io/badge/Package-com.sha.orbisnet-0284c7.svg?style=flat&logo=android)](https://github.com/ShaDevPro/O-R-B-I-S-net)
+[![Protocole](https://img.shields.io/badge/Protocole-Nostr_(WebSockets)_%2B_Repli_GSM_SMS-8b5cf6.svg?style=flat&logo=nostr)](https://nostr.com)
+[![Cryptographie](https://img.shields.io/badge/Cryptographie-BIP--340_Schnorr_&_AES--256--GCM-ef4444.svg?style=flat&logo=lock)](https://en.wikipedia.org/wiki/End-to-end_encryption)
+[![Plateforme](https://img.shields.io/badge/Plateforme-100%25_Android_Exclusif-10b981.svg?style=flat&logo=android)](https://android.com)
+[![Apple iOS](https://img.shields.io/badge/Apple_iOS-NON_SUPPORTÉ-critical.svg?style=flat&logo=apple)](#-compatibilité-matérielle--exclusivité-android)
+[![Langage](https://img.shields.io/badge/Langage-Kotlin_2.0-7F52FF.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![UI](https://img.shields.io/badge/Interface-Jetpack_Compose_Material_3-4285F4.svg?style=flat&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
+[![Moteur IA](https://img.shields.io/badge/IA_Locale-Guard--LLM_%26_Reply--LLM-f59e0b.svg?style=flat&logo=openai)](https://github.com/ShaDevPro/O-R-B-I-S-net)
+[![Console Edge](https://img.shields.io/badge/Console_Edge-Vercel_Hébergée-black.svg?style=flat&logo=vercel)](https://orbis-net.vercel.app)
+[![Telegram](https://img.shields.io/badge/Communauté-Telegram-2CA5E0.svg?style=flat&logo=telegram)](https://t.me/orbis_community)
 
 ---
 
 > [!IMPORTANT]
-> ### 🤖 100% Android Exclusive Architecture — Strictly Incompatible with Apple iOS (iPhone)
-> **OrbisNet is exclusively engineered for Android smartphones.**  
-> It is **fundamentally incompatible with Apple iOS (iPhone)** because Apple's closed sandbox policy strictly prohibits third-party applications from acting as the default telephony SMS handler, intercepting raw GSM SMS packets in the background, or directly controlling cellular modem hardware.  
-> **If you use an iPhone, OrbisNet cannot run on your device.**
+> ### 🤖 Architecture 100% Android Native — Strictement Incompatible avec Apple iOS (iPhone)
+> **OrbisNet est exclusivement conçu pour les smartphones Android.**  
+> Il est **techniquement et fondamentalement incompatible avec Apple iOS (iPhone)** : la politique de bac à sable hermétique d'Apple interdit formellement à toute application tierce de remplacer le client de téléphonie SMS par défaut, d'intercepter les trames cellulaires brutes en arrière-plan ou d'interagir directement avec le modem téléphonique.  
+> **Si vous possédez un iPhone, OrbisNet ne peut pas fonctionner sur votre appareil.**
 
 ---
 
-## 📖 Executive Overview
+## 📖 Présentation Exécutive
 
-**OrbisNet** (`com.sha.orbisnet`) is the world's first **sovereign hybrid communication platform** fusing the speed and openness of the decentralized **Nostr protocol (WebSockets)** with the indestructible off-grid resilience of the **cellular GSM network (encrypted direct SMS and P2P calls)**.
+**OrbisNet** (`com.sha.orbisnet`) est la première infrastructure souveraine de communication au monde combinant la puissance de l'Internet libre décentralisé (**protocole Nostr via WebSockets**) et la résilience absolue hors-ligne du réseau cellulaire direct (**GSM SMS P2P et appels chiffrés**).
 
-Designed for total digital autonomy, zero-censorship resilience, and privacy during severe internet blackouts, telecom cutoffs, or emergency crises, OrbisNet provides a seamless dual-mode experience:
+Pensé pour garantir l'autonomie numérique totale, la liberté d'expression et la continuité opérationnelle en cas de coupure Internet, de censure ou de situation d'urgence, OrbisNet propose un fonctionnement bi-moteur automatique :
 
-1. ⚡ **Decentralized Internet Mode (Nostr WebSockets)**:  
-   When internet or Wi-Fi is active, OrbisNet connects to global decentralized Nostr relays (`wss://relay.damus.io`, `wss://nos.lol`, `wss://relay.primal.net`) for instantaneous zero-cost messaging, encrypted DMs (NIP-04 & NIP-44), public notes (Kind 1), ephemeral 24h stories, and interactive polls.
-2. 📡 **Automatic Off-Grid Fallback (GSM SMS P2P)**:  
-   The moment internet access drops or is intentionally cut off, OrbisNet switches transparently and automatically to direct device-to-device cellular GSM SMS. Messages, GPS coordinates, and reactions are chunked, compressed, and encrypted with military-grade AES-256-GCM and Double Ratchet (Perfect Forward Secrecy).
-3. 🔐 **Sovereign Cryptographic Identity (BIP-340 Schnorr)**:  
-   Zero phone numbers or emails required for Nostr access. User identities are anchored in `secp256k1` cryptographic keypairs (`npub` / `nsec`), where every single note and message is mathematically signed with BIP-340 Schnorr signatures.
-4. 📞 **E2EE Encrypted WebRTC Voice & Video Calling**:  
-   Real-time peer-to-peer audio and video streaming with Nostr or offline GSM SMS signaling (`ORB:CO:`, `ORB:CA:`), verbal SAS (Short Authentication String) verification against wiretaps, and automatic fallback to standard cellular GSM calls if SMS credits are exhausted.
-5. 🎙️ **High-Density Voice Notes**:  
-   Compressed using ZLIB Deflater with an interactive waveform seek-bar and dynamic playback speeds (1.0x / 1.5x / 2.0x), dispatched over Nostr in milliseconds or chunked across SMS segments offline.
-6. 📰 **Global Social Feed & Friends-Only Circles**:  
-   Publish public broadcast notes to the Nostr network or isolate sharing exclusively to trusted peer circles in encrypted P2P with zero contact leakage.
-7. 🧠 **Dual On-Device Neural AI Engines (Orbis Guard-LLM & Reply-LLM)**:  
-   Proprietary 100% offline Kotlin matrix AI engine (< 2MB footprint, < 10ms CPU inference, zero cloud relay) delivering real-time smishing/phishing detection, tri-state threat ratings, contextual smart reply suggestions (French, English, Arabic), and on-device continual learning.
-8. ☁️ **Sovereign Edge Telemetry & Update Manager (Vercel)**:  
-   Connected to the official Next.js Edge backend ([https://orbis-net.vercel.app](https://orbis-net.vercel.app)) for emergency announcements, remote APK update checks, and SHA-256 integrity validation with zero personally identifiable data.
-9. 🛡️ **Fortress Hardware Security**:  
-   Android KeyStore TEE hardware master keys (anti-ADB extraction), Duress PIN decoy profile (anti-coercion panic wipe), and volatile RAM zeroization (`fill(0)`).
-10. ✉️ **Default Android Telephony SMS Client**:  
-    Full Android telephony stack integration with intelligent OTP banking extraction and automatic spam isolation.
+1. ⚡ **Mode En Ligne Décentralisé (Nostr WebSockets)** :  
+   Dès qu'une connexion Internet (Wi-Fi ou données mobiles) est active, OrbisNet se connecte instantanément aux relais décentralisés Nostr mondiaux (`wss://relay.damus.io`, `wss://nos.lol`, `wss://relay.primal.net`). Les échanges sont immédiats, gratuits (0 SMS consommé) et chiffrés de bout en bout (DMs NIP-04 / NIP-44, publications publiques Kind 1, stories 24h et sondages).
+2. 📡 **Repli Automatique Hors-Ligne (GSM SMS P2P Chiffré)** :  
+   Dès que le réseau Internet est coupé, indisponible ou censuré, OrbisNet bascule de manière fluide et transparente sur le réseau cellulaire direct SMS de smartphone à smartphone. Chaque paquet est compressé (ZLIB), protégé par un chiffrement de niveau militaire AES-256-GCM et renouvelé par Double Ratchet (Perfect Forward Secrecy).
+3. 🔑 **Identité Souveraine par Signatures Schnorr (BIP-340)** :  
+   Aucun compte central, aucune adresse e-mail et aucun numéro de téléphone ne sont requis pour créer ou utiliser une identité Nostr. L'utilisateur est seul maître de sa paire de clés cryptographiques `secp256k1` (`npub` publique / `nsec` privée), et chaque publication est signée mathématiquement par Schnorr.
+4. 📞 **Appels Vocaux & Vidéo Chiffrés E2EE** :  
+   Streaming direct en pair à pair (P2P) WebRTC chiffré en AES-256-GCM avec signalisation Nostr ou SMS hors-ligne (`ORB:CO:`, `ORB:CA:`), validation mutuelle par code vocal court SAS anti-interception et repli automatique vers appel cellulaire ordinaire si le solde SMS est nul.
+5. 🎙️ **Notes Vocales à Haute Densité** :  
+   Capture audio compressée par Deflater ZLIB avec scrubbing dynamique tactile sur forme d'onde (*Waveform*) et sélecteur de vitesse (1.0x / 1.5x / 2.0x), diffusée instantanément sur Nostr ou segmentée par SMS.
+6. 📰 **Mur Social Mondial & Cercles d'Amis Privés** :  
+   Publiez des notes publiques mondiales sur le réseau décentralisé Nostr ou activez le mode "Entre Amis" pour restreindre la diffusion exclusivement à vos cercles de confiance en P2P chiffré.
+7. 🧠 **Double Moteur Neuronal IA Embarqué (Guard-LLM & Reply-LLM)** :  
+   Modèles neuronaux propriétaires 100% Kotlin natif exécutés localement sur processeur (< 2 Mo, inférence < 10 ms, zéro serveur tiers). Détection intelligente des arnaques/phishing par SMS (tri-état Sûr, Suspect, Danger), suggestions de réponses contextuelles en français, anglais et arabe, et auto-apprentissage continu sur l'appareil.
+8. ☁️ **Console Edge & Gestionnaire de Mises à Jour (Vercel)** :  
+   Backend sans état déployé sur l'Edge Vercel ([https://orbis-net.vercel.app](https://orbis-net.vercel.app)) pour la diffusion des annonces de sécurité d'urgence, la vérification d'intégrité des APK par empreinte SHA-256 et la supervision anonyme sans aucune collecte de données personnelles.
+9. 🛡️ **Sécurité Matérielle Forteresse** :  
+   Clés maîtresses scellées dans l'Android KeyStore TEE matériel (anti-extraction ADB), code PIN de détresse avec environnement leurre (anti-coercition physique) et écrasement immédiat de la mémoire vive (`fill(0)`).
+10. ✉️ **Client Téléphonie SMS Android par Défaut** :  
+    Gestion intégrale des SMS cellulaires standards, extraction automatique des codes de validation 2FA/bancaires (OTP) et isolation des spams.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Architecture Globale du Réseau OrbisNet
 
 ```mermaid
 graph TD
-    subgraph UI_Layer ["🎨 Jetpack Compose UI Layer (Material 3)"]
-        Header["OrbisTopHeader: RelayStatusPill + Search + Notifications + SIM Switcher"]
-        Nav["Navigation Bar: Social Feed / Chats / Contacts / Settings / Telephony SMS"]
-        TabSocial["📰 Nostr Global Feed & Friends-Only 24h Stories"]
-        TabChat["💬 Hybrid Encrypted Chats & Voice Notes"]
-        TabCall["📞 E2EE Voice & Video Calls + SAS Verbal Code"]
-        TabContacts["👥 Sovereign Directory, Circles & In-Person QR Pairing"]
-        TabSettings["⚙️ Settings, Dual-SIM Manager, Duress PIN & Help Center"]
-        TabSMS["✉️ Android Telephony SMS Client with Smart OTP"]
+    subgraph UI_Layer ["🎨 Interface Utilisateur Jetpack Compose (Material 3)"]
+        Header["OrbisTopHeader : Statut Relais + Recherche + Notifications + Sélecteur SIM"]
+        Nav["Barre de Navigation : Mur Nostr / Chats Hybrides / Contacts / Réglages / SMS"]
+        TabSocial["📰 Flux Mondial Nostr & Stories 24h Entre Amis"]
+        TabChat["💬 Discussions Hybrides E2EE & Notes Vocales"]
+        TabCall["📞 Appels Vocaux & Vidéo Chiffrés E2EE + Code SAS"]
+        TabContacts["👥 Annuaire Souverain, Cercles & Certification QR"]
+        TabSettings["⚙️ Réglages, Double-SIM, PIN de Détresse & Guide"]
+        TabSMS["✉️ Client SMS Téléphonie Android + Détection OTP"]
     end
 
-    subgraph Dual_Transport ["🔀 Hybrid Dual-Transport Switching Engine"]
-        NetworkMonitor["NetworkStateObserver (Wi-Fi / Mobile Data / Offline)"]
-        TransportRouter["HybridTransportRouter: Auto-Selects Nostr vs GSM"]
-        NetworkMonitor --> TransportRouter
+    subgraph Dual_Router ["🔀 Routeur de Transport Hybride Intelligent"]
+        NetworkWatcher["NetworkStateObserver : Wi-Fi / Données Mobiles / Hors-Ligne"]
+        SwitchEngine["TransportRouter : Sélection Automatique Nostr vs GSM"]
+        NetworkWatcher --> SwitchEngine
     end
 
-    subgraph Nostr_Engine ["⚡ Decentralized Nostr WebSocket Subsystem"]
-        RelayPool["NostrRelayPoolManager (damus, nos.lol, primal)"]
-        NostrCrypto["BIP-340 Schnorr Signer & secp256k1 Key Manager"]
-        NIP44["NIP-04 / NIP-44 End-to-End Encrypted DMs"]
-        FeedEngine["Kind 1 Public Notes, Reactions & Interactive Polls"]
-        RelayPool --> NostrCrypto
-        RelayPool --> NIP44
+    subgraph Nostr_Subsystem ["⚡ Moteur Décentralisé Nostr (WebSockets)"]
+        RelayPool["Gestionnaire de Relais wss:// (damus, nos.lol, primal)"]
+        SchnorrSigner["Signataire Cryptographique BIP-340 Schnorr (secp256k1)"]
+        DMEngine["Messagerie Privée Chiffrée NIP-04 / NIP-44"]
+        FeedEngine["Flux Public Kind 1, Réactions NIP-25 & Sondages"]
+        RelayPool --> SchnorrSigner
+        RelayPool --> DMEngine
         RelayPool --> FeedEngine
     end
 
-    subgraph GSM_Transport ["📡 GSM Cellular Transport Subsystem (Offline Fallback)"]
-        SmsEngine["P2P SMS Transport, Compression & Multi-Chunking"]
-        SmsReceiver["Background Inbound SMS Router & Parser"]
-        Stego["Invisible Steganography (Zero-Width Unicode)"]
-        Quota["GSM Quota Optimizer & Deduplication Engine"]
-        SmsEngine --> Stego
-        SmsEngine --> Quota
-        Quota --> SmsReceiver
+    subgraph GSM_Subsystem ["📡 Moteur de Repli Cellulaire GSM SMS (Hors-Ligne)"]
+        SmsEngine["Transport P2P SMS, Fragmentation & Concaténation"]
+        SmsReceiver["Routeur & Intercepteur SMS d'Arrière-Plan"]
+        Stegano["Stéganographie Invisible (Caractères Unicode Largeur Zéro)"]
+        QuotaEngine["Optimiseur de Quota SMS & Déduplication"]
+        SmsEngine --> Stegano
+        SmsEngine --> QuotaEngine
+        QuotaEngine --> SmsReceiver
     end
 
-    subgraph Security_Vault ["🔒 Fortress Security & Cryptographic Core"]
+    subgraph Security_Core ["🔒 Forteresse Cryptographique & Sécurité"]
         DoubleRatchet["Double Ratchet KDF & Perfect Forward Secrecy (PFS)"]
-        AESGCM["AES-256-GCM Encrypted Packet Sealed Vault"]
-        KeyStore["Android KeyStore Hardware Enclave (TEE)"]
-        Duress["DuressPINManager: Decoy Profile & Emergency Key Purge"]
-        MemoryZero["Volatile RAM Zeroization: fill(0) on Session Teardown"]
+        AESGCM["Chiffrement Authentifié AES-256-GCM"]
+        KeyStore["Enclave Matérielle Android KeyStore (TEE)"]
+        Duress["Gestionnaire de Détresse : Profil Leurre & Purge Silencieuse"]
+        RAMWipe["Écrasement RAM Volatile : fill(0) après Lecture"]
     end
 
-    subgraph Voice_Engine ["🎙️ E2EE Voice & Video Streaming Engine"]
-        CallManager["CallManager & CallSignalingService (Nostr/SMS)"]
-        AudioStream["AudioStreamEngine: Direct P2P AES-256-GCM Stream"]
-        SASVerifier["SAS (Short Authentication String) Verbal Verifier"]
-        Watchdog["Dead-Peer Watchdog (4.5s Silence Timeout) & UDP Teardown"]
-        CallManager --> AudioStream
+    subgraph Voice_Engine ["🎙️ Moteur Streaming Audio/Vidéo E2EE"]
+        CallManager["CallManager & Service de Signalisation Hybride"]
+        WebRTCStream["Flux P2P Chiffré Direct AES-256-GCM"]
+        SASVerifier["Vérificateur Vocal SAS (Short Authentication String)"]
+        Watchdog["Chien de Garde Dead-Peer (Coupure 4.5s) & Teardown"]
+        CallManager --> WebRTCStream
         CallManager --> SASVerifier
         CallManager --> Watchdog
     end
 
-    subgraph AI_Engine ["🧠 On-Device Neural Engines (Kotlin Vectorized Matrix)"]
-        GuardLLM["Orbis Guard-LLM: Smishing & Scam Threat Classifier"]
-        ReplyLLM["Orbis Reply-LLM: Contextual Smart Replies (FR/EN/AR)"]
-        ContinualLearner["Continual Learning Engine: Local Encrypted Weights"]
-        GuardLLM --> ContinualLearner
-        ReplyLLM --> ContinualLearner
+    subgraph AI_Core ["🧠 Moteurs Neuronaux 100% Locaux (Kotlin Vectoriel)"]
+        GuardLLM["Orbis Guard-LLM : Bouclier Anti-Arnaque & Détection Phishing"]
+        ReplyLLM["Orbis Reply-LLM : Suggestions Contextuelles (FR / EN / AR)"]
+        LocalWeights["Auto-Entraînement Embarqué : Poids Adaptatifs Scellés"]
+        GuardLLM --> LocalWeights
+        ReplyLLM --> LocalWeights
     end
 
-    subgraph Edge_Cloud ["☁️ Sovereign Edge Backend (Vercel)"]
-        EdgeApi["Vercel Edge Telemetry & Remote Announcement API"]
-        UpdateVerifier["SHA-256 Release Integrity & Forced Update Gate"]
+    subgraph Edge_Backend ["☁️ Infrastructure Souveraine Edge (Vercel)"]
+        EdgeAPI["API Edge Vercel : Alertes d'Urgence & Annonces"]
+        IntegrityGate["Contrôle d'Intégrité SHA-256 & Mises à Jour APK"]
     end
 
-    TabChat --> TransportRouter
-    TabSocial --> TransportRouter
+    TabChat --> SwitchEngine
+    TabSocial --> SwitchEngine
     TabCall --> CallManager
-    TransportRouter -->|Online| RelayPool
-    TransportRouter -->|Offline| SmsEngine
-    TransportRouter --> Security_Vault
+    SwitchEngine -->|En Ligne| RelayPool
+    SwitchEngine -->|Hors-Ligne| SmsEngine
+    SwitchEngine --> Security_Core
     TabSMS --> GuardLLM
     TabSMS --> ReplyLLM
     TabChat --> ReplyLLM
-    TabSettings --> EdgeApi
-    EdgeApi --> UpdateVerifier
+    TabSettings --> EdgeAPI
+    EdgeAPI --> IntegrityGate
 ```
 
 ---
 
-## 🌟 Core Features & Technical Capabilities
+## 🌟 Fonctionnalités Principales & Piliers Techniques
 
-### 1. 🔀 Hybrid Dual-Engine Transport (Nostr + GSM SMS)
-- **Automatic Seamless Switching**: Automatically detects network status. While connected to the internet, exchanges happen instantaneously over Nostr WebSockets with 0 SMS consumed. If network connectivity fails, the app instantly switches to encrypted GSM SMS with zero user configuration required.
-- **NIP-04 & NIP-44 End-to-End Encryption**: Direct messages sent over Nostr relays are sealed with modern NIP-44 authenticated encryption.
-- **Offline Double Ratchet Protocol**: SMS fallback employs Signal-style Double Ratchet with HMAC-SHA256 and AES-256-GCM, regenerating ephemeral session keys with every transmission for Perfect Forward Secrecy.
+### 1. 🔀 Transport Hybride Automatique (Nostr + GSM SMS)
+- **Bascule Transparente Sans Intervention** : L'application détecte en temps réel la connectivité réseau. En présence d'Internet, les messages transitent par WebSockets Nostr instantanément et sans coût SMS. En cas de coupure réseau ou de zone blanche, la bascule sur SMS GSM chiffré s'effectue automatiquement.
+- **Chiffrement Authentifié NIP-44** : En ligne, les messages directs Nostr utilisent le standard cryptographique NIP-44 adossé à AES-GCM.
+- **Double Ratchet Hors-Ligne (Signal Protocol)** : En mode SMS, chaque message dérive une nouvelle clé éphémère KDF via HMAC-SHA256, assurant la confidentialité persistante (*Perfect Forward Secrecy*).
 
-### 2. ⚡ Sovereign Cryptographic Identity (BIP-340 Schnorr)
-- **Zero Identity Gatekeeping**: No email address, Google account, or mobile phone number is required to join the Nostr network.
-- **Deterministic Key Pairs**: Generates sovereign `secp256k1` keys (`npub` public keys, `nsec` private keys).
-- **Mathematical Non-Repudiation**: Every post, comment, direct message, reaction, and profile update is cryptographically signed with BIP-340 Schnorr signatures.
+### 2. ⚡ Identité Souveraine & Signatures BIP-340 Schnorr
+- **Zéro Dépendance aux Opérateurs** : Aucune carte SIM, aucun numéro et aucune adresse mail ne sont nécessaires pour communiquer via le réseau Nostr.
+- **Paires de Clés Déterministes** : Génération locale sécurisée de clés `secp256k1` (`npub` pour l'adresse publique, `nsec` pour la clé secrète).
+- **Non-Répudiation Mathématique** : Chaque publication, commentaire, réaction ou message direct est signé numériquement par Schnorr.
 
-### 3. 📞 E2EE Encrypted Voice & Video Calling
-- **Dual-Channel Signaling Protocol**:
-  - WebRTC signaling routed through Nostr WebSockets when online.
-  - Compact GSM SMS signaling frames (`ORB:CO:`, `ORB:CA:`, `ORB:CE:`) when off-grid.
-- **Direct AES-256-GCM Streaming**: Real-time peer-to-peer encrypted audio/video socket stream with zero intermediate media relay servers.
-- **SAS (Short Authentication String) Verification**: Derived cryptographic visual hash displayed on both screens for verbal peer validation, immunizing calls against Man-in-the-Middle (MITM) wiretaps and rogue cellular towers (IMSI-Catchers).
-- **Zero-Credit Cellular Fallback**: If either party runs out of SMS balance, OrbisNet detects delivery state and prompts a one-tap fallback to standard cellular voice (100% free for the receiver).
-- **Dead-Peer Watchdog (4.5s)**: Automated UDP teardown bursts and watchdog termination after 4.5 seconds of silence or connection drop.
+### 3. 📞 Appels Vocaux & Vidéo Chiffrés E2EE
+- **Signalisation Hybride Multi-Canaux** :
+  - Signalisation WebRTC instantanée via relais Nostr lorsque vous êtes connecté.
+  - Trames de signalisation SMS compactes hors-ligne (`ORB:CO:`, `ORB:CA:`, `ORB:CE:`) en zone blanche.
+- **Streaming Direct AES-256-GCM** : Flux audio et vidéo en pair à pair sans serveur relais intermédiaire.
+- **Code de Sécurité Vocal SAS** : Empreinte cryptographique visuelle courte affichée sur les deux écrans pour une validation vocale mutuelle, protégeant contre toute interception MITM ou fausse antenne relais (IMSI-Catcher).
+- **Bascule Gratuite vers Appel GSM** : Si l'un des correspondants n'a plus de crédit SMS pour émettre la signalisation, l'application propose instantanément de basculer vers un appel GSM cellulaire standard (100% gratuit en réception).
+- **Chien de Garde Dead-Peer (4.5s)** : Coupure automatique garantie après 4.5 secondes de silence ou de rupture réseau pour préserver la batterie et la confidentialité.
 
-### 4. 📰 Global Nostr Feed & Friends-Only Social Circles
-- **Kind 1 Public Social Feed**: Discover and broadcast short notes across global Nostr relays without algorithmic sorting or shadowbanning.
-- **24-Hour Ephemeral Stories**: Full-screen multimedia stories with glowing rings, status badges, and 24h expiration.
-- **Decentralized Polls**: Interactive voting with real-time tally aggregation and cryptographic anti-double-vote validation.
-- **Friends-Only Encrypted Mode**: Switch to isolated circle mode where posts and media are transmitted strictly to confirmed trusted friends via encrypted P2P.
+### 4. 📰 Mur Social Mondial & Stories 24h Entre Amis
+- **Flux Public Nostr (Kind 1)** : Découvrez et publiez des notes publiques ouvertes sur le réseau décentralisé mondial sans algorithme opaque ni modération centralisée.
+- **Stories Éphémères 24h** : Galerie horizontale avec halo lumineux, indicateur de lecture et purge automatique après 24 heures.
+- **Sondages Décentralisés** : Vote interactif avec dépouillement en temps réel et signature cryptographique anti-fraude.
+- **Mode Confidentiel "Entre Amis"** : Partagez vos pensées et médias exclusivement avec vos pairs confirmés en P2P chiffré sans fuite vers vos contacts ordinaires.
 
-### 5. 🎙️ Ultra-Compressed Voice Notes
-- **High-Efficiency Voice Compression**: Voice recording optimized with AMR/AAC codec paired with ZLIB Deflater compression.
-- **Interactive Waveform Player**: Touch scrubbing waveform seek-bar, playback speed toggles (1.0x / 1.5x / 2.0x), and sub-second timers. Dispatched in 1 packet over Nostr or chunked across multi-segment SMS offline.
+### 5. 🎙️ Notes Vocales Haute Densité
+- **Compression Acoustique Optimisée** : Enregistrement vocal optimisé (AMR/AAC) combiné à un compactage Deflater ZLIB.
+- **Lecteur Interactif Waveform** : Forme d'onde tactile interactive avec sélecteur de vitesse fluide (1.0x / 1.5x / 2.0x), transmis en 1 paquet sur Nostr ou segmenté par SMS hors-ligne.
 
-### 6. 🛡️ Invisible SMS Steganography
-- **Zero-Width Unicode Concealment**: Encrypted binary payloads are concealed as invisible Unicode zero-width characters inside everyday carrier text messages to bypass deep packet inspection (DPI) and operator keyword censors.
+### 6. 🛡️ Stéganographie SMS Invisible
+- **Dissimulation Unicode Largeur Zéro** : En mode secours SMS, les octets chiffrés sont convertis en caractères Unicode invisibles insérés au sein d'une phrase banale, contournant les filtres de censure par mots-clés des opérateurs télécoms.
 
-### 7. 🧠 Dual On-Device Neural AI Engines (Guard-LLM & Reply-LLM)
-- **Orbis Guard-LLM (Anti-Smishing & Scam Shield)**:
-  - **100% On-Device Threat Evaluation**: Heuristic and vectorized semantic inspection of inbound carrier SMS for banking scams, phishing lures, urgency tactics, and fraudulent SIM warnings.
-  - **Tri-State Severity Rating**: Immediate categorization (*Safe*, *Suspicious*, *Danger*) with explicit threat reasons and URL domain isolation (defending against misleading dot-formatted text like "M.Pierre").
-  - **Spam & Blocked Hub**: Suspicious SMS are isolated in the dedicated "Spam & Blocked" management tab with 1-tap blocking and sender blacklisting.
-- **Orbis Reply-LLM (Contextual Smart Replies)**:
-  - **3 Instant Suggestion Chips**: Generates 3 polite, relevant, and actionable reply proposals directly above the composer in encrypted chats and standard SMS.
-  - **Multilingual Context Awareness**: Recognizes intent in French, English, and Arabic (questions, logistics, gratitude, emergencies).
-  - **Pure Kotlin Vector Engine**: Proprietary on-device matrix engine (< 2MB, < 10ms CPU inference) with zero reliance on heavy ONNX or TFLite binaries, preserving battery and maintaining an APK size under 5MB.
-- **On-Device Continual Learning**: Adapts dynamically as the user classifies messages without transmitting any telemetry or training data to remote servers.
+### 7. 🧠 Double Moteur IA Embarqué (Guard-LLM & Reply-LLM)
+- **Orbis Guard-LLM (Bouclier Anti-Arnaque)** :
+  - **Analyse Sémantique Vectorisée 100% Locale** : Inspection en direct des SMS entrants pour détecter les faux liens bancaires, le smishing, les tentatives d'extorsion et les alertes d'urgence frauduleuses.
+  - **Classification Tri-État** : Attribution d'un niveau de risque (*Sûr*, *Suspect*, *Danger*) avec explications claires et isolation des domaines suspects.
+  - **Onglet Dédié "Spam & Bloqués"** : Isolement automatique des messages suspects avec option de blocage 1-clic.
+- **Orbis Reply-LLM (Suggestions Intelligentes)** :
+  - **3 Pastilles Contextuelles** : Génération instantanée de 3 réponses polies, concises et pertinentes au-dessus du clavier dans les discussions chiffrées et les SMS classiques.
+  - **Compréhension Multilingue** : Reconnaissance contextuelle des salutations, rendez-vous, confirmations, urgences et remerciements en français, anglais et arabe.
+  - **Moteur Matriciel Kotlin Pur** : Inférence sur processeur en moins de 10 ms sans aucune bibliothèque externe lourde (ni ONNX, ni TFLite), maintenant un APK léger sous 5 Mo.
+- **Auto-Entraînement Continu Embarqué** : Les poids neuronaux s'adaptent localement lorsque l'utilisateur signale un message sans jamais envoyer la moindre donnée sur le réseau.
 
-### 8. ☁️ Sovereign Edge Backend & Remote Update Manager (Vercel)
-- **High-Performance Edge Infrastructure**: Hosted on Vercel Edge Network ([https://orbis-net.vercel.app](https://orbis-net.vercel.app)).
-- **Remote Security Announcements**: Real-time broadcast of critical security alerts and network advisories.
-- **SHA-256 Release Validation**: Instant on-device verification of official signed APK updates to prevent supply chain tampering.
-- **Supervisor Telemetry Console**: Authenticated admin dashboard (`/admin`) secured with `x-admin-key` validation (zero credentials stored in APK, memory-only session storage).
+### 8. ☁️ Console Edge Vercel & Mises à Jour Souveraines
+- **Infrastructure Serverless Edge Ultra-Rapide** : Hébergée sur le réseau Edge mondial Vercel ([https://orbis-net.vercel.app](https://orbis-net.vercel.app)).
+- **Annonces & Alertes d'Urgence** : Diffusion en direct d'informations critiques et d'alertes de sécurité aux utilisateurs de l'application.
+- **Contrôle d'Intégrité SHA-256** : Vérification automatisée des empreintes cryptographiques des nouvelles versions APK pour empêcher toute altération de la chaîne de distribution.
+- **Tableau de Bord Administrateur (`/admin`)** : Interface web claire et moderne protégée par en-tête `x-admin-key`, sans aucun mot de passe inscrit dans l'APK ni persistance sur disque.
 
-### 9. 🔒 Fortress Hardware Security
-- **Android KeyStore (TEE)**: Master keys sealed in processor-level hardware security; immune to ADB backup extraction.
-- **Duress PIN & Decoy Profile**: Entering an emergency alternative PIN unlocks a harmless decoy sandbox while silently purging or locking cryptographic session keys under physical coercion.
-- **RAM Zeroization**: Ratchet keys and decrypted buffers are overwritten in RAM (`fill(0)`) immediately after reading.
-- **Encrypted V3 Vault**: Backup archives (`.orbis`) derived with PBKDF2 (100,000 rounds) and a 128-bit cryptographic salt.
+### 9. 🔒 Sécurité Forteresse en Profondeur
+- **Android KeyStore (TEE)** : Clé maîtresse de chiffrement gérée au niveau matériel dans l'enclave sécurisée du processeur (anti-extraction ADB).
+- **Code PIN de Détresse & Profil Leurre** : En cas de contrainte physique, saisir un code secret alternatif déverrouille un environnement leurre inoffensif tout en purgeant silencieusement les clés de chiffrement de session.
+- **Zéro-Trace RAM** : Écrasement immédiat des tampons mémoire et des clés éphémères (`fill(0)`) dès lecture.
+- **Coffre Chiffré V3** : Sauvegardes intégrales (`.orbis`) dérivées par PBKDF2 à 100 000 itérations avec sel cryptographique de 128 bits.
 
 ---
 
-## 🔒 Security & Cryptographic Matrix
+## 🔒 Matrice Cryptographique & Sécurité
 
-| Layer | Algorithm / Protocol | Implementation Details |
+| Couche | Algorithme / Protocole | Détails d'Implémentation |
 |---|---|---|
-| **Nostr Identity & Signing** | **BIP-340 Schnorr / secp256k1** | Hardware-backed keypair generated on-device, mathematical non-repudiation |
-| **Online Messaging** | **NIP-04 / NIP-44 (WebSockets)** | Authenticated payload encryption over decentralized Nostr relays |
-| **Offline Messaging** | **AES-256-GCM + Double Ratchet** | Signal-style KDF tree, new session key per message, Perfect Forward Secrecy |
-| **E2EE Voice/Video Calls** | **WebRTC + AES-256-GCM** | Direct peer-to-peer audio/video stream with verbal SAS anti-wiretap verification |
-| **Data At-Rest** | **Android KeyStore (TEE)** | Master key stored in hardware enclave; immune to ADB memory dumps |
-| **Vault Backups** | **PBKDF2 (100k rounds)** | AES-256-CBC with 128-bit cryptographically secure random salt |
-| **Steganography** | **Zero-Width Unicode** | Anti-censorship binary payload concealment inside harmless plain text |
-| **Neural AI Engines** | **Proprietary Vectorized Kotlin Engine** | 100% On-Device CPU execution, zero telemetry, local continual learning weights |
-| **Duress Panic Defense** | **Duress PIN & Decoy Sandbox** | Alternate PIN unlocks decoy profile and silently destroys cryptographic session keys |
-| **Edge Infrastructure** | **Vercel Edge Network + SHA-256** | Remote announcement broadcast, release verification, zero personally identifiable data |
+| **Identité & Signature Nostr** | **BIP-340 Schnorr / secp256k1** | Paire de clés souveraines générées sur l'appareil, non-répudiation mathématique |
+| **Messagerie En Ligne** | **NIP-04 / NIP-44 (WebSockets)** | Chiffrement de charge utile authentifié via relais décentralisés Nostr |
+| **Messagerie Hors-Ligne** | **AES-256-GCM + Double Ratchet** | Arbre KDF Signal Protocol, clé éphémère par message, Perfect Forward Secrecy |
+| **Appels Vocaux/Vidéo E2EE** | **WebRTC + AES-256-GCM** | Flux audio/vidéo direct en P2P avec code vocal court SAS anti-écoute |
+| **Stockage au Repos** | **Android KeyStore (TEE)** | Clé maîtresse matérielle ; protection absolue contre l'extraction mémoire ADB |
+| **Coffre & Sauvegardes** | **PBKDF2 (100k itérations)** | Dérivation ralentie avec sel cryptographique aléatoire de 128 bits |
+| **Stéganographie** | **Unicode Largeur Zéro** | Dissimulation de charge binaire chiffrée au sein d'un texte anodin |
+| **Moteurs d'IA Neuronale** | **Moteur Vectoriel Kotlin Natif** | Exécution 100% sur CPU local, 0 télémétrie, auto-apprentissage scellé |
+| **Défense Anti-Contrainte** | **PIN de Détresse & Sandbox Leurre** | Déverrouillage d'un profil leurre et destruction silencieuse des clés secrètes |
+| **Infrastructure Edge** | **Vercel Edge Network + SHA-256** | Diffusion des annonces critiques, validation d'intégrité, 0 donnée personnelle |
 
 ---
 
-## 📊 Network & Quota Transparency
+## 📊 Transparence Réseau & Sobriété du Quota SMS
 
-OrbisNet optimizes every byte to deliver completely free communication when online, and absolute frugality when off-grid:
+OrbisNet a été optimisé à l'octet près pour offrir une gratuité totale en ligne et une frugalité maximale hors-ligne :
 
-| User Action | Online (Nostr Relays) | Offline (GSM SMS Fallback) | Technical Details |
+| Action Utilisateur | En Ligne (Relais Nostr) | Hors-Ligne (Repli GSM SMS) | Détails Techniques |
 |---|---|---|---|
-| 💬 **1-on-1 Text Message** | **0 SMS** (Data < 1 KB) | **1 SMS** | Nostr NIP-44 instant / Offline AES-256-GCM Double Ratchet |
-| 📞 **E2EE Call Signaling** | **0 SMS** (Data < 2 KB) | **2 SMS** | Session key handshake • 0 SMS consumed during audio/video stream |
-| 🗺️ **Satellite GPS Location** | **0 SMS** (Data < 1 KB) | **1 SMS** | Ultra-compact binary coordinates (~40 bytes) |
-| 👍 **Emoji Reaction / ACK** | **0 SMS** (NIP-25 event) | **1 SMS** | Lightweight single-frame acknowledgment packet |
-| 📰 **Social Post & Stories 24h** | **0 SMS** (Kind 1 broadcast) | **Direct P2P** | Nostr relay broadcast or direct circle dispatch |
-| 🎙️ **Voice Note (3 to 5 sec)** | **0 SMS** (Data < 20 KB) | **5 to 12 SMS** | AMR/AAC audio compressed with Deflater ZLIB |
-| 🧠 **AI Guard & Reply LLM** | **0 SMS • 0 KB Data** | **0 SMS • 0 KB Data** | 100% On-Device CPU vectorization • 0 telemetry |
+| 💬 **Message Texte 1 à 1** | **0 SMS** (Data < 1 Ko) | **1 SMS** | NIP-44 instantané en ligne / Chiffré AES-256-GCM Double Ratchet |
+| 📞 **Signalisation Appel E2EE** | **0 SMS** (Data < 2 Ko) | **2 SMS** | Échange des clés de session • 0 SMS consommé pendant l'appel audio/vidéo |
+| 🗺️ **Position GPS Satellite** | **0 SMS** (Data < 1 Ko) | **1 SMS** | Coordonnées ultra-compactes ~40 octets |
+| 👍 **Réaction Emoji / ACK** | **0 SMS** (Événement NIP-25) | **1 SMS** | Trame d'acquittement allégée et directe |
+| 📰 **Publication Mur & Stories** | **0 SMS** (Événement Kind 1) | **P2P Direct** | Diffusion sur relais Nostr ou envoi direct aux cercles de confiance |
+| 🎙️ **Note Vocale (3 à 5 sec)** | **0 SMS** (Data < 20 Ko) | **5 à 12 SMS** | Flux audio AMR/AAC compressé ZLIB en multi-segments |
+| 🧠 **IA Guard-LLM & Reply-LLM** | **0 SMS • 0 Ko Data** | **0 SMS • 0 Ko Data** | Inférence 100% CPU locale • Zéro requête réseau • Zéro télémétrie |
 
 ---
 
-## 🔗 Official Links & Resources
+## 🔗 Liens Officiels & Ressources
 
-- 🌐 **Official Website**: [https://orbisoffline-cloud.github.io/ORBIS/](https://orbisoffline-cloud.github.io/ORBIS/)
-- ☁️ **Sovereign Edge Backend**: [https://orbis-net.vercel.app](https://orbis-net.vercel.app)
-- 💬 **Official Telegram Community**: [https://t.me/orbis_community](https://t.me/orbis_community)
-- 🐙 **GitHub Repository**: [https://github.com/orbisoffline-cloud/ORBIS](https://github.com/orbisoffline-cloud/ORBIS)
-- 📦 **Direct APK Download**: [O.R.B.I.S. v1.1.0 APK](https://github.com/orbisoffline-cloud/ORBIS/releases/download/ORBIS-v1.1.0/O.R.B.I.S.apk)
+- 🌐 **Dépôt GitHub Officiel** : [https://github.com/ShaDevPro/O-R-B-I-S-net](https://github.com/ShaDevPro/O-R-B-I-S-net)
+- ☁️ **Console Edge & Télémétrie** : [https://orbis-net.vercel.app](https://orbis-net.vercel.app)
+- 💬 **Communauté Telegram Officielle** : [https://t.me/orbis_community](https://t.me/orbis_community)
+- 📦 **Téléchargement Direct APK** : [OrbisNet v1.1.0 APK](https://github.com/ShaDevPro/O-R-B-I-S-net/releases)
 
 ---
 
-## 📥 Download & Installation
+## 📥 Téléchargement & Installation
 
-### 📋 Prerequisites & Platform Compatibility
-- **Operating System**: 🤖 **100% Android Exclusive** (Android 8.0 Oreo / API 26 through Android 15 / API 35).
-- **Apple iOS / iPhone**: 🚫 **STRICTLY NOT SUPPORTED** — Incompatible by technical design. Apple's iOS sandbox blocks raw background GSM SMS frame interception, telephony client overrides, and direct cellular modem manipulation.
-- **Cellular Hardware**: Active SIM card with standard GSM SMS & Voice capability (Dual-SIM multi-carrier supported).
-- **Internet / Wi-Fi**: Optional — Used for real-time Nostr relays and WebRTC calling; automatically falls back to offline GSM when absent.
+### 📋 Compatibilité Matérielle & Exclusivité Android
+- **Système d'Exploitation** : 🤖 **100% Exclusif Android** (Android 8.0 Oreo / API 26 jusqu'à Android 15 / API 35).
+- **Apple iOS / iPhone** : 🚫 **STRICTEMENT NON SUPPORTÉ** — Incompatible par conception technique (sandbox iOS fermée).
+- **Matériel Cellulaire** : Carte SIM active avec forfait SMS/Voix standard (Double SIM multi-opérateurs gérée nativement).
+- **Connexion Internet / Wi-Fi** : Optionnelle — Utilisée pour les relais Nostr et les appels WebRTC en ligne ; repli automatique sur GSM SMS en son absence.
 
-### 🚀 Setup Guide
-1. **Download the Official Signed APK**:
-   - Download `O.R.B.I.S.apk` from the [Official Website](https://orbisoffline-cloud.github.io/ORBIS/) or [GitHub Releases](https://github.com/orbisoffline-cloud/ORBIS/releases/download/ORBIS-v1.1.0/O.R.B.I.S.apk).
-2. **Verify SHA-256 Cryptographic Checksum**:
+### 🚀 Guide d'Installation Rapide
+1. **Téléchargez l'APK Officiel Signé** :
+   - Récupérez `OrbisNet.apk` depuis les [Releases GitHub](https://github.com/ShaDevPro/O-R-B-I-S-net/releases) ou la [Console Edge](https://orbis-net.vercel.app).
+2. **Vérification de l'Empreinte Cryptographique SHA-256** :
    ```bash
    # Windows (PowerShell / CMD)
-   certutil -hashfile O.R.B.I.S.apk SHA256
+   certutil -hashfile OrbisNet.apk SHA256
 
    # Linux / macOS
-   sha256sum O.R.B.I.S.apk
-   # Expected Hash: 6b983af8c9b139d39d220fb435f1c04c10e190a9817455c90d0886199bea96d9
+   sha256sum OrbisNet.apk
+   # Empreinte attendue : 6b983af8c9b139d39d220fb435f1c04c10e190a9817455c90d0886199bea96d9
    ```
-3. **Install & Authorize Permissions**:
-   - Open the `.apk` file and authorize installation (*Allow from unknown sources*).
-   - Set OrbisNet as your **Default SMS App** (required by Android to encrypt, decrypt, and route cellular frames).
-   - Grant SMS, Phone, Audio, and Contacts permissions when prompted.
-4. **Connect & Communicate**:
-   - Connect instantly to decentralized Nostr relays using your generated `npub` identity, or exchange public keys over SMS or QR code for immediate off-grid communication.
+3. **Installation & Autorisations** :
+   - Ouvrez le fichier `.apk` et autorisez l'installation depuis des sources inconnues.
+   - Définissez OrbisNet comme votre **Application SMS par défaut** (obligatoire sur Android pour intercepter, chiffrer et déchiffrer les paquets cellulaires).
+   - Accordez les permissions SMS, Téléphone, Audio et Contacts lors du premier lancement.
+4. **Prise en Main Immédiate** :
+   - Rejoignez les relais Nostr décentralisés grâce à votre clé `npub`, ou scannez le QR code d'un proche pour commencer à communiquer en toute souveraineté.
 
 ---
 
-## 📄 License & Credits
+## 📄 Licence & Droits d'Auteur
 
-Designed & Developed with sovereign precision by **ShaDevPro**.  
-© 2026 **OrbisNet — Nostr & GSM Sovereign Hybrid**. All rights reserved.
+Conçu et développé avec une rigueur souveraine par **ShaDevPro**.  
+© 2026 **OrbisNet — Le Réseau Hybride Souverain Nostr & GSM**. Tous droits réservés.
