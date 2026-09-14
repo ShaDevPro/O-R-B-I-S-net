@@ -1,7 +1,7 @@
 {
-  "name": "OrbisNet — Réseau Souverain Nostr & GSM",
+  "name": "OrbisNet — Réseau Décentralisé Souverain Nostr",
   "short_name": "OrbisNet",
-  "description": "Réseau Social & Messagerie Hybride Souveraine Nostr (WebSockets) & GSM SMS",
+  "description": "Réseau Social & Messagerie Décentralisée Souveraine Nostr (WebSockets & WebRTC E2EE)",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
