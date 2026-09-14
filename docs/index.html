@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>O R B I S — Messagerie & Réseau Social P2P Souverain Hors-Ligne</title>
-  <meta name="description" content="Communiquez sans Internet, sans serveur et sans traces. O R B I S est la première plateforme sociale et de messagerie P2P souveraine au monde propulsée par le protocole GSM SMS chiffré.">
-  <meta name="keywords" content="Orbis, P2P, SMS, chiffrement, AES-256, Double Ratchet, hors-ligne, ShaDevPro, souveraineté, messagerie sécurisée">
+  <title>OrbisNet — Réseau Social & Messagerie Hybride Souveraine Nostr & GSM</title>
+  <meta name="description" content="Communiquez en temps réel avec le protocole décentralisé Nostr et sans Internet grâce au repli automatique GSM SMS. OrbisNet est la plateforme souveraine hybride chiffrée de bout en bout.">
+  <meta name="keywords" content="OrbisNet, Nostr, P2P, SMS, GSM, hybride, décentralisé, chiffrement, AES-256-GCM, Double Ratchet, BIP-340, Schnorr, hors-ligne, ShaDevPro, souveraineté, WebSockets, WebRTC">
   
   <!-- Favicon & Web App Icons -->
   <link rel="icon" type="image/png" href="ic_webicon.png">
@@ -16,16 +16,16 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="O R B I S">
+  <meta name="apple-mobile-web-app-title" content="OrbisNet">
   
   <!-- Open Graph & Meta Media -->
-  <meta property="og:title" content="O R B I S — Messagerie & Réseau Social P2P Souverain Hors-Ligne">
-  <meta property="og:description" content="Communiquez sans Internet, sans serveur et sans traces. O R B I S est la première plateforme sociale et de messagerie P2P souveraine au monde propulsée par le protocole GSM SMS chiffré.">
+  <meta property="og:title" content="OrbisNet — Réseau Social & Messagerie Hybride Souveraine Nostr & GSM">
+  <meta property="og:description" content="Communiquez en temps réel avec le protocole décentralisé Nostr et sans Internet grâce au repli automatique GSM SMS. Chiffrement AES-256-GCM, Double Ratchet et signatures BIP-340.">
   <meta property="og:image" content="https://orbisoffline-cloud.github.io/ORBIS/ic_webicon.png">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="O R B I S — Messagerie & Réseau Social P2P Souverain">
-  <meta name="twitter:description" content="Communiquez sans Internet, sans serveur et sans traces.">
+  <meta name="twitter:title" content="OrbisNet — Réseau Souverain Hybride Nostr & GSM">
+  <meta name="twitter:description" content="En ligne avec Nostr. Hors-ligne avec GSM SMS. Zéro serveur central, zéro traçage.">
   <meta name="twitter:image" content="https://orbisoffline-cloud.github.io/ORBIS/ic_webicon.png">
   
   <!-- Fonts -->
@@ -33,7 +33,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=1.2.0">
+  <link rel="stylesheet" href="style.css?v=1.3.0">
 </head>
 <body>
 
@@ -50,20 +50,20 @@
     <nav class="navbar container">
       <a href="#" class="brand-logo">
         <div class="logo-shield">
-          <img src="ic_webicon.png" alt="O R B I S Logo" class="brand-logo-img">
+          <img src="ic_webicon.png" alt="OrbisNet Logo" class="brand-logo-img">
           <div class="orbit-ring"></div>
         </div>
         <div class="brand-text">
-          <span class="brand-title">O R B I S</span>
-          <span class="brand-badge">SOVEREIGN P2P</span>
+          <span class="brand-title">OrbisNet</span>
+          <span class="brand-badge">NOSTR & GSM HYBRID</span>
         </div>
       </a>
 
       <div class="nav-menu" id="navMenu">
         <a href="#features" class="nav-link" data-i18n="nav.features">Fonctionnalités</a>
-        <a href="#security" class="nav-link" data-i18n="nav.security">Sécurité & PFS</a>
+        <a href="#security" class="nav-link" data-i18n="nav.security">Sécurité & Cryptographie</a>
         <a href="#help-center" class="nav-link" data-i18n="nav.help">Centre d'aide</a>
-        <a href="#quota" class="nav-link" data-i18n="nav.quota">Quota GSM</a>
+        <a href="#quota" class="nav-link" data-i18n="nav.quota">Quota & Réseau</a>
         <a href="#download" class="nav-link" data-i18n="nav.download">Télécharger</a>
         
         <!-- Mobile Drawer Action Buttons -->
@@ -115,22 +115,22 @@
     <div class="hero-content">
       <div class="hero-pill">
         <span class="pulse-dot"></span>
-        <span data-i18n="hero.pill">Protocole Décentralisé GSM • 100% Hors-Ligne pour Android</span>
+        <span data-i18n="hero.pill">Protocole Hybride Décentralisé • Nostr Relays & GSM SMS Hors-Ligne</span>
       </div>
 
       <h1 class="hero-title">
-        <span data-i18n="hero.title_part1">Communiquez sans Internet.</span><br>
-        <span class="gradient-text" data-i18n="hero.title_part2">Sans Serveur. Sans Traces.</span>
+        <span data-i18n="hero.title_part1">L'Internet Libre & Décentralisé.</span><br>
+        <span class="gradient-text" data-i18n="hero.title_part2">En Ligne avec Nostr. Hors-Ligne avec GSM.</span>
       </h1>
 
       <p class="hero-subtitle" data-i18n="hero.subtitle">
-        La première plateforme sociale et de messagerie souveraine au monde propulsée par le réseau SMS GSM avec chiffrement de niveau militaire AES-256-GCM, Double Ratchet (PFS) et stéganographie invisible.
+        La première plateforme souveraine combinant le réseau décentralisé Nostr (WebSockets) et le transport cellulaire direct GSM SMS. Chiffrement militaire AES-256-GCM, Double Ratchet, signatures Schnorr BIP-340 et IA 100% locale.
       </p>
 
       <div class="hero-cta-group">
         <a href="https://github.com/orbisoffline-cloud/ORBIS/releases/download/ORBIS-v1.1.0/O.R.B.I.S.apk" class="btn btn-primary btn-lg pulse-hover" download>
-          <img src="ic_webicon.png" alt="O R B I S" class="btn-hero-app-icon">
-          <span data-i18n="hero.download_btn">Télécharger O R B I S v1.1.0</span>
+          <img src="ic_webicon.png" alt="OrbisNet" class="btn-hero-app-icon">
+          <span data-i18n="hero.download_btn">Télécharger OrbisNet v1.1.0</span>
         </a>
         <a href="https://t.me/orbis_community" target="_blank" rel="noopener noreferrer" class="btn btn-telegram btn-lg">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="btn-icon-svg">
@@ -147,30 +147,30 @@
       <!-- Trust Badges -->
       <div class="trust-badges">
         <div class="trust-badge">
-          <span class="badge-icon">🔐</span>
+          <span class="badge-icon">⚡</span>
           <div>
-            <strong data-i18n="badges.encryption_title">AES-256-GCM & PFS</strong>
-            <span data-i18n="badges.encryption_sub">Double Ratchet Militaire</span>
+            <strong data-i18n="badges.encryption_title">BIP-340 & Double Ratchet</strong>
+            <span data-i18n="badges.encryption_sub">Schnorr & AES-256-GCM</span>
           </div>
         </div>
         <div class="trust-badge">
-          <span class="badge-icon">📶</span>
+          <span class="badge-icon">🌐</span>
           <div>
-            <strong data-i18n="badges.offline_title">Zéro Dépendance Cloud</strong>
-            <span data-i18n="badges.offline_sub">GSM SMS P2P Direct</span>
+            <strong data-i18n="badges.offline_title">Hybride Nostr + GSM</strong>
+            <span data-i18n="badges.offline_sub">Relais WebSockets & Repli SMS</span>
           </div>
         </div>
         <div class="trust-badge">
           <span class="badge-icon">🛡️</span>
           <div>
-            <strong data-i18n="badges.hardware_title">Android KeyStore</strong>
-            <span data-i18n="badges.hardware_sub">Protection Matérielle</span>
+            <strong data-i18n="badges.hardware_title">Android KeyStore TEE</strong>
+            <span data-i18n="badges.hardware_sub">Enclave Matérielle Sécurisée</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Interactive Holographic Phone Mockup -->
+    <!-- Interactive Phone Mockup -->
     <div class="hero-visual">
       <div class="device-frame">
         <div class="device-screen">
@@ -180,8 +180,8 @@
               <span>👤</span>
             </div>
             <div class="mockup-title">
-              <strong data-i18n="mockup.peer_name">Sovereign Mesh Peer</strong>
-              <span class="mockup-status" data-i18n="mockup.status">● Chiffré E2EE • GSM</span>
+              <strong data-i18n="mockup.peer_name">Nostr Peer • npub1...</strong>
+              <span class="mockup-status" data-i18n="mockup.status">● Connecté • Relais Nostr + GSM Prêt</span>
             </div>
             <div class="mockup-lock">🔒</div>
           </div>
@@ -189,12 +189,12 @@
           <!-- Mockup Chat Stream -->
           <div class="mockup-messages">
             <div class="mockup-msg peer">
-              <p data-i18n="mockup.msg1">🔐 Canaux Double Ratchet initialisés avec succès. Clé éphémère KDF synchronisée.</p>
+              <p data-i18n="mockup.msg1">⚡ Connecté au relais décentralisé wss://relay.damus.io. Signatures Schnorr BIP-340 actives.</p>
               <span class="mockup-time">12:40</span>
             </div>
 
             <div class="mockup-msg mine">
-              <p data-i18n="mockup.msg2">Parfait ! Partage de position d'urgence chiffrée envoyé en 1 seul SMS.</p>
+              <p data-i18n="mockup.msg2">Parfait ! En cas de coupure Internet, bascule automatique instantanée en GSM SMS chiffré.</p>
               <div class="mockup-gps-card">
                 <span data-i18n="mockup.gps">🗺️ GPS: 33.5731° N, 7.5898° W</span>
               </div>
@@ -214,14 +214,14 @@
             </div>
 
             <div class="mockup-msg mine">
-              <p data-i18n="mockup.msg3">Stéganographie active : charge utile dissimulée sous texte porteur 🛡️</p>
+              <p data-i18n="mockup.msg3">Appel vocal E2EE prêt • Bouclier IA Guard-LLM actif 🛡️</p>
               <span class="mockup-time">12:42 ✓✓</span>
             </div>
           </div>
 
           <!-- Mockup Bottom Bar -->
           <div class="mockup-input-bar">
-            <span data-i18n="mockup.placeholder">Message chiffré SMS...</span>
+            <span data-i18n="mockup.placeholder">Message chiffré Nostr / SMS...</span>
             <div class="mockup-send-icon">➤</div>
           </div>
         </div>
@@ -232,9 +232,9 @@
   <!-- Core Features Section -->
   <section id="features" class="section container">
     <div class="section-header text-center reveal">
-      <span class="section-tag" data-i18n="features.tag">PILIERS SOUVERAINS</span>
-      <h2 class="section-title" data-i18n="features.title">L'Autonomie Numérique Réinventée</h2>
-      <p class="section-desc" data-i18n="features.desc">Tout ce qu'un réseau social et une messagerie moderne offrent, sans aucun serveur tiers ni connexion Internet requise.</p>
+      <span class="section-tag" data-i18n="features.tag">ARCHITECTURE HYBRIDE</span>
+      <h2 class="section-title" data-i18n="features.title">La Souveraineté Numérique Totale</h2>
+      <p class="section-desc" data-i18n="features.desc">La puissance d'un réseau mondial décentralisé (Nostr) couplée à l'invulnérabilité d'un protocole direct hors-ligne (GSM SMS).</p>
     </div>
 
     <div class="grid grid-3 stagger-items">
@@ -243,75 +243,75 @@
         <div class="feature-icon-wrapper cyan">
           <span class="feature-icon">💬</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f1_title">Messagerie P2P & Double Ratchet</h3>
+        <h3 class="feature-title" data-i18n="features.f1_title">Messagerie Hybride Nostr & SMS P2P</h3>
         <p class="feature-text" data-i18n="features.f1_text">
-          Chaque message génère une nouvelle clé de dérivation via HMAC-SHA256 (PFS). Dès lecture, la clé est écrasée en mémoire vive (`fill(0)`).
+          Échanges instantanés en ligne via relais Nostr décentralisés (DMs NIP-04/NIP-44), avec basculement automatique et imperceptible sur SMS GSM chiffré (Double Ratchet PFS) dès que le réseau internet fait défaut.
         </p>
       </div>
 
       <!-- Feature 2 -->
       <div class="feature-card reveal">
-        <div class="feature-icon-wrapper blue">
-          <span class="feature-icon">🎙️</span>
+        <div class="feature-icon-wrapper purple">
+          <span class="feature-icon">⚡</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f2_title">Notes Vocales & Waveform Interactive</h3>
+        <h3 class="feature-title" data-i18n="features.f2_title">Identité Nostr & Signatures BIP-340</h3>
         <p class="feature-text" data-i18n="features.f2_text">
-          Compression ZLIB/Deflater ultra-dense, scrubbing dynamique au toucher et sélecteur de vitesse de lecture fluide (1.0x / 1.5x / 2.0x).
+          Identité cryptographique souveraine (paires de clés npub/nsec). Aucune adresse e-mail ni numéro de téléphone requis pour l'accès Nostr. Chaque publication et message est signé numériquement par Schnorr (secp256k1).
         </p>
       </div>
 
       <!-- Feature 3 -->
       <div class="feature-card reveal">
         <div class="feature-icon-wrapper green">
-          <span class="feature-icon">🗺️</span>
+          <span class="feature-icon">📞</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f3_title">Géolocalisation & Widget SOS</h3>
+        <h3 class="feature-title" data-i18n="features.f3_title">Appels Vocaux & Vidéo Chiffrés E2EE</h3>
         <p class="feature-text" data-i18n="features.f3_text">
-          Émission d'alerte de détresse avec coordonnées GPS vers vos cercles de confiance en 1 seul clic depuis l'écran d'accueil Android.
+          Appels WebRTC P2P chiffrés de bout en bout avec signalisation Nostr ou SMS hors-ligne, streaming audio/vidéo direct, vérification du code de sécurité SAS anti-interception et bascule d'urgence sur appel GSM standard.
         </p>
       </div>
 
       <!-- Feature 4 -->
       <div class="feature-card reveal">
-        <div class="feature-icon-wrapper purple">
+        <div class="feature-icon-wrapper blue">
           <span class="feature-icon">🌐</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f4_title">Mur Social & Stories 24h Entre Amis</h3>
+        <h3 class="feature-title" data-i18n="features.f4_title">Flux Social Mondial & Stories 24h</h3>
         <p class="feature-text" data-i18n="features.f4_text">
-          Partagez vos pensées, sondages décentralisés et stories éphémères exclusivement avec vos amis confirmés et cercles de confiance, sans fuite vers vos contacts ordinaires.
+          Publiez des notes publiques (Kind 1), des sondages interactifs et des stories éphémères sur le réseau mondial Nostr ou limitez la diffusion exclusivement à vos cercles d'amis de confiance en P2P chiffré.
         </p>
       </div>
 
       <!-- Feature 5 -->
-      <div class="feature-card reveal">
-        <div class="feature-icon-wrapper green">
-          <span class="feature-icon">📞</span>
-        </div>
-        <h3 class="feature-title" data-i18n="features.f7_title">Appels Vocaux Chiffrés E2EE</h3>
-        <p class="feature-text" data-i18n="features.f7_text">
-          Signalisation GSM SMS hors-ligne, streaming audio direct AES-256-GCM, validation du code de sécurité SAS et bascule automatique vers appel GSM ordinaire en cas de solde SMS épuisé.
-        </p>
-      </div>
-
-      <!-- Feature 6 -->
       <div class="feature-card reveal">
         <div class="feature-icon-wrapper orange">
           <span class="feature-icon">🕵️</span>
         </div>
         <h3 class="feature-title" data-i18n="features.f5_title">Stéganographie SMS Invisible</h3>
         <p class="feature-text" data-i18n="features.f5_text">
-          Dissimule les données chiffrées sous forme de caractères Unicode invisibles de largeur nulle au milieu de textes anodins (anti-censure).
+          En mode secours SMS, dissimule les octets chiffrés sous forme de caractères Unicode invisibles de largeur nulle au milieu d'un texte anodin, contournant tout filtrage ou censure par l'opérateur.
         </p>
       </div>
 
-      <!-- Feature 7 -->
+      <!-- Feature 6 -->
       <div class="feature-card reveal">
         <div class="feature-icon-wrapper red">
           <span class="feature-icon">📦</span>
         </div>
         <h3 class="feature-title" data-i18n="features.f6_title">Coffre Chiffré V3 & Migration P2P</h3>
         <p class="feature-text" data-i18n="features.f6_text">
-          Sauvegarde intégrale dérivée par PBKDF2 (100 000 itérations), nettoyage intelligent du stockage et migration entre smartphones sans le cloud.
+          Sauvegarde intégrale dérivée par PBKDF2 (100 000 itérations), nettoyage intelligent du stockage et migration de smartphone à smartphone sans aucune dépendance au cloud centralisé.
+        </p>
+      </div>
+
+      <!-- Feature 7 -->
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper blue">
+          <span class="feature-icon">🎙️</span>
+        </div>
+        <h3 class="feature-title" data-i18n="features.f7_title">Notes Vocales & Waveform Interactive</h3>
+        <p class="feature-text" data-i18n="features.f7_text">
+          Compression ZLIB/Deflater ultra-dense, scrubbing tactile fluide et sélecteur de vitesse de lecture (1.0x / 1.5x / 2.0x), transmis instantanément sur Nostr ou segmentés par SMS.
         </p>
       </div>
 
@@ -322,18 +322,18 @@
         </div>
         <h3 class="feature-title" data-i18n="features.f8_title">Extraction OTP & Filtre Intelligent</h3>
         <p class="feature-text" data-i18n="features.f8_text">
-          Détection instantanée et copie 1-clic des codes 2FA/bancaires (Google, WhatsApp, banques) avec priorisation en haut de liste et isolation des spams sans aucun accès internet.
+          Détection instantanée et copie 1-clic des codes 2FA/bancaires reçus par SMS, avec priorisation en haut de liste et isolation des spams sans aucun accès internet requis.
         </p>
       </div>
 
       <!-- Feature 9 -->
       <div class="feature-card reveal">
-        <div class="feature-icon-wrapper blue">
-          <span class="feature-icon">📶</span>
+        <div class="feature-icon-wrapper green">
+          <span class="feature-icon">☁️</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f9_title">Multi-SIM & Routage GSM Natif</h3>
+        <h3 class="feature-title" data-i18n="features.f9_title">Console Edge & Mises à Jour Souveraines</h3>
         <p class="feature-text" data-i18n="features.f9_text">
-          Prise en charge native Double SIM Android avec basculement automatique selon la couverture réseau et suivi rigoureux des quotas SMS par opérateur.
+          Synchronisation décentralisée avec l'infrastructure Edge Vercel (https://orbis-net.vercel.app) pour les annonces d'urgence, vérification d'intégrité SHA-256 et télémétrie de santé anonymisée.
         </p>
       </div>
 
@@ -342,7 +342,7 @@
         <div class="feature-icon-wrapper red">
           <span class="feature-icon">🛡️</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f_guard_title">ORBIS Guard-LLM : Bouclier Anti-Arnaque</h3>
+        <h3 class="feature-title" data-i18n="features.f_guard_title">Orbis Guard-LLM : Bouclier Anti-Arnaque</h3>
         <p class="feature-text" data-i18n="features.f_guard_text">
           Analyse sémantique vectorisée en temps réel de vos SMS. Détection des faux liens bancaires, smishing et arnaques avec classification tri-état (Sûr, Suspect, Danger) et blocage 1-clic.
         </p>
@@ -353,7 +353,7 @@
         <div class="feature-icon-wrapper purple">
           <span class="feature-icon">💡</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f_reply_title">ORBIS Reply-LLM : Suggestions Intelligentes</h3>
+        <h3 class="feature-title" data-i18n="features.f_reply_title">Orbis Reply-LLM : Suggestions Intelligentes</h3>
         <p class="feature-text" data-i18n="features.f_reply_text">
           Génération instantanée de 3 réponses rapides, polies et contextuelles au-dessus de votre saisie dans le chat chiffré et les SMS classiques, en français, anglais et arabe.
         </p>
@@ -364,9 +364,9 @@
         <div class="feature-icon-wrapper green">
           <span class="feature-icon">🧠</span>
         </div>
-        <h3 class="feature-title" data-i18n="features.f_ai_engine_title">Moteur IA Vectorisé & Auto-Entraînement</h3>
+        <h3 class="feature-title" data-i18n="features.f_ai_engine_title">Moteur IA Vectorisé 100% CPU Local</h3>
         <p class="feature-text" data-i18n="features.f_ai_engine_text">
-          Modèles neuronaux propriétaires 100% Kotlin natif (< 2 Mo, inférence < 10 ms). Auto-apprentissage continu sur l'appareil à partir de vos retours, sans aucun serveur ni télémétrie.
+          Modèles neuronaux propriétaires 100% Kotlin natif (< 2 Mo, inférence < 10 ms). Auto-apprentissage continu sur l'appareil à partir de vos retours, sans aucun serveur tiers ni fuite de données.
         </p>
       </div>
     </div>
@@ -378,15 +378,15 @@
       <div class="section-header text-center reveal">
         <span class="section-tag" data-i18n="security.tag">ARCHITECTURE FORTERESSE</span>
         <h2 class="section-title" data-i18n="security.title">Sécurité Multi-Couches en Profondeur</h2>
-        <p class="section-desc" data-i18n="security.desc">Chaque couche d'O R B I S a été auditée et durcie pour résister à la rétro-ingénierie, aux écoutes réseau et aux extractions physiques.</p>
+        <p class="section-desc" data-i18n="security.desc">Chaque couche d'OrbisNet a été conçue pour résister à la censure, aux coupures d'accès, aux écoutes réseau et aux extractions physiques.</p>
       </div>
 
       <div class="security-grid stagger-items">
         <div class="security-item reveal">
           <div class="security-num">01</div>
           <div class="security-body">
-            <h4 data-i18n="security.s1_title">Chiffrement Asymétrique RSA-2048</h4>
-            <p data-i18n="security.s1_text">Paires de clés privées/publiques générées localement sur l'appareil. Signature cryptographique de chaque paquet pour garantir l'authenticité de l'expéditeur.</p>
+            <h4 data-i18n="security.s1_title">Signatures Schnorr BIP-340 & secp256k1</h4>
+            <p data-i18n="security.s1_text">Authentification cryptographique native Nostr : chaque événement et message direct est signé numériquement par votre clé privée Schnorr, garantissant une intégrité mathématique absolue.</p>
           </div>
         </div>
 
@@ -394,15 +394,15 @@
           <div class="security-num">02</div>
           <div class="security-body">
             <h4 data-i18n="security.s2_title">Double Ratchet & Perfect Forward Secrecy</h4>
-            <p data-i18n="security.s2_text">Renouvellement automatique et irréversible des clés de session après chaque message. Même en cas de compromission physique, l'historique reste indéchiffrable.</p>
+            <p data-i18n="security.s2_text">Renouvellement automatique et irréversible des clés de session après chaque message. Même en cas de compromission d'une clé éphémère, le passé et le futur restent scellés.</p>
           </div>
         </div>
 
         <div class="security-item reveal">
           <div class="security-num">03</div>
           <div class="security-body">
-            <h4 data-i18n="security.s3_title">Stockage au Repos via Android KeyStore</h4>
-            <p data-i18n="security.s3_text">Les bases de données locales et fichiers sont scellés par une clé matérielle AES-GCM gérée dans la zone sécurisée TEE de votre processeur (anti-extraction ADB).</p>
+            <h4 data-i18n="security.s3_title">Stockage au Repos via Android KeyStore TEE</h4>
+            <p data-i18n="security.s3_text">Les bases de données Room locales et clés privées sont scellées par une clé matérielle AES-GCM gérée dans la zone sécurisée TEE de votre processeur (anti-extraction ADB).</p>
           </div>
         </div>
 
@@ -410,15 +410,15 @@
           <div class="security-num">04</div>
           <div class="security-body">
             <h4 data-i18n="security.s4_title">Dérivation de Coffre PBKDF2 100k Itérations</h4>
-            <p data-i18n="security.s4_text">Vos archives `.orbis` résistent aux attaques par force brute grâce au hachage ralenti PBKDF2 combiné à un sel aléatoire cryptographique de 128 bits.</p>
+            <p data-i18n="security.s4_text">Vos archives de sauvegarde `.orbis` résistent aux attaques par force brute grâce au hachage ralenti PBKDF2 combiné à un sel aléatoire cryptographique de 128 bits.</p>
           </div>
         </div>
 
         <div class="security-item reveal">
           <div class="security-num">05</div>
           <div class="security-body">
-            <h4 data-i18n="security.s5_title">Appels Vocaux Chiffrés & Code SAS</h4>
-            <p data-i18n="security.s5_text">Balisage sonore en streaming direct AES-256-GCM, authentification vocale par code court SAS anti-interception et coupure garantie sous 4.5s (Dead-Peer Watchdog).</p>
+            <h4 data-i18n="security.s5_title">Appels Vocaux & Vidéo Chiffrés avec Code SAS</h4>
+            <p data-i18n="security.s5_text">Balisage audio/vidéo chiffré en AES-256-GCM, authentification vocale par code court SAS anti-interception et coupure garantie sous 4.5s (Dead-Peer Watchdog).</p>
           </div>
         </div>
 
@@ -426,7 +426,7 @@
           <div class="security-num">06</div>
           <div class="security-body">
             <h4 data-i18n="security.s6_title">Signature Numérique & Anti-Altération</h4>
-            <p data-i18n="security.s6_text">Chaque trame et publication est signée numériquement par votre clé privée RSA-2048. L'intégrité du paquet est validée mathématiquement avant exécution pour bloquer toute falsification.</p>
+            <p data-i18n="security.s6_text">Chaque trame Nostr, paquet SMS et publication est signée numériquement. L'intégrité du paquet est validée mathématiquement avant exécution pour bloquer toute falsification.</p>
           </div>
         </div>
 
@@ -449,7 +449,7 @@
         <div class="security-item reveal">
           <div class="security-num">09</div>
           <div class="security-body">
-            <h4 data-i18n="security.s9_title">Moteur IA Vectorisé Hors-Ligne & Zéro Télémétrie</h4>
+            <h4 data-i18n="security.s9_title">Moteur IA Vectorisé 100% Hors-Ligne</h4>
             <p data-i18n="security.s9_text">Les deux LLM (Guard & Reply) s'exécutent 100% en local via un moteur matriciel Kotlin natif. Aucune donnée d'entraînement, SMS ou empreinte vectorielle ne transite sur le réseau.</p>
           </div>
         </div>
@@ -457,51 +457,51 @@
         <div class="security-item reveal">
           <div class="security-num">10</div>
           <div class="security-body">
-            <h4 data-i18n="security.s10_title">Banc de Test &amp; Benchmark Matériel Dédié</h4>
-            <p data-i18n="security.s10_text">Outil de mesure temps réel de la latence CPU (&lt; 1 ms), du débit d\'inférence et de la RAM, avec activation granulaire désactivée par défaut pour un consentement souverain.</p>
+            <h4 data-i18n="security.s10_title">Banc de Test & Benchmark Matériel Dédié</h4>
+            <p data-i18n="security.s10_text">Outil de mesure temps réel de la latence CPU (&lt; 1 ms), du débit d'inférence et de la RAM, avec activation granulaire désactivée par défaut pour un consentement souverain.</p>
           </div>
         </div>
 
         <div class="security-item reveal">
           <div class="security-num">11</div>
           <div class="security-body">
-            <h4 data-i18n="security.s11_title">Code PIN de Détresse &amp; Profil Leurre Anti-Contrainte</h4>
-            <p data-i18n="security.s11_text">Système de défense physique (Duress Manager) : la saisie d\'un code secret alternatif déverrouille un environnement leurre tout en purgeant silencieusement les clés de chiffrement.</p>
+            <h4 data-i18n="security.s11_title">Code PIN de Détresse & Profil Leurre Anti-Contrainte</h4>
+            <p data-i18n="security.s11_text">Système de défense physique (Duress Manager) : la saisie d'un code secret alternatif déverrouille un environnement leurre tout en purgeant silencieusement les clés de chiffrement.</p>
           </div>
         </div>
 
         <div class="security-item reveal">
           <div class="security-num">12</div>
           <div class="security-body">
-            <h4 data-i18n="security.s12_title">Enclave Biométrique &amp; Sandbox Zéro-Permission</h4>
-            <p data-i18n="security.s12_text">Authentification biométrique matérielle (Android BiometricPrompt) couplée à une isolation totale du bac à sable système, sans aucune permission réseau (INTERNET désactivé).</p>
+            <h4 data-i18n="security.s12_title">Télémétrie Edge Vercel & Vérification SHA-256</h4>
+            <p data-i18n="security.s12_text">Backend Edge souverain (https://orbis-net.vercel.app) pour la diffusion des annonces d'urgence, vérification des signatures APK par SHA-256 et diagnostic réseau sans identifiant personnel.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Help Center & Knowledge Base (Integrated App Guide) -->
+  <!-- Help Center & Knowledge Base -->
   <section id="help-center" class="section container">
     <div class="section-header text-center reveal">
-      <span class="section-tag" data-i18n="help.tag">GUIDE COMPLET & CENTRE D'AIDE</span>
-      <h2 class="section-title" data-i18n="help.title">Comment Fonctionne O R B I S ?</h2>
-      <p class="section-desc" data-i18n="help.desc">Découvrez le guide officiel intégré dans l'application pour maîtriser l'ensemble des flux décentralisés.</p>
+      <span class="section-tag" data-i18n="help.tag">GUIDE OFFICIEL & CENTRE D'AIDE</span>
+      <h2 class="section-title" data-i18n="help.title">Comment Fonctionne OrbisNet ?</h2>
+      <p class="section-desc" data-i18n="help.desc">Découvrez le guide officiel pour maîtriser l'hybridation Nostr, le repli cellulaire GSM et la sécurité souveraine.</p>
     </div>
 
     <!-- Search & Filter Controls -->
     <div class="help-controls reveal">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="helpSearch" placeholder="Rechercher un sujet (ex: hors-ligne, vocal, appel, clés, quota, sos)..." data-i18n-ph="help.search_placeholder">
+        <input type="text" id="helpSearch" placeholder="Rechercher un sujet (ex: nostr, repli, gsm, appels, clés, relais, ia)..." data-i18n-ph="help.search_placeholder">
       </div>
 
       <div class="category-pills" id="categoryPills">
         <button class="pill active" data-cat="all" data-i18n="help.cat_all">Tous</button>
         <button class="pill" data-cat="start" data-i18n="help.cat_start">🚀 Démarrage</button>
+        <button class="pill" data-cat="nostr" data-i18n="help.cat_nostr">⚡ Nostr & Relais</button>
         <button class="pill" data-cat="chat" data-i18n="help.cat_chat">💬 Messagerie</button>
-        <button class="pill" data-cat="calls" data-i18n="help.cat_calls">📞 Appels</button>
-        <button class="pill" data-cat="social" data-i18n="help.cat_social">👥 Réseau Social</button>
+        <button class="pill" data-cat="calls" data-i18n="help.cat_calls">📞 Appels E2EE</button>
         <button class="pill" data-cat="ai" data-i18n="help.cat_ai">🧠 IA & LLM</button>
         <button class="pill" data-cat="sec" data-i18n="help.cat_sec">🔐 Sécurité</button>
         <button class="pill" data-cat="sys" data-i18n="help.cat_sys">⚙️ Système & GSM</button>
@@ -519,96 +519,96 @@
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t_telegram_content">
-            Rejoignez notre communauté Telegram officielle (<a href="https://t.me/orbis_community" target="_blank" rel="noopener noreferrer" style="color:var(--primary);font-weight:bold;">t.me/orbis_community</a>) pour télécharger les nouvelles versions APK signées en direct, recevoir les alertes de sécurité et participer aux discussions et retours d'expérience.
+            Rejoignez notre communauté Telegram officielle (<a href="https://t.me/orbis_community" target="_blank" rel="noopener noreferrer" style="color:var(--primary);font-weight:bold;">t.me/orbis_community</a>) ou consultez le site web pour télécharger les nouvelles versions APK signées en direct, recevoir les alertes de sécurité et participer aux discussions et retours d'expérience.
           </p>
         </div>
       </div>
 
-      <!-- Topic 1 -->
+      <!-- Topic 1: Hybrid Architecture -->
       <div class="accordion-item" data-category="start">
         <button class="accordion-header">
-          <span class="acc-icon">📶</span>
-          <span class="acc-title" data-i18n="topics.t1_title">Comment O R B I S fonctionne-t-il à 100% hors-ligne ?</span>
+          <span class="acc-icon">🌐</span>
+          <span class="acc-title" data-i18n="topics.t1_title">Comment fonctionne l'architecture hybride Nostr + GSM SMS ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t1_content">
-            O R B I S n'utilise aucun serveur cloud, API ou passerelle Web. Toutes les communications transitent directement via le réseau téléphonique cellulaire (GSM SMS). Vos messages et publications sont segmentés, compressés et chiffrés avant d'être envoyés directement de smartphone à smartphone.
+            Lorsque vous disposez d'une connexion Internet (Wi-Fi ou données mobiles), OrbisNet se connecte aux relais Nostr décentralisés mondiaux via WebSockets pour des échanges instantanés et gratuits (Kind 1, NIP-44 DMs). Dès qu'Internet est indisponible, en panne ou censuré, l'application bascule instantanément et automatiquement sur le réseau cellulaire GSM SMS chiffré de bout en bout (AES-256-GCM + Double Ratchet).
           </p>
         </div>
       </div>
 
-      <!-- Topic 2 -->
-      <div class="accordion-item" data-category="start">
+      <!-- Topic 2: Nostr Protocol & Keys -->
+      <div class="accordion-item" data-category="nostr">
         <button class="accordion-header">
-          <span class="acc-icon">🤝</span>
-          <span class="acc-title" data-i18n="topics.t2_title">Comment fonctionne l'appairage et l'échange de clés de sécurité ?</span>
+          <span class="acc-icon">⚡</span>
+          <span class="acc-title" data-i18n="topics.t2_title">Qu'est-ce que le protocole Nostr et les clés npub / nsec ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t2_content">
-            Lors de la première prise de contact, les utilisateurs s'échangent leurs clés publiques de chiffrement soit par QR Code direct (instantané et hors-ondes), soit par SMS d'invitation sécurisé automatique. Une fois la clé validée, un canal chiffré de bout en bout inviolable est établi.
+            Nostr est un protocole de communication décentralisé, sans serveur central ni autorité de contrôle. Votre compte est constitué d'une paire de clés cryptographiques : votre clé publique (npub) qui sert d'adresse partagée, et votre clé privée (nsec) qui reste sur votre appareil pour signer vos messages (BIP-340 Schnorr). Aucun email ni numéro de téléphone n'est requis pour créer ou utiliser un compte Nostr.
           </p>
         </div>
       </div>
 
-      <!-- Topic 3 -->
-      <div class="accordion-item" data-category="chat">
+      <!-- Topic 3: Pairing & Key Exchange -->
+      <div class="accordion-item" data-category="sec">
         <button class="accordion-header">
-          <span class="acc-icon">🎙️</span>
-          <span class="acc-title" data-i18n="topics.t3_title">Comment fonctionnent les notes vocales par SMS ?</span>
+          <span class="acc-icon">🤝</span>
+          <span class="acc-title" data-i18n="topics.t3_title">Comment fonctionne l'appairage et l'échange de clés de sécurité ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t3_content">
-            L'enregistreur audio capture votre voix avec un codec vocal ultra-optimisé (AMR/AAC) et applique une compression Deflater ZLIB. L'application découpe ensuite le fichier audio en fragments SMS compacts et le reconstitue instantanément chez le destinataire avec une barre de lecture interactive (1.0x / 1.5x / 2.0x).
+            Lors de la première prise de contact, les utilisateurs s'échangent leurs clés de chiffrement soit par scan de QR Code direct (instantané et hors-ondes), soit par échange automatique sécurisé via relais Nostr ou SMS. Une fois le canal validé, un canal chiffré de bout en bout inviolable avec Perfect Forward Secrecy est établi.
           </p>
         </div>
       </div>
 
-      <!-- Topic 4 (Calls E2EE) -->
+      <!-- Topic 4: Calls E2EE -->
       <div class="accordion-item" data-category="calls">
         <button class="accordion-header">
           <span class="acc-icon">📞</span>
-          <span class="acc-title" data-i18n="topics.t_call_e2ee_title">Comment fonctionnent les appels vocaux chiffrés E2EE ?</span>
+          <span class="acc-title" data-i18n="topics.t_call_e2ee_title">Comment fonctionnent les appels vocaux et vidéo chiffrés E2EE ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t_call_e2ee_content">
-            L'initiation de l'appel utilise une trame SMS de signalisation compacte (Offre <code>ORB:CO:</code>). À l'acceptation (<code>ORB:CA:</code>), un canal de streaming audio direct chiffré en AES-256-GCM est ouvert en peer-to-peer, sans aucun serveur intermédiaire et protégé contre toute interception réseau.
+            L'initiation de l'appel utilise une trame de signalisation WebRTC via relais Nostr (en ligne) ou SMS GSM compact (hors-ligne). Le flux audio/vidéo est diffusé en pair à pair (P2P) chiffré de bout en bout en AES-256-GCM. Un code court SAS (Short Authentication String) permet de vérifier verbalement l'absence d'interception.
           </p>
         </div>
       </div>
 
-      <!-- Topic 5 (Call Zero Credit Fallback) -->
+      <!-- Topic 5: Call Fallback -->
       <div class="accordion-item" data-category="calls">
         <button class="accordion-header">
           <span class="acc-icon">📶</span>
-          <span class="acc-title" data-i18n="topics.t_call_credit_title">Que se passe-t-il si un utilisateur n'a pas de crédit SMS lors d'un appel ?</span>
+          <span class="acc-title" data-i18n="topics.t_call_credit_title">Que se passe-t-il si un utilisateur n'a pas de connexion Internet ni de crédit SMS lors d'un appel ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t_call_credit_content">
-            Si l'appelant n'a pas de crédit SMS, O R B I S détecte immédiatement l'échec et propose de basculer vers un appel GSM standard. Si le destinataire n'a pas de SMS pour émettre la réponse chiffrée, il peut décrocher en mode GSM classique (100% gratuit pour lui en réception), tout en prévenant l'appelant.
+            Si Internet est indisponible et que le solde SMS est épuisé, OrbisNet détecte immédiatement l'état et propose de basculer vers un appel GSM cellulaire classique standard. En réception, l'utilisateur hors-ligne peut décrocher gratuitement selon les tarifs habituels de son opérateur téléphonique.
           </p>
         </div>
       </div>
 
-      <!-- Topic 6 (Call SAS Security) -->
+      <!-- Topic 6: Call SAS Security -->
       <div class="accordion-item" data-category="calls">
         <button class="accordion-header">
           <span class="acc-icon">🔒</span>
-          <span class="acc-title" data-i18n="topics.t_call_sas_title">Qu'est-ce que le code SAS pendant l'appel vocal ?</span>
+          <span class="acc-title" data-i18n="topics.t_call_sas_title">Qu'est-ce que le code SAS pendant un appel ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t_call_sas_content">
-            Le code SAS (Short Authentication String) est dérivé des empreintes cryptographiques de la session et s'affiche sur les deux écrans. En lisant ce court code à voix haute, les deux correspondants vérifient mutuellement et mathématiquement l'absence totale d'espion intermédiaire (MITM) ou de fausses antennes relais.
+            Le code SAS (Short Authentication String) est calculé à partir des empreintes cryptographiques de la session et s'affiche sur les deux écrans. En lisant ce code à voix haute au début de la conversation, les deux interlocuteurs confirment mathématiquement l'absence totale d'interception ou de fausse antenne relais.
           </p>
         </div>
       </div>
 
-      <!-- Topic 7 (Call Hangup & Watchdog) -->
+      <!-- Topic 7: Call Hangup & Watchdog -->
       <div class="accordion-item" data-category="calls">
         <button class="accordion-header">
           <span class="acc-icon">🛑</span>
@@ -617,12 +617,12 @@
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t_call_hangup_content">
-            Lors de la coupure, O R B I S envoie des paquets UDP de fermeture immédiate, un SMS d'arrêt (<code>ORB:CE:</code>) et active un chien de garde (Dead-Peer Watchdog). En cas de perte soudaine de couverture, la session est automatiquement fermée après 4.5 secondes de silence pour préserver la batterie et la confidentialité.
+            Lors de la fin d'appel, OrbisNet envoie un signal de fermeture immédiat et active un chien de garde (Dead-Peer Watchdog). En cas de coupure brutale du réseau ou de perte de signal, la session est coupée automatiquement après 4.5 secondes de silence pour préserver la batterie et la confidentialité.
           </p>
         </div>
       </div>
 
-      <!-- Topic 8 (GPS) -->
+      <!-- Topic 8: GPS -->
       <div class="accordion-item" data-category="chat">
         <button class="accordion-header">
           <span class="acc-icon">🗺️</span>
@@ -631,26 +631,26 @@
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t4_content">
-            Non ! La puce GPS satellite de votre smartphone fonctionne sans connexion Internet ni données mobiles. O R B I S lit vos coordonnées satellite exactes et les transmet dans un SMS chiffré de 1 seul segment, ouvrant directement la carte chez votre contact.
+            Non ! La puce satellite GPS de votre smartphone fonctionne sans aucune connexion Internet ni données mobiles. OrbisNet extrait vos coordonnées satellite exactes et les transmet dans un message chiffré de 1 seul SMS (ou via relais Nostr si en ligne), ouvrant instantanément la carte chez votre contact.
           </p>
         </div>
       </div>
 
-      <!-- Topic 9 (Social Friends-Only) -->
-      <div class="accordion-item" data-category="social">
+      <!-- Topic 9: Social Feed & Stories -->
+      <div class="accordion-item" data-category="nostr">
         <button class="accordion-header">
           <span class="acc-icon">📰</span>
-          <span class="acc-title" data-i18n="topics.t5_title">Comment fonctionne le mur social et la diffusion exclusivement Entre Amis ?</span>
+          <span class="acc-title" data-i18n="topics.t5_title">Comment fonctionnent le mur social, les stories et les sondages ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t5_content">
-            Le mur social et les stories 24h fonctionnent en réseau P2P décentralisé exclusivement entre amis confirmés et cercles de confiance. Vos publications et sondages ne sont transmis qu'à vos pairs autorisés via GSM P2P, garantissant zéro diffusion intempestive vers vos contacts téléphoniques ordinaires.
+            Sur le réseau Nostr, vous pouvez publier des notes publiques (Kind 1), des sondages interactifs et des stories éphémères visibles par l'ensemble du réseau décentralisé. Vous pouvez également basculer en mode 'Entre Amis' pour restreindre la diffusion exclusivement à vos cercles de confiance confirmés via P2P chiffré.
           </p>
         </div>
       </div>
 
-      <!-- Topic 10 (Steganography) -->
+      <!-- Topic 10: Steganography -->
       <div class="accordion-item" data-category="sec">
         <button class="accordion-header">
           <span class="acc-icon">🕵️</span>
@@ -664,35 +664,91 @@
         </div>
       </div>
 
-      <!-- Topic 11 (Quota) -->
+      <!-- Topic 11: Quota & Data -->
       <div class="accordion-item" data-category="sys">
         <button class="accordion-header">
           <span class="acc-icon">📊</span>
-          <span class="acc-title" data-i18n="topics.t7_title">Quelle est la consommation réelle de mon forfait SMS ?</span>
+          <span class="acc-title" data-i18n="topics.t7_title">Quelle est la consommation réelle en données et SMS ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t7_content">
-            Un message texte standard, un emoji de réaction, un partage GPS ou une mise à jour de statut ne consomment que <strong>1 seul SMS</strong>. Aucun SMS n'est émis en tâche de fond (0 keep-alive). Sur un forfait avec SMS illimités, l'impact est totalement nul et transparent.
+            En ligne (relais Nostr via Wi-Fi ou 4G/5G), vous ne consommez aucun SMS (0 SMS) et seulement quelques kilo-octets de données. En mode hors-ligne, un message texte, un emoji de réaction ou un partage GPS ne consomment que 1 seul SMS. Sur un forfait avec SMS illimités, le coût est totalement nul.
           </p>
         </div>
       </div>
 
-      <!-- Topic 12 (Apple iOS / iPhone Incompatibility) -->
+      <!-- Topic 12: Apple iOS / iPhone Incompatibility -->
       <div class="accordion-item" data-category="sys">
         <button class="accordion-header">
           <span class="acc-icon">🍏</span>
-          <span class="acc-title" data-i18n="topics.t8_title">L'application O R B I S est-elle disponible sur iPhone (Apple iOS) ?</span>
+          <span class="acc-title" data-i18n="topics.t8_title">L'application OrbisNet est-elle disponible sur iPhone (Apple iOS) ?</span>
           <span class="acc-chevron">▼</span>
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t8_content">
-            Non, O R B I S est une <strong>exclusivité stricte Android</strong> et ne sera jamais disponible sur iPhone. Le système d'exploitation fermé d'Apple (sandbox iOS) interdit formellement à toute application tierce de remplacer le client SMS de téléphonie par défaut, d'intercepter les trames GSM en arrière-plan ou d'accéder directement au modem cellulaire. Seul l'écosystème ouvert d'Android permet d'offrir une véritable souveraineté de communication 100% décentralisée et hors-ligne.
+            Non, OrbisNet est une exclusivité stricte Android. Le système fermé d'Apple (sandbox iOS) interdit formellement à toute application tierce d'intercepter les trames GSM SMS en arrière-plan, de gérer le matériel modem ou de servir de client SMS de téléphonie par défaut. Seul l'écosystème ouvert d'Android permet d'offrir une véritable souveraineté de communication hybride et hors-ligne.
           </p>
         </div>
       </div>
 
-      <!-- Topic 13 (Legal, Privacy & Terms of Service) -->
+      <!-- Topic 13: Edge Vercel Console -->
+      <div class="accordion-item" data-category="start">
+        <button class="accordion-header">
+          <span class="acc-icon">☁️</span>
+          <span class="acc-title" data-i18n="topics.t_edge_title">À quoi sert la console Edge Vercel (https://orbis-net.vercel.app) ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_edge_content">
+            L'infrastructure Edge hébergée sur Vercel fournit un point de synchronisation souverain et ultra-rapide pour vérifier l'intégrité des mises à jour APK (hash SHA-256), diffuser les annonces critiques ou alertes de sécurité d'urgence, et afficher l'état de santé du réseau avec zéro donnée d'identification personnelle (zéro PII).
+          </p>
+        </div>
+      </div>
+
+      <!-- Topic 14: Guard-LLM Anti-Smishing -->
+      <div class="accordion-item" data-category="ai">
+        <button class="accordion-header">
+          <span class="acc-icon">🛡️</span>
+          <span class="acc-title" data-i18n="topics.t_guard_title">Comment fonctionne Orbis Guard-LLM contre les arnaques et spams ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_guard_content">
+            Orbis Guard-LLM analyse en temps réel les SMS entrants grâce à des embeddings vectoriels locaux. Il détecte les stratagèmes d'urgence, fausses alertes bancaires, faux numéros SIM et isole les domaines frauduleux (tout en distinguant les abréviations innocentes comme 'M.Pierre'). Les messages douteux sont isolés dans l'onglet 'Spam & bloqués' avec alerte visuelle et option de blocage immédiat.
+          </p>
+        </div>
+      </div>
+
+      <!-- Topic 15: Reply-LLM Smart Replies -->
+      <div class="accordion-item" data-category="ai">
+        <button class="accordion-header">
+          <span class="acc-icon">💡</span>
+          <span class="acc-title" data-i18n="topics.t_reply_title">Comment Orbis Reply-LLM propose-t-il des réponses intelligentes hors-ligne ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_reply_content">
+            Orbis Reply-LLM analyse le fil de conversation et l'intention du dernier message (salutations, questions, logistique, urgence, remerciements) pour générer 3 pastilles de réponses rapides et polies au-dessus du clavier. L'inférence s'exécute en moins de 10 ms sans aucune connexion Internet ni appel réseau.
+          </p>
+        </div>
+      </div>
+
+      <!-- Topic 16: Continual Learning & Privacy -->
+      <div class="accordion-item" data-category="ai">
+        <button class="accordion-header">
+          <span class="acc-icon">🧠</span>
+          <span class="acc-title" data-i18n="topics.t_ai_learning_title">Comment les modèles IA s'auto-entraînent-ils sans risque pour ma vie privée ?</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p data-i18n="topics.t_ai_learning_content">
+            L'entraînement s'effectue exclusivement sur votre appareil (on-device continual learning). Lorsque vous bloquez un spam ou sélectionnez des suggestions, les poids synaptiques locaux s'adaptent dynamiquement dans le stockage chiffré de l'application. Aucune donnée textuelle, empreinte vectorielle ou statistique n'est envoyée sur un quelconque serveur.
+          </p>
+        </div>
+      </div>
+
+      <!-- Topic 17: Legal & Privacy -->
       <div class="accordion-item" data-category="sec">
         <button class="accordion-header">
           <span class="acc-icon">📜</span>
@@ -701,7 +757,7 @@
         </button>
         <div class="accordion-body">
           <p data-i18n="topics.t_legal_content">
-            ORBIS est une infrastructure souveraine 100% hors-ligne. Aucune donnée n'est collectée ou transmise à des serveurs tiers. Les communications sont chiffrées de bout en bout (AES-256-GCM / RSA-2048 / Double Ratchet). En tant que logiciel propriétaire fourni « en l'état », chaque utilisateur est légalement et exclusivement responsable de son utilisation et de la conformité avec les lois de sa juridiction.
+            OrbisNet est une infrastructure hybride souveraine. Aucune donnée personnelle n'est collectée ou transmise à des tiers. Les communications sont chiffrées de bout en bout (AES-256-GCM / BIP-340 / Double Ratchet). En tant que logiciel fourni « en l'état », chaque utilisateur est légalement et exclusivement responsable de son utilisation et de la conformité avec les lois de sa juridiction.
           </p>
           <div style="margin-top: 14px;">
             <button type="button" class="btn btn-secondary btn-sm open-legal-modal" data-tab="0">
@@ -711,58 +767,16 @@
           </div>
         </div>
       </div>
-
-      <!-- Topic 14 (ORBIS Guard-LLM Anti-Smishing) -->
-      <div class="accordion-item" data-category="ai">
-        <button class="accordion-header">
-          <span class="acc-icon">🛡️</span>
-          <span class="acc-title" data-i18n="topics.t_guard_title">Comment fonctionne ORBIS Guard-LLM contre les arnaques et spams ?</span>
-          <span class="acc-chevron">▼</span>
-        </button>
-        <div class="accordion-body">
-          <p data-i18n="topics.t_guard_content">
-            ORBIS Guard-LLM évalue chaque SMS classique entrant grâce à des embeddings vectoriels locaux. Il détecte les stratagèmes d'urgence, fausses alertes bancaires, faux numéros SIM et isole les domaines frauduleux (tout en distinguant les abréviations innocentes comme "M.Pierre"). Les messages douteux sont isolés dans l'onglet "Spam & bloqués" avec alerte visuelle et option de blocage immédiat.
-          </p>
-        </div>
-      </div>
-
-      <!-- Topic 15 (ORBIS Reply-LLM Smart Replies) -->
-      <div class="accordion-item" data-category="ai">
-        <button class="accordion-header">
-          <span class="acc-icon">💡</span>
-          <span class="acc-title" data-i18n="topics.t_reply_title">Comment ORBIS Reply-LLM propose-t-il des réponses intelligentes hors-ligne ?</span>
-          <span class="acc-chevron">▼</span>
-        </button>
-        <div class="accordion-body">
-          <p data-i18n="topics.t_reply_content">
-            ORBIS Reply-LLM analyse le fil de conversation et l'intention du dernier message (salutations, questions, logistique, urgence, remerciements) pour générer 3 pastilles de réponses rapides et polies au-dessus du clavier. L'inférence s'exécute en moins de 10 ms sans aucune connexion Internet ni appel réseau.
-          </p>
-        </div>
-      </div>
-
-      <!-- Topic 16 (On-Device Continual Learning & Privacy) -->
-      <div class="accordion-item" data-category="ai">
-        <button class="accordion-header">
-          <span class="acc-icon">🧠</span>
-          <span class="acc-title" data-i18n="topics.t_ai_learning_title">Comment les modèles s'auto-entraînent-ils sans risque pour ma vie privée ?</span>
-          <span class="acc-chevron">▼</span>
-        </button>
-        <div class="accordion-body">
-          <p data-i18n="topics.t_ai_learning_content">
-            L'entraînement s'effectue exclusivement sur votre appareil (on-device continual learning). Lorsque vous bloquez un spam ou sélectionnez des suggestions, les poids synaptiques locaux s'adaptent dynamiquement dans le stockage chiffré de l'application. Aucune donnée textuelle, empreinte vectorielle ou statistique n'est envoyée sur un quelconque serveur.
-          </p>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- Quota GSM Transparency Section -->
+  <!-- Quota & Network Transparency Section -->
   <section id="quota" class="section bg-surface">
     <div class="container">
       <div class="section-header text-center reveal">
-        <span class="section-tag" data-i18n="quota.tag">TRANSPARENCE GSM</span>
-        <h2 class="section-title" data-i18n="quota.title">Consommation & Sobriété du Quota SMS</h2>
-        <p class="section-desc" data-i18n="quota.desc">O R B I S compresse chaque paquet à l'octet près pour offrir un ratio coût/résilience optimal.</p>
+        <span class="section-tag" data-i18n="quota.tag">TRANSPARENCE RÉSEAU</span>
+        <h2 class="section-title" data-i18n="quota.title">Consommation Réseau Nostr & Quota SMS</h2>
+        <p class="section-desc" data-i18n="quota.desc">OrbisNet optimise chaque octet pour offrir une gratuité totale en ligne et une sobriété maximale en mode hors-ligne.</p>
       </div>
 
       <div class="table-responsive reveal-scale">
@@ -770,45 +784,50 @@
           <thead>
             <tr>
               <th data-i18n="quota.th_action">Action Réalisée</th>
-              <th data-i18n="quota.th_cost">Coût SMS</th>
+              <th data-i18n="quota.th_cost">Coût Réseau</th>
               <th data-i18n="quota.th_details">Détails Techniques</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><span class="quota-icon">💬</span> <strong data-i18n="quota.row1_title">Message Texte 1 à 1</strong></td>
-              <td><span class="badge-success">1 SMS</span></td>
-              <td data-i18n="quota.row1_desc">Chiffré AES-256-GCM + signature + compression ZLIB</td>
+              <td><span class="quota-icon">⚡</span> <strong data-i18n="quota.row1_title">Message Texte & DMs (Mode En Ligne)</strong></td>
+              <td><span class="badge-success" data-i18n="quota.row1_cost">0 SMS (Data &lt; 1 Ko)</span></td>
+              <td data-i18n="quota.row1_desc">WebSockets décentralisés Nostr • Chiffrement NIP-44 / AES-GCM • Instantané</td>
             </tr>
             <tr>
-              <td><span class="quota-icon">📞</span> <strong data-i18n="quota.row_call_title">Signalisation Appel Vocal E2EE</strong></td>
-              <td><span class="badge-info">2 SMS</span></td>
-              <td data-i18n="quota.row_call_desc">Échange des clés de session via SMS GSM • 0 SMS consommé pendant l'appel audio</td>
+              <td><span class="quota-icon">💬</span> <strong data-i18n="quota.row_fallback_title">Message Texte 1 à 1 (Mode Hors-Ligne GSM)</strong></td>
+              <td><span class="badge-success" data-i18n="quota.row_fallback_cost">1 SMS</span></td>
+              <td data-i18n="quota.row_fallback_desc">Chiffré AES-256-GCM + Double Ratchet PFS + compression ZLIB</td>
             </tr>
             <tr>
-              <td><span class="quota-icon">🗺️</span> <strong data-i18n="quota.row2_title">Partage GPS Satellite</strong></td>
-              <td><span class="badge-success">1 SMS</span></td>
-              <td data-i18n="quota.row2_desc">Coordonnées ultra-compactes ~40 octets</td>
+              <td><span class="quota-icon">📞</span> <strong data-i18n="quota.row_call_title">Signalisation Appel Vocal & Vidéo E2EE</strong></td>
+              <td><span class="badge-info" data-i18n="quota.row_call_cost">0 SMS (Nostr) / 2 SMS (GSM)</span></td>
+              <td data-i18n="quota.row_call_desc">Échange de clés de session • 0 SMS consommé pendant le streaming audio/vidéo</td>
             </tr>
             <tr>
-              <td><span class="quota-icon">👍</span> <strong data-i18n="quota.row3_title">Réaction Emoji / Accusé (ACK)</strong></td>
-              <td><span class="badge-success">1 SMS</span></td>
-              <td data-i18n="quota.row3_desc">Trame d'acquittement allégée et directe</td>
+              <td><span class="quota-icon">🗺️</span> <strong data-i18n="quota.row2_title">Partage de Position GPS Satellite</strong></td>
+              <td><span class="badge-success" data-i18n="quota.row2_cost">0 SMS (Nostr) / 1 SMS (GSM)</span></td>
+              <td data-i18n="quota.row2_desc">Coordonnées géographiques ultra-compactes ~40 octets</td>
             </tr>
             <tr>
-              <td><span class="quota-icon">👥</span> <strong data-i18n="quota.row4_title">Message de Groupe (N membres)</strong></td>
-              <td><span class="badge-info">(N - 1) SMS</span></td>
-              <td data-i18n="quota.row4_desc">Envoi P2P souverain direct à chaque membre du groupe</td>
+              <td><span class="quota-icon">👍</span> <strong data-i18n="quota.row3_title">Réactions Emoji & Accusés de Réception</strong></td>
+              <td><span class="badge-success" data-i18n="quota.row3_cost">0 SMS (Nostr) / 1 SMS (GSM)</span></td>
+              <td data-i18n="quota.row3_desc">Événement Nostr NIP-25 ou trame d'acquittement GSM compacte</td>
             </tr>
             <tr>
-              <td><span class="quota-icon">🎙️</span> <strong data-i18n="quota.row5_title">Note Vocale (3 à 5 secondes)</strong></td>
-              <td><span class="badge-warning">5 à 12 SMS</span></td>
-              <td data-i18n="quota.row5_desc">Flux audio binaire AMR/AAC compressé en multi-segments</td>
+              <td><span class="quota-icon">👥</span> <strong data-i18n="quota.row4_title">Publication Sociale & Stories 24h</strong></td>
+              <td><span class="badge-info" data-i18n="quota.row4_cost">0 SMS (Nostr) / P2P Direct</span></td>
+              <td data-i18n="quota.row4_desc">Diffusion sur relais Nostr décentralisés ou P2P direct entre cercles de confiance</td>
             </tr>
             <tr>
-              <td><span class="quota-icon">🧠</span> <strong data-i18n="quota.row_ai_title">Analyse IA Guard-LLM & Reply-LLM</strong></td>
-              <td><span class="badge-success">0 SMS</span></td>
-              <td data-i18n="quota.row_ai_desc">Inférence neuronale 100% CPU locale • 0 octet émis ou reçu • Zéro télémétrie</td>
+              <td><span class="quota-icon">🎙️</span> <strong data-i18n="quota.row5_title">Note Vocale Audio (3 à 5 secondes)</strong></td>
+              <td><span class="badge-warning" data-i18n="quota.row5_cost">0 SMS (Nostr) / 5 à 12 SMS (GSM)</span></td>
+              <td data-i18n="quota.row5_desc">Flux audio AMR/AAC compressé ZLIB • Instantané en ligne ou multi-segments par SMS</td>
+            </tr>
+            <tr>
+              <td><span class="quota-icon">🧠</span> <strong data-i18n="quota.row_ai_title">Bouclier IA Guard-LLM & Suggestions Reply-LLM</strong></td>
+              <td><span class="badge-success" data-i18n="quota.row_ai_cost">0 SMS • 0 Ko Data</span></td>
+              <td data-i18n="quota.row_ai_desc">Inférence neuronale 100% CPU locale • Zéro requête distante • Zéro télémétrie</td>
             </tr>
           </tbody>
         </table>
@@ -820,9 +839,9 @@
   <section id="download" class="section container">
     <div class="download-card reveal-scale">
       <div class="download-badge">RELEASE OFFICIELLE</div>
-      <h2 class="download-title" data-i18n="dl.title">Téléchargez O R B I S dès Aujourd'hui</h2>
+      <h2 class="download-title" data-i18n="dl.title">Téléchargez OrbisNet dès Aujourd'hui</h2>
       <p class="download-desc" data-i18n="dl.desc">
-        Prenez le contrôle absolu de votre vie privée. Installez l'application souveraine sans passer par les magasins centralisés.
+        Reprenez le contrôle de vos communications. Téléchargez l'application souveraine hybride sans magasin centralisé.
       </p>
 
       <div class="release-specs">
@@ -831,8 +850,8 @@
           <span class="spec-val">v1.1.0 (Stable)</span>
         </div>
         <div class="spec-item">
-          <span class="spec-label">Build</span>
-          <span class="spec-val">110</span>
+          <span class="spec-label">Package</span>
+          <span class="spec-val">com.sha.orbisnet</span>
         </div>
         <div class="spec-item">
           <span class="spec-label">Taille</span>
@@ -851,11 +870,11 @@
             <!-- Primary APK Button -->
             <a href="https://github.com/orbisoffline-cloud/ORBIS/releases/download/ORBIS-v1.1.0/O.R.B.I.S.apk" id="directDownloadBtn" class="btn-download-primary pulse-hover" download>
               <div class="btn-download-icon">
-                <img src="ic_webicon.png" alt="O R B I S APK" class="btn-download-app-icon">
+                <img src="ic_webicon.png" alt="OrbisNet APK" class="btn-download-app-icon">
               </div>
               <div class="btn-download-text">
                 <span class="btn-download-title" data-i18n="dl.btn_apk">Télécharger l'APK Officiel</span>
-                <span class="btn-download-meta">O R B I S v1.1.0 • 4.64 Mo • Android 8.0+</span>
+                <span class="btn-download-meta">OrbisNet v1.1.0 • 4.64 Mo • Android 8.0+</span>
               </div>
             </a>
 
@@ -905,7 +924,7 @@
             <img 
               id="apkQrCodeImg" 
               src="qr-code.svg" 
-              alt="QR Code Téléchargement O R B I S" 
+              alt="QR Code Téléchargement OrbisNet" 
               class="qr-code-img"
               width="200"
               height="200"
@@ -928,22 +947,22 @@
       <div class="footer-brand">
         <div class="brand-logo">
           <div class="logo-shield">
-            <img src="ic_webicon.png" alt="O R B I S" class="brand-logo-img">
+            <img src="ic_webicon.png" alt="OrbisNet" class="brand-logo-img">
           </div>
           <div class="brand-text">
-            <span class="brand-title">O R B I S</span>
-            <span class="brand-badge">SOVEREIGN P2P</span>
+            <span class="brand-title">OrbisNet</span>
+            <span class="brand-badge">NOSTR & GSM HYBRID</span>
           </div>
         </div>
         <p class="footer-tagline" data-i18n="footer.tagline">
-          Architecture de communication souveraine, P2P et hors-ligne propulsée par ShaDevPro.
+          Réseau social et messagerie hybride souveraine Nostr & GSM propulsé par ShaDevPro.
         </p>
       </div>
 
       <div class="footer-links">
         <a href="#features" data-i18n="nav.features">Fonctionnalités</a>
-        <a href="#security" data-i18n="nav.security">Sécurité</a>
-        <a href="#help-center" data-i18n="nav.help">Guide</a>
+        <a href="#security" data-i18n="nav.security">Sécurité & Cryptographie</a>
+        <a href="#help-center" data-i18n="nav.help">Centre d'aide</a>
         <a href="#privacy" class="open-legal-modal" data-tab="0" data-i18n="footer.privacy">Confidentialité</a>
         <a href="#terms" class="open-legal-modal" data-tab="1" data-i18n="footer.terms">Conditions & Légal</a>
         <a href="https://t.me/orbis_community" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;">
@@ -957,7 +976,7 @@
     </div>
 
     <div class="footer-bottom text-center">
-      <p>© 2026 <strong>O R B I S Sovereign P2P</strong> • Conçu & Développé par <strong>ShaDevPro</strong>. Tous droits réservés.</p>
+      <p>© 2026 <strong>OrbisNet — Nostr & GSM Sovereign Hybrid</strong> • Conçu & Développé par <strong>ShaDevPro</strong>. Tous droits réservés.</p>
     </div>
   </footer>
 
@@ -969,7 +988,7 @@
   </button>
 
   <!-- =========================================================================
-       Modal: Confidentialité & Conditions (Audit Android APK PrivacyTermsDialog)
+       Modal: Confidentialité & Conditions
        ========================================================================= -->
   <div id="legalModal" class="legal-modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="legalModalTitle">
     <div class="legal-modal-container">
@@ -984,7 +1003,7 @@
             </div>
             <div>
               <h3 id="legalModalTitle" class="legal-modal-title" data-i18n="legal.modal_title">Confidentialité & Conditions</h3>
-              <span class="legal-modal-badge" data-i18n="legal.badge">100% Hors-Ligne • Souverain</span>
+              <span class="legal-modal-badge" data-i18n="legal.badge">Souverain • Nostr & GSM Hybride</span>
             </div>
           </div>
           <button type="button" id="closeLegalModalBtn" class="legal-modal-close-btn" aria-label="Fermer">✕</button>
@@ -1003,33 +1022,33 @@
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">📋</span>
-                <h4 data-i18n="legal.p1_title">1. Zéro Collecte & Zéro Serveur</h4>
+                <h4 data-i18n="legal.p1_title">1. Architecture Décentralisée & Zéro Profilage</h4>
               </div>
-              <p data-i18n="legal.p1_desc">ORBIS ne dispose d'aucun serveur, base de données centrale ou service d'analyse. Aucune donnée d'utilisation, adresse IP, identifiant ou contact n'est jamais collecté, transmis ou revendu.</p>
+              <p data-i18n="legal.p1_desc">OrbisNet ne dispose d'aucun serveur central d'écoute ou de profilage. Les échanges transitent via des relais décentralisés Nostr ou directement de smartphone à smartphone via le réseau GSM cellulaire.</p>
             </div>
 
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">🔐</span>
-                <h4 data-i18n="legal.p2_title">2. Chiffrement de Bout en Bout Matériel</h4>
+                <h4 data-i18n="legal.p2_title">2. Cryptographie de Bout en Bout Matérielle</h4>
               </div>
-              <p data-i18n="legal.p2_desc">Toutes les communications (messages, notes vocales, publications, sondages) sont chiffrées sur votre appareil avec AES-256-GCM, Double Ratchet (PFS) et RSA-2048 adossés à l'Android KeyStore matériel.</p>
+              <p data-i18n="legal.p2_desc">Toutes les communications privées sont chiffrées avec AES-256-GCM, Double Ratchet (PFS), signatures BIP-340 Schnorr et clés secp256k1 scellées dans l'Android KeyStore TEE matériel.</p>
             </div>
 
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">🗄️</span>
-                <h4 data-i18n="legal.p3_title">3. Stockage Exclusivement Local</h4>
+                <h4 data-i18n="legal.p3_title">3. Stockage Exclusivement Local & Souverain</h4>
               </div>
-              <p data-i18n="legal.p3_desc">L'historique de vos discussions, clés privées et publications est conservé localement dans le stockage protégé de l'application. Vous pouvez exporter une archive chiffrée (PBKDF2) ou tout effacer à tout instant.</p>
+              <p data-i18n="legal.p3_desc">L'historique de vos discussions, clés secrètes et archives est conservé exclusivement sur votre appareil. Vous pouvez exporter une sauvegarde chiffrée (PBKDF2) ou détruire vos données à tout instant.</p>
             </div>
 
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">📡</span>
-                <h4 data-i18n="legal.p4_title">4. Métadonnées Cellulaires GSM</h4>
+                <h4 data-i18n="legal.p4_title">4. Réseau Nostr & Métadonnées Cellulaires</h4>
               </div>
-              <p data-i18n="legal.p4_desc">Les paquets chiffrés transitent par le réseau SMS de votre opérateur téléphonique. Bien que le contenu soit illisible sans vos clés, votre opérateur conserve les métadonnées de transmission habituelles (numéros, horodatage, antennes-relais) conformément à la réglementation télécoms locale.</p>
+              <p data-i18n="legal.p4_desc">Sur Nostr, vos publications publiques sont relayées par les serveurs WebSocket choisis. En mode de repli GSM, les paquets SMS chiffrés transitent par votre opérateur téléphonique, soumis aux métadonnées télécoms habituelles.</p>
             </div>
           </div>
 
@@ -1038,17 +1057,17 @@
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">📜</span>
-                <h4 data-i18n="legal.t1_title">1. Licence d'Utilisation & Fourniture « En l'état »</h4>
+                <h4 data-i18n="legal.t1_title">1. Licence d'Utilisation Personnelle & Fourniture « En l'état »</h4>
               </div>
-              <p data-i18n="legal.t1_desc">ORBIS est un logiciel souverain et propriétaire concédé sous licence d'utilisation personnelle, distribué SANS AUCUNE GARANTIE, expresse ou implicite, y compris les garanties d'adéquation à un usage particulier, d'absence d'erreurs ou de disponibilité continue.</p>
+              <p data-i18n="legal.t1_desc">OrbisNet est un logiciel souverain distribué « en l'état », sans garantie expresse ou implicite de disponibilité ininterrompue ou d'adéquation à un usage particulier.</p>
             </div>
 
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">⚖️</span>
-                <h4 data-i18n="legal.t2_title">2. Responsabilité Exclusive de l'Utilisateur</h4>
+                <h4 data-i18n="legal.t2_title">2. Responsabilité Légale de l'Utilisateur</h4>
               </div>
-              <p data-i18n="legal.t2_desc">Vous reconnaissez être seul responsable de l'utilisation que vous faites de l'application et de vos communications. Vous vous engagez à respecter l'ensemble des lois, réglementations et restrictions en vigueur dans votre juridiction.</p>
+              <p data-i18n="legal.t2_desc">Vous reconnaissez être seul responsable de l'usage fait de l'application, de la garde de vos clés privées (nsec / identifiants) et du respect des lois en vigueur dans votre pays.</p>
             </div>
 
             <div class="legal-item-card">
@@ -1056,15 +1075,15 @@
                 <span class="legal-item-icon">🛡️</span>
                 <h4 data-i18n="legal.t3_title">3. Décharge de Responsabilité des Développeurs</h4>
               </div>
-              <p data-i18n="legal.t3_desc">Les créateurs, développeurs et contributeurs d'ORBIS déclinent expressément toute responsabilité civile ou pénale quant aux dommages, litiges ou infractions découlant d'une utilisation illicite, frauduleuse ou détournée de l'application.</p>
+              <p data-i18n="legal.t3_desc">Les créateurs et contributeurs d'OrbisNet déclinent toute responsabilité civile ou pénale quant aux utilisations illicites, frauduleuses ou détournées du protocole.</p>
             </div>
 
             <div class="legal-item-card">
               <div class="legal-item-head">
                 <span class="legal-item-icon">🚨</span>
-                <h4 data-i18n="legal.t4_title">4. Fonctionnalités d'Urgence (SOS / GPS)</h4>
+                <h4 data-i18n="legal.t4_title">4. Fonctionnalités d'Urgence (SOS & GPS)</h4>
               </div>
-              <p data-i18n="legal.t4_desc">Les fonctions de partage de position GPS et d'alerte SOS sont des outils d'assistance de pair à pair basés sur le signal radio GSM local et ne se substituent en aucun cas aux services publics d'urgence officiels.</p>
+              <p data-i18n="legal.t4_desc">Les fonctionnalités de détresse SOS et de partage GPS satellite sont des outils de solidarité de pair à pair et ne remplacent en aucun cas les services officiels de secours d'urgence.</p>
             </div>
           </div>
         </div>
@@ -1077,6 +1096,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=1.2.0"></script>
+  <script src="app.js?v=1.3.0"></script>
 </body>
 </html>

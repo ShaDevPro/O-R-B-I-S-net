@@ -1,10 +1,10 @@
 {
-  "name": "O R B I S Sovereign P2P",
-  "short_name": "O R B I S",
-  "description": "Messagerie & Réseau Social P2P Souverain Hors-Ligne",
+  "name": "OrbisNet — Réseau Souverain Nostr & GSM",
+  "short_name": "OrbisNet",
+  "description": "Réseau Social & Messagerie Hybride Souveraine Nostr (WebSockets) & GSM SMS",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#020617",
+  "background_color": "#ffffff",
   "theme_color": "#0284c7",
   "icons": [
     {
