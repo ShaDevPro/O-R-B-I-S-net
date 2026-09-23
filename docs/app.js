@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "L'Internet Libre & Décentralisé.",
       "hero.title_part2": "Zéro Serveur Central. Zéro Censure.",
       "hero.subtitle": "La plateforme souveraine de communication propulsée par le réseau décentralisé Nostr (WebSockets) et les appels WebRTC chiffrés de bout en bout. Signatures Schnorr BIP-340, chiffrement NIP-44 et IA 100% locale.",
-      "hero.download_btn": "Télécharger OrbisNet v1.1.0",
+      "hero.download_btn": "Télécharger OrbisNet v1.3.0",
       "hero.guide_btn": "Explorer le Guide & FAQ",
       "hero.telegram_btn": "Communauté Telegram",
       "dl.btn_telegram": "Communauté Telegram",
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "features.f2_title": "Identité Souveraine & Signatures BIP-340",
       "features.f2_text": "Identité cryptographique souveraine (paires de clés npub/nsec). Aucune adresse email ni numéro de téléphone requis. Chaque publication et message est signé numériquement par Schnorr (secp256k1).",
       "features.f3_title": "Appels Vocaux & Vidéo Chiffrés E2EE",
-      "features.f3_text": "Appels WebRTC en pair à pair (P2P) haute fidélité chiffrés en AES-256-GCM. Validation du code de sécurité SAS contre les écoutes et zéro recours à la téléphonie classique.",
+      "features.f3_text": "Appels WebRTC P2P haute fidélité intégrés à Android Telecom (ConnectionService). Chiffrement DTLS-SRTP, réveil silencieux FCM, code SAS et zéro recours au GSM.",
       "features.f4_title": "Flux Social Mondial Kind 1 & Stories 24h",
       "features.f4_text": "Publiez des notes publiques ouvertes sur le réseau mondial Nostr ou diffusez des stories éphémères et des sondages exclusivement vers vos cercles d'amis de confiance.",
       "features.f5_title": "Chiffrement Authentifié NIP-44",
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "The Free & Decentralized Internet.",
       "hero.title_part2": "Zero Central Server. Zero Censorship.",
       "hero.subtitle": "The sovereign communication platform powered by the decentralized Nostr network (WebSockets) and end-to-end encrypted WebRTC calls. BIP-340 Schnorr signatures, NIP-44 encryption, and 100% on-device AI.",
-      "hero.download_btn": "Download OrbisNet v1.1.0",
+      "hero.download_btn": "Download OrbisNet v1.3.0",
       "hero.guide_btn": "Explore Guide & FAQ",
       "hero.telegram_btn": "Telegram Community",
       "dl.btn_telegram": "Telegram Community",
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "features.f2_title": "Sovereign Identity & BIP-340 Signatures",
       "features.f2_text": "Sovereign cryptographic identity (npub/nsec keypairs). No email or phone number required. Every post and message is signed using Schnorr (secp256k1).",
       "features.f3_title": "Encrypted E2EE Voice & Video Calls",
-      "features.f3_text": "Peer-to-peer WebRTC calls encrypted with AES-256-GCM. Verbal SAS verification against wiretapping with zero reliance on traditional telephony.",
+      "features.f3_text": "High-fidelity P2P WebRTC calls integrated with Android Telecom (ConnectionService). DTLS-SRTP encryption, silent FCM wake-up, SAS code verification, and zero GSM reliance.",
       "features.f4_title": "Global Kind 1 Social Feed & 24h Stories",
       "features.f4_text": "Publish open public notes on the global Nostr network or share ephemeral stories and polls exclusively with your trusted circles.",
       "features.f5_title": "NIP-44 Authenticated Encryption",
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "الإنترنت الحر واللامركزي.",
       "hero.title_part2": "بلا خادم مركزي. بلا رقابة.",
       "hero.subtitle": "المنصة السيادية للتواصل المدعومة بشبكة Nostr اللامركزية (WebSockets) ومكالمات WebRTC المشفرة طرفاً لطرف. تواقيع Schnorr BIP-340 وتشفير NIP-44 وذكاء اصطناعي محلي 100%.",
-      "hero.download_btn": "تحميل OrbisNet v1.1.0",
+      "hero.download_btn": "تحميل OrbisNet v1.3.0",
       "hero.guide_btn": "دليل الاستخدام والأسئلة الشائعة",
       "hero.telegram_btn": "مجتمع تيليجرام الرسمي",
       "dl.btn_telegram": "مجتمع تيليجرام",
@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "features.f2_title": "هوية سيادية وتواقيع BIP-340",
       "features.f2_text": "هوية تشفيرية سيادية (مفاتيح npub/nsec). لا حاجة لبريد إلكتروني أو رقم هاتف. يتم توقيع كل منشور ورسالة عبر Schnorr (secp256k1).",
       "features.f3_title": "مكالمات صوت وفيديو مشفرة E2EE",
-      "features.f3_text": "مكالمات WebRTC بنظام الند للند مشفرة بـ AES-256-GCM. توثيق برمز SAS الشفهي لمكافحة التنصت دون أي اعتماد على شبكات الهاتف التقليدية.",
+      "features.f3_text": "مكالمات WebRTC بنظام الند للند مدمجة مع نظام Android Telecom. تشفير DTLS-SRTP، إيقاظ صامت بـ FCM، توثيق برمز SAS الشفهي ودون أي اعتماد على شبكات GSM.",
       "features.f4_title": "موجز اجتماعي عالمي وقصص 24 ساعة",
       "features.f4_text": "انشر ملاحظات عامة على شبكة Nostr العالمية أو شارك قصصاً مؤقتة واستطلاعات رأي حصرياً مع دوائر أصدقائك الموثوقين.",
       "features.f5_title": "تشفير NIP-44 الموثق",
@@ -797,10 +797,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Direct Download & QR Code Dynamic Configuration
   // =========================================================================
   const ORBISNET_CONFIG = {
-    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.1.0/O.R.B.I.S.apk",
+    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk",
     githubRepoUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net",
-    version: "1.1.0",
-    build: 110,
+    version: "1.3.0",
+    build: 130,
     size: "4.64 Mo"
   };
 
