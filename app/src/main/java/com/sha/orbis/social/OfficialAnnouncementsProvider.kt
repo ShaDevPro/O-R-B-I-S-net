@@ -21,77 +21,9 @@ object OfficialAnnouncementsProvider {
      * Construit et fournit la liste des annonces officielles initiales d'ORBIS.
      */
     fun getOfficialInitialPosts(context: Context): List<SocialPost> {
-        val adminAvatar = AvatarManager.ensureOfficialAppAvatar(context)
-        val devPhone = AdminSecurityHelper.getDeveloperChannelPhone()
-        val now = System.currentTimeMillis()
-
-        return listOf(
-            // 1. Main Pinned Announcement: Sovereign Digital Autonomy & Official Channels
-            SocialPost(
-                id = POST_WEBSITE_ANNOUNCEMENT_ID,
-                authorPhone = devPhone,
-                authorName = "O R B I S",
-                authorAvatarPath = adminAvatar,
-                content = """
-                    🛡️ Welcome to ORBIS — The World's First 100% Offline Sovereign Social Network & Messenger.
-
-                    Communicate freely with zero cloud dependencies, zero internet required, and military-grade AES-256-GCM + Double Ratchet (PFS) encryption directly over cellular GSM SMS.
-
-                    🌐 Official Website & Documentation:
-                    https://orbisoffline-cloud.github.io/ORBIS/
-
-                    📢 Official Telegram Community & Direct Updates:
-                    https://t.me/orbis_community
-
-                    🚀 Join our Telegram channel for direct signed APK releases, security advisories, and community discussions!
-                """.trimIndent(),
-                hashtags = listOf("orbis", "sovereign", "p2p", "offline", "privacy", "telegram", "security"),
-                timestamp = now,
-                rsaSignature = "rsa_sig_valid_official_web",
-                reactions = emptyList(),
-                poll = SocialPoll(
-                    id = "poll_website",
-                    question = "What brings you to ORBIS today?",
-                    options = listOf(
-                        PollOption("opt_web_1", "100% Offline GSM autonomy 📶", 0, emptyList()),
-                        PollOption("opt_web_2", "Military-grade privacy & PFS 🔐", 0, emptyList()),
-                        PollOption("opt_web_3", "Following official updates on Telegram 📢", 0, emptyList())
-                    ),
-                    totalVotes = 0
-                ),
-                comments = emptyList(),
-                isPinned = true,
-                isOfficialAnnouncement = true,
-                authorRole = UserSocialRole.FOUNDER_DEV
-            ),
-
-            // 2. Founding Statement: Sovereign GSM Social Feed
-            SocialPost(
-                id = POST_WELCOME_ID,
-                authorPhone = devPhone,
-                authorName = "O R B I S",
-                authorAvatarPath = adminAvatar,
-                content = "Your privacy is non-negotiable. Every post, voice note, and message in ORBIS is cryptographically signed on-device with your private RSA-2048 key and delivered directly peer-to-peer. Zero middlemen. Zero traces. 🛡️",
-                hashtags = listOf("freedom", "p2p", "privacy", "cryptography", "gsm"),
-                timestamp = now - 60_000L,
-                rsaSignature = "rsa_sig_valid_root",
-                reactions = emptyList(),
-                poll = SocialPoll(
-                    id = "poll_welcome",
-                    question = "Which sovereign feature is most essential for you?",
-                    options = listOf(
-                        PollOption("opt_1", "Zero Internet / 100% GSM SMS 📶", 0, emptyList()),
-                        PollOption("opt_2", "Encrypted Voice Notes & Calls 🎙️", 0, emptyList()),
-                        PollOption("opt_3", "Friends-Only P2P Social Feed 👥", 0, emptyList())
-                    ),
-                    totalVotes = 0
-                ),
-                comments = emptyList(),
-                isPinned = false,
-                isOfficialAnnouncement = true,
-                authorRole = UserSocialRole.FOUNDER_DEV
-            )
-        )
+        // No initial official posts — feed starts empty for new users.
+        // Official announcements can be published via the admin console when needed.
+        return emptyList()
     }
 
     /**
@@ -122,7 +54,7 @@ object OfficialAnnouncementsProvider {
 
         val repository = SocialRepository(context)
         val adminAvatar = AvatarManager.ensureOfficialAppAvatar(context)
-        val devPhone = AdminSecurityHelper.getDeveloperChannelPhone()
+        val devPhone = callerPhone ?: AdminSecurityHelper.getDeveloperChannelPhone(context)
         val postId = existingPostId ?: "post_announcement_${UUID.randomUUID().toString().take(8)}"
         val timestamp = System.currentTimeMillis()
 
@@ -148,7 +80,7 @@ object OfficialAnnouncementsProvider {
         val newPost = SocialPost(
             id = postId,
             authorPhone = devPhone,
-            authorName = "O R B I S",
+            authorName = "O R B I S net",
             authorAvatarPath = adminAvatar,
             content = content.trim(),
             hashtags = hashtags.map { it.trim().removePrefix("#") }.filter { it.isNotBlank() },

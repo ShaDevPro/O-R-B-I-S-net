@@ -88,6 +88,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import com.sha.orbis.admin.AdminSecurityHelper
 import com.sha.orbis.social.UserSocialRole
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -127,6 +128,11 @@ fun ProfileScreen(
                 avatarPath = savedPath
                 sessionManager.updateActiveAccountAvatar(savedPath)
                 Toast.makeText(context, context.getString(R.string.contact_photo_assigned), Toast.LENGTH_SHORT).show()
+                kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                    try {
+                        com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context).publishProfileUpdate(avatarPath = savedPath)
+                    } catch (_: Exception) {}
+                }
             }
         }
     }
@@ -278,6 +284,61 @@ fun ProfileScreen(
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            // 1.2 Sovereign Nostr Identity Card (npub)
+            item {
+                val nostrIdentity = remember { com.sha.orbis.nostr.identity.NostrIdentityManager.getInstance(context) }
+                val npub = nostrIdentity.npub
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Icon(
+                                    imageVector = Icons.Default.Key,
+                                    contentDescription = null,
+                                    tint = Color(0xFF00A3FF),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.nostr_identity_npub),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            IconButton(
+                                onClick = {
+                                    clipboardManager.setText(androidx.compose.ui.text.AnnotatedString(npub))
+                                    Toast.makeText(context, context.getString(R.string.nostr_identity_copied), Toast.LENGTH_SHORT).show()
+                                },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = "Copier",
+                                    tint = Color(0xFF00A3FF),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "${npub.take(16)}...${npub.takeLast(12)}",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                        )
                     }
                 }
             }
@@ -440,6 +501,14 @@ fun ProfileScreen(
                                     interests = selectedInterests.toList()
                                 )
                                 Toast.makeText(context, context.getString(R.string.profile_updated_success), Toast.LENGTH_SHORT).show()
+                                kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                                    try {
+                                        com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context).publishProfileUpdate(
+                                            displayName = displayName,
+                                            bio = bio
+                                        )
+                                    } catch (_: Exception) {}
+                                }
                             },
                             enabled = !isNameReservedError && displayName.isNotBlank(),
                             modifier = Modifier.fillMaxWidth(),
@@ -590,9 +659,22 @@ fun ProfileScreen(
                             }
                             Switch(
                                 checked = isPresenceHidden,
-                                onCheckedChange = {
-                                    isPresenceHidden = it
-                                    sessionManager.isPresenceHidden = it
+                                onCheckedChange = { isOffline ->
+                                    isPresenceHidden = isOffline
+                                    sessionManager.isPresenceHidden = isOffline
+                                    try {
+                                        com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context).broadcastPresence(isOnline = !isOffline)
+                                    } catch (_: Exception) {}
+                                    val intent = Intent(com.sha.orbis.notification.OrbisEventBus.ACTION_REFRESH_CONVERSATIONS).apply {
+                                        setPackage(context.packageName)
+                                    }
+                                    context.sendBroadcast(intent)
+                                    val toastMsg = if (isOffline) {
+                                        context.getString(R.string.presence_toast_offline_active)
+                                    } else {
+                                        context.getString(R.string.presence_toast_online_active)
+                                    }
+                                    Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show()
                                 }
                             )
                         }
@@ -710,7 +792,7 @@ fun ProfileScreen(
                                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
                                 .clickable {
                                     try {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://orbisoffline-cloud.github.io/ORBIS/"))
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://shadevpro.github.io/O-R-B-I-S-net/"))
                                         context.startActivity(intent)
                                     } catch (_: Exception) {}
                                 }

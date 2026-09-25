@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Dark Circular Background for standalone usage -->
+    <path
+        android:pathData="M 48,4 A 44,44 0 1,0 48,92 A 44,44 0 1,0 48,4 Z"
+        android:fillColor="#0E1117" />
+
+    <!-- Orbital Ring Track -->
+    <path
+        android:pathData="M 48,22 A 26,26 0 1,0 48,74 A 26,26 0 1,0 48,22 Z"
+        android:strokeWidth="1.2"
+        android:strokeColor="#3300A3FF"
+        android:fillColor="#00000000" />
+
+    <!-- Orbital Leading Arc Accent -->
+    <path
+        android:pathData="M 70.5,35 A 26,26 0 0,1 70.5,61"
+        android:strokeWidth="2.2"
+        android:strokeColor="#00A3FF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Core Minimalist Monochrome Shield (Sky Blue) -->
+    <path
+        android:pathData="M 48,33 L 35,38 L 35,48.5 C 35,56.5 40.8,61.8 48,63.5 C 55.2,61.8 61,56.5 61,48.5 L 61,38 Z"
+        android:fillColor="#00A3FF" />
+
+    <!-- Subtle Right-side Shading -->
+    <path
+        android:pathData="M 48,33 L 48,63.5 C 55.2,61.8 61,56.5 61,48.5 L 61,38 Z"
+        android:fillColor="#25FFFFFF" />
+
+</vector>
