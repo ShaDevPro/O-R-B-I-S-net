@@ -6,6 +6,75 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [v1.4.0] - 2026-09-30
+
+### 🚀 Major Highlights
+
+- **⚡ Optimisations Majeures du Fil d'Actualité (Feed & External Posts)**:
+  - Correction définitive du gel / crash lors de la présence de posts extra-Orbis (Instagram, TikTok, YouTube, Web) avec suppression de l'exception `measure is called on a deactivated node`.
+  - Analyse linéaire ultra-rapide des métadonnées HTML sans expressions régulières lourdes ni blocage des threads de calcul.
+  - Décodage optimisé des miniatures d'aperçu réduisant la consommation mémoire de 8 Mo à moins de 400 Ko.
+
+- **📞 Barre de Navigation Épurée du Journal d'Appels (Call History Navigation)**:
+  - Rénovation de la navigation "Tous / Manqués" : suppression du fond gris terne au profit d'un arrière-plan constant et mise en valeur par élargissement net de la bordure vert émeraude (2.5dp) à la sélection.
+  - Badges de décompte harmonisés et ergonomie tactile préservée sans décalage de mise en page.
+
+- **📲 Partage d'Application & Code QR v1.4.0 (Share App & QR Code)**:
+  - Mise à jour de l'URL de téléchargement direct vers la release officielle v1.4.0 et génération des codes QR haute lisibilité intégrés.
+
+### 🔧 Bug Fixes & Stability
+
+- **🛡️ Watchdog & Diagnostics**:
+  - Enrichissement du traceur de gel UI (`FeedDebugTracker`) avec capture de pile même sur Android 16.
+  - Validation du pipeline de mise à jour forcée instantanée vers la version 1.4.0.
+
+---
+
+## [v1.3.0] - 2026-09-23
+
+### 🚀 Major Highlights
+
+- **💬 Discussions Privées (Private Conversations)**:
+  - Possibilité d'initier des discussions privées chiffrées de bout en bout avec n'importe quel contact Nostr.
+
+- **👁️ Masquage de Publications dans le Fil d'Actualité (Post Hiding)**:
+  - Fonctionnalité permettant de masquer des publications indésirables directement depuis le feed social.
+
+### 🔧 Bug Fixes & Stability
+
+- **📞 Stabilité Appels 4G/4G (4G Call Stability)**:
+  - Correction du bug de coupure d'appel lorsque les deux interlocuteurs sont en 4G — ajout de STUN discovery, backoff de reconnexion et timeout étendu.
+
+- **🔄 Correction Doublons de Conversations (Duplicate Conversations Fix)**:
+  - Résolution du bug créant des conversations dupliquées lors du partage externe vers l'application.
+
+- Corrections mineures de bugs et améliorations de performance.
+
+---
+
+## [v1.2.0] - 2026-09-21
+
+### 🚀 Major Highlights
+
+- **⚡ Standby & Deep Sleep Resilience (Doze Mode & OEM Task Killers)**:
+  - Permanent sovereign background listener (`NostrForegroundService`) maintained 24/7 with automatic keep-alive watchdog and boot recovery.
+  - Native integration of Android 14+ `FOREGROUND_SERVICE_PHONE_CALL` preventing system kills on incoming VoIP calls.
+  - Full-Screen Intent attached to call alerts: wakes up the CPU, turns on the locked screen and rings instantly.
+  - Automatic detection and setup assistant for aggressive OEM task killers (`OemAutoStartHelper`): Xiaomi (MIUI/HyperOS), Samsung (OneUI deep sleep), Huawei/Honor (EMUI), Oppo/Realme (ColorOS), Vivo, OnePlus, Transsion.
+
+- **💬 Modernized Conversation Interface & Bubbles (WhatsApp Refinement)**:
+  - Distinct sender (periwinkle violet `#5E6BB2`) and receiver (soft lavender gray `#EEF0F8`) color palettes.
+  - Symmetrical rounded geometry (16.dp), clean horizontal date dividers and adaptive voice note audio waves.
+
+- **❤️ Floating WhatsApp-Style Emoji Reactions**:
+  - Interactive floating reaction pill overlapping bubbles with dynamic emoji grouping and total reaction count badge.
+
+- **✓✓ Live Blue Read Receipts (Accusé de lecture)**:
+  - Real-time double checkmarks: Sent (single gray ✓), Delivered (double gray ✓✓), Read (double WhatsApp vivid blue ✓✓ `#38BDF8`).
+  - Automatic cryptographic read receipt emission over Nostr (Kind 20003).
+
+---
+
 ## [v1.1.0] - 2026-09-05
 
 ### 🚀 Major Highlights

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "L'Internet Libre & Décentralisé.",
       "hero.title_part2": "Zéro Serveur Central. Zéro Censure.",
       "hero.subtitle": "La plateforme souveraine de communication propulsée par le réseau décentralisé Nostr (WebSockets) et les appels WebRTC chiffrés de bout en bout. Signatures Schnorr BIP-340, chiffrement NIP-44 et IA 100% locale.",
-      "hero.download_btn": "Télécharger OrbisNet v1.3.0",
+      "hero.download_btn": "Télécharger OrbisNet v1.4.0",
       "hero.guide_btn": "Explorer le Guide & FAQ",
       "hero.telegram_btn": "Communauté Telegram",
       "dl.btn_telegram": "Communauté Telegram",
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "The Free & Decentralized Internet.",
       "hero.title_part2": "Zero Central Server. Zero Censorship.",
       "hero.subtitle": "The sovereign communication platform powered by the decentralized Nostr network (WebSockets) and end-to-end encrypted WebRTC calls. BIP-340 Schnorr signatures, NIP-44 encryption, and 100% on-device AI.",
-      "hero.download_btn": "Download OrbisNet v1.3.0",
+      "hero.download_btn": "Download OrbisNet v1.4.0",
       "hero.guide_btn": "Explore Guide & FAQ",
       "hero.telegram_btn": "Telegram Community",
       "dl.btn_telegram": "Telegram Community",
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "الإنترنت الحر واللامركزي.",
       "hero.title_part2": "بلا خادم مركزي. بلا رقابة.",
       "hero.subtitle": "المنصة السيادية للتواصل المدعومة بشبكة Nostr اللامركزية (WebSockets) ومكالمات WebRTC المشفرة طرفاً لطرف. تواقيع Schnorr BIP-340 وتشفير NIP-44 وذكاء اصطناعي محلي 100%.",
-      "hero.download_btn": "تحميل OrbisNet v1.3.0",
+      "hero.download_btn": "تحميل OrbisNet v1.4.0",
       "hero.guide_btn": "دليل الاستخدام والأسئلة الشائعة",
       "hero.telegram_btn": "مجتمع تيليجرام الرسمي",
       "dl.btn_telegram": "مجتمع تيليجرام",
@@ -797,11 +797,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Direct Download & QR Code Dynamic Configuration
   // =========================================================================
   const ORBISNET_CONFIG = {
-    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk",
+    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk",
     githubRepoUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net",
-    version: "1.3.0",
-    build: 130,
-    size: "4.64 Mo"
+    version: "1.4.0",
+    build: 140,
+    size: "53 Mo"
   };
 
   function updateDownloadUrls(url) {
