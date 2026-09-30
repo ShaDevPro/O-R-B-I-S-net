@@ -18,7 +18,8 @@ local.properties
 backend/node_modules/
 backend/.next/
 
-# Secrets & Tokens
+# Secrets & Tokens & Private Guides
 github_token.txt
 *.token
 *.key
+GUIDE_MISE_A_JOUR_ORBIS.md
