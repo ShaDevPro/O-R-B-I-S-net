@@ -24,6 +24,10 @@ github_token.txt
 *.key
 GUIDE_MISE_A_JOUR_ORBIS.md
 
+# Android Application Source Code (Proprietary - Local Only, Never on Public Git)
+/app/
+app/
+
 # Build Artifacts & Binaries (Never push APKs to Git)
 *.apk
 *.aab
