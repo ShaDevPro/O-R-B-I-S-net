@@ -2141,6 +2141,7 @@
     <string name="text_show_more">Voir plus</string>
     <string name="text_show_less">Voir moins</string>
     <string name="text_truncated_warning">Texte trop long, tronqué par sécurité</string>
+    <string name="notif_social_poll_voted">%1$s a voté à votre sondage</string>
 </resources>
 
 

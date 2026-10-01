@@ -1121,11 +1121,10 @@ class NostrSyncManager private constructor(private val context: Context) {
             val isFromMe = event.pubkey.equals(myPubkey, ignoreCase = true) ||
                 (myNpub.isNotBlank() && post.authorPhone == myNpub) ||
                 FriendRequestRepository.isSamePhone(post.authorPhone, sessionManager.userPhone)
-            val isFriend = friendRequestRepo.isFriend(finalPost.authorPhone) ||
-                friendRequestRepo.isConnectedContact(finalPost.authorPhone)
-            val isFounder = finalPost.authorRole == com.sha.orbis.social.UserSocialRole.FOUNDER_DEV
+            val isFriend = friendRequestRepo.isFriend(finalPost.authorPhone)
+            val isOfficial = finalPost.isOfficialAnnouncement
 
-            if (!isFromMe && !isFriend && !isFounder) {
+            if (!isFromMe && !isFriend && !isOfficial) {
                 Log.d(TAG, "Post ignoré (auteur non-ami) : ${finalPost.authorPhone}")
                 return
             }
@@ -1139,7 +1138,7 @@ class NostrSyncManager private constructor(private val context: Context) {
 
             // Notification pour les posts d'amis ou annonces officielles
             if (!isFromMe) {
-                if (isFriend || isFounder) {
+                if (isFriend || isOfficial) {
                     val cleanPostAuthor = if (finalPost.authorName.startsWith("npub1", ignoreCase = true) || finalPost.authorName.startsWith("+") || finalPost.authorName.isBlank()) {
                         val c = conversationRepo.loadContacts().find { it.phone == finalPost.authorPhone || it.publicKey == finalPost.authorPhone }
                         val r = friendRequestRepo.loadRequests().find { it.senderPhone == finalPost.authorPhone || it.senderPublicKey == finalPost.authorPhone }
@@ -1198,6 +1197,14 @@ class NostrSyncManager private constructor(private val context: Context) {
             ?: event.tags.find { it.size >= 2 && it[0] == "e" }?.get(1)
             ?: return
         val targetCommentId = event.tags.find { it.size >= 2 && it[0] == "comment_id" }?.get(1)?.trim()
+
+        val targetPollOptionId = event.tags.find { it.size >= 2 && (it[0] == "poll_option" || it[0] == "option_id") }?.get(1)?.trim()
+            ?: if (event.content.startsWith("POLL_VOTE:")) event.content.removePrefix("POLL_VOTE:").trim() else null
+
+        if (!targetPollOptionId.isNullOrBlank()) {
+            handlePollVote(event, targetPostId, targetPollOptionId)
+            return
+        }
 
         if (socialRepo.isPostDeleted(targetPostId)) {
             Log.d(TAG, "Réaction ignorée : post cible supprimé ($targetPostId)")
@@ -1368,6 +1375,142 @@ class NostrSyncManager private constructor(private val context: Context) {
 
         val intent = Intent(OrbisEventBus.ACTION_ORBIS_POST_RECEIVED)
         context.sendBroadcast(intent)
+    }
+
+    private fun handlePollVote(event: NostrEvent, targetPostId: String, targetPollOptionId: String) {
+        if (socialRepo.isPostDeleted(targetPostId)) {
+            Log.d(TAG, "Vote sondage ignoré : post cible supprimé ($targetPostId)")
+            return
+        }
+
+        if (processedEventsRepo.isProcessed(event.id)) {
+            return
+        }
+
+        val senderNpub = Bech32.npubEncode(event.pubkey)
+        val tagAuthorName = event.tags.find { it.size >= 2 && it[0] == "author_name" }?.get(1)?.trim()
+        val tagAuthorPhone = event.tags.find { it.size >= 2 && it[0] == "author_phone" }?.get(1)?.trim()
+        val tagAuthorAvatar = event.tags.find { it.size >= 2 && it[0] == "author_avatar" }?.get(1)?.trim()
+
+        val contacts = conversationRepo.loadContacts()
+        val matchedContact = contacts.find {
+            it.publicKey.equals(event.pubkey, ignoreCase = true) ||
+            it.publicKey.equals(senderNpub, ignoreCase = true) ||
+            (!tagAuthorPhone.isNullOrBlank() && FriendRequestRepository.isSamePhone(it.phone, tagAuthorPhone))
+        }
+        val userIdentifier = matchedContact?.phone?.takeIf { it.isNotBlank() } ?: tagAuthorPhone ?: senderNpub
+
+        if (blockedRepo.isBlocked(userIdentifier) || blockedRepo.isBlocked(senderNpub) || blockedRepo.isBlocked(event.pubkey)) {
+            Log.d(TAG, "Vote sondage ignoré : expéditeur bloqué ($userIdentifier)")
+            return
+        }
+
+        val applied = socialRepo.applyIncomingPollVote(targetPostId, targetPollOptionId, userIdentifier) ||
+            socialRepo.enqueuePendingPollVote(targetPostId, targetPollOptionId, userIdentifier)
+        if (applied) {
+            processedEventsRepo.markProcessed(event.id)
+        }
+
+        // Rafraîchir l'interface et le vote en temps réel
+        context.sendBroadcast(
+            Intent(com.sha.orbis.notification.OrbisEventBus.ACTION_ORBIS_REACTION_RECEIVED)
+        )
+        context.sendBroadcast(
+            Intent(com.sha.orbis.notification.OrbisEventBus.ACTION_ORBIS_POST_RECEIVED)
+        )
+
+        // Notification si le post est à nous et le vote vient d'un tiers
+        val myPubkey = identityManager.publicKeyHex
+        val myNpub = try { Bech32.npubEncode(myPubkey) } catch (_: Exception) { "" }
+        val isFromMe = event.pubkey.equals(myPubkey, ignoreCase = true) ||
+            senderNpub.equals(myNpub, ignoreCase = true) ||
+            FriendRequestRepository.isSamePhone(userIdentifier, sessionManager.userPhone)
+
+        if (!isFromMe) {
+            val allPosts = socialRepo.loadPosts()
+            val targetPost = allPosts.find {
+                it.id == targetPostId ||
+                (targetPostId.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.id).equals(targetPostId, ignoreCase = true))
+            }
+            if (targetPost != null && !socialRepo.isPostDeleted(targetPost.id)) {
+                val isMyPost = FriendRequestRepository.isSamePhone(targetPost.authorPhone, sessionManager.userPhone) ||
+                    (myNpub.isNotBlank() && targetPost.authorPhone == myNpub) ||
+                    targetPost.authorPhone.equals(myPubkey, ignoreCase = true)
+
+                if (isMyPost) {
+                    val savedAvatar = if (!tagAuthorAvatar.isNullOrBlank() && tagAuthorAvatar.length > 50) {
+                        com.sha.orbis.ui.components.AvatarManager.saveAvatarFromBase64(
+                            context,
+                            tagAuthorAvatar,
+                            "avatar_${tagAuthorPhone?.filter { it.isDigit() }?.ifBlank { event.pubkey.take(8) } ?: event.pubkey.take(8)}"
+                        )
+                    } else null
+
+                    val matchedRequest = friendRequestRepo.loadRequests().find {
+                        it.senderPublicKey.equals(event.pubkey, ignoreCase = true) ||
+                        it.senderPublicKey.equals(senderNpub, ignoreCase = true) ||
+                        (!tagAuthorPhone.isNullOrBlank() && FriendRequestRepository.isSamePhone(it.senderPhone, tagAuthorPhone))
+                    }
+
+                    val postAuthorMatch = if (matchedContact == null && matchedRequest == null && tagAuthorName.isNullOrBlank()) {
+                        allPosts.asSequence().mapNotNull { p ->
+                            if (p.authorPhone.equals(senderNpub, ignoreCase = true) || p.authorPhone.equals(event.pubkey, ignoreCase = true) || (!tagAuthorPhone.isNullOrBlank() && FriendRequestRepository.isSamePhone(p.authorPhone, tagAuthorPhone))) {
+                                p.authorName to p.authorAvatarPath
+                            } else null
+                        }.firstOrNull { it.first.isNotBlank() && !it.first.startsWith("npub1") && !it.first.startsWith("+") }
+                    } else null
+
+                    val cleanSenderName = when {
+                        !matchedContact?.name.isNullOrBlank() && !matchedContact!!.name.startsWith("npub1") && !matchedContact.name.startsWith("+") -> matchedContact.name
+                        !matchedRequest?.senderName.isNullOrBlank() && !matchedRequest!!.senderName.startsWith("npub1") && !matchedRequest.senderName.startsWith("+") -> matchedRequest.senderName
+                        !tagAuthorName.isNullOrBlank() && !tagAuthorName.startsWith("npub1") && !tagAuthorName.startsWith("+") -> tagAuthorName
+                        postAuthorMatch != null -> postAuthorMatch.first
+                        else -> {
+                            val displayDigits = (tagAuthorPhone ?: userIdentifier).filter { it.isDigit() }.takeLast(4)
+                            if (displayDigits.isNotBlank()) "Orbis ($displayDigits)" else context.getString(R.string.notif_sender_orbis_member)
+                        }
+                    }
+
+                    val effectiveAvatar = matchedContact?.avatarPath
+                        ?: matchedRequest?.senderAvatarPath
+                        ?: savedAvatar
+                        ?: postAuthorMatch?.second
+
+                    val notifDescription = context.getString(R.string.notif_social_poll_voted, cleanSenderName)
+                    val notifId = "notif_poll_vote_${event.id.take(16)}"
+                    val notifAlreadyExists = notifRepo.hasNotificationForEvent(notifId)
+
+                    val notif = com.sha.orbis.model.AppNotification(
+                        id = notifId,
+                        title = cleanSenderName,
+                        description = notifDescription,
+                        timestamp = event.createdAt * 1000L,
+                        type = com.sha.orbis.model.NotificationType.SOCIAL,
+                        isRead = false,
+                        senderPhone = matchedContact?.phone ?: tagAuthorPhone ?: userIdentifier,
+                        senderName = cleanSenderName,
+                        senderAvatarPath = effectiveAvatar,
+                        targetPostId = targetPost.id,
+                        actionType = "poll_vote"
+                    )
+                    val addedToNotifRepo = notifRepo.addNotification(notif)
+
+                    val eventAgeMs = System.currentTimeMillis() - (event.createdAt * 1000L)
+                    val isLiveEvent = eventAgeMs in -30_000L..120_000L
+
+                    if (isLiveEvent && applied && addedToNotifRepo && !notifAlreadyExists) {
+                        SmsNotificationHelper.showSocialNotification(
+                            context = context,
+                            title = cleanSenderName,
+                            text = notifDescription,
+                            postId = targetPost.id,
+                            actionType = "poll_vote"
+                        )
+                    }
+                    com.sha.orbis.data.OrbisBadgeHub.refresh(context)
+                }
+            }
+        }
     }
 
     private fun handleStoryReaction(event: NostrEvent, targetStoryId: String) {
@@ -1784,6 +1927,50 @@ class NostrSyncManager private constructor(private val context: Context) {
         relayPool.publish(event)
         try {
             com.sha.orbis.telemetry.FeedTelemetryTracker.trackComment(context)
+        } catch (_: Exception) {}
+        return event
+    }
+
+    /**
+     * Publie un vote de sondage décentralisé sur les relais Nostr (Kind 7 avec tag poll_option).
+     */
+    fun publishPollVote(
+        postId: String,
+        optionId: String,
+        postAuthorNpubOrHex: String
+    ): NostrEvent {
+        val authorPubkeyHex = resolveAuthorPubkeyHex(postAuthorNpubOrHex)
+        val myName = sessionManager.userName.trim().takeIf { it.isNotBlank() }
+        val myPhone = sessionManager.userPhone.trim().takeIf { it.isNotBlank() }
+        val myAvatar = com.sha.orbis.ui.components.AvatarManager.getAvatarAsBase64Thumbnail(sessionManager.userAvatarPath, 96)
+
+        val tags = mutableListOf<List<String>>(
+            listOf("e", postId),
+            listOf("poll_option", optionId),
+            listOf("t", NostrProtocolEngine.TAG_ORBISNET),
+            listOf("t", "poll_vote")
+        )
+        if (!authorPubkeyHex.isNullOrBlank()) {
+            tags.add(listOf("p", authorPubkeyHex))
+        }
+        if (!myName.isNullOrBlank()) {
+            tags.add(listOf("author_name", myName))
+        }
+        if (!myPhone.isNullOrBlank()) {
+            tags.add(listOf("author_phone", myPhone))
+        }
+        if (!myAvatar.isNullOrBlank()) {
+            tags.add(listOf("author_avatar", myAvatar))
+        }
+
+        val event = identityManager.signEvent(
+            kind = NostrEvent.KIND_REACTION,
+            tags = tags,
+            content = "POLL_VOTE:$optionId"
+        )
+        relayPool.publish(event)
+        try {
+            com.sha.orbis.telemetry.FeedTelemetryTracker.trackPollVote(context)
         } catch (_: Exception) {}
         return event
     }

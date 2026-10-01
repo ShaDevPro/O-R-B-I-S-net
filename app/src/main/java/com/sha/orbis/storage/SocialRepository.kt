@@ -55,6 +55,7 @@ class SocialRepository(
     private val pendingComments = mutableListOf<SocialComment>()
     private val pendingReactions = mutableListOf<Triple<String, String, String>>()
     private val pendingCommentReactions = mutableListOf<Triple<String, String, Pair<String, String>>>()
+    private val pendingPollVotes = mutableListOf<Triple<String, String, String>>()
 
     private fun ensureDeletedPostsLoaded() {
         if (deletedPostsLoaded) return
@@ -267,6 +268,57 @@ class SocialRepository(
         return byId.values.sortedBy { it.timestamp }
     }
 
+    private fun mergePolls(
+        existing: SocialPoll?,
+        incoming: SocialPoll?
+    ): SocialPoll? {
+        if (existing == null) return incoming
+        if (incoming == null) return existing
+
+        // Conserver impérativement l'option votée localement par l'utilisateur courant
+        val localUserVotedId = existing.userVotedOptionId ?: incoming.userVotedOptionId
+
+        // Fusionner les options et leurs votants sans jamais perdre de votes
+        val mergedOptions = incoming.options.map { incOpt ->
+            val exOpt = existing.options.find { it.id == incOpt.id || it.text.equals(incOpt.text, ignoreCase = true) }
+            val exVoters = exOpt?.votersPhones ?: emptyList()
+            val incVoters = incOpt.votersPhones
+
+            val combinedVoters = (exVoters + incVoters).distinctBy { voter ->
+                val trimmed = voter.trim()
+                if (trimmed.startsWith("npub1", ignoreCase = true) || (trimmed.length == 64 && trimmed.all { it.isDigit() || it in 'a'..'f' || it in 'A'..'F' })) {
+                    trimmed.lowercase()
+                } else {
+                    val digits = trimmed.filter { it.isDigit() }
+                    if (digits.length >= 8) digits.takeLast(8) else trimmed
+                }
+            }
+            val count = maxOf(combinedVoters.size, exOpt?.voteCount ?: 0, incOpt.voteCount)
+            incOpt.copy(
+                voteCount = count,
+                votersPhones = combinedVoters
+            )
+        }.toMutableList()
+
+        existing.options.forEach { exOpt ->
+            if (mergedOptions.none { it.id == exOpt.id || it.text.equals(exOpt.text, ignoreCase = true) }) {
+                mergedOptions.add(exOpt)
+            }
+        }
+
+        val totalVotes = maxOf(
+            mergedOptions.sumOf { it.voteCount },
+            existing.totalVotes,
+            incoming.totalVotes
+        )
+
+        return incoming.copy(
+            options = mergedOptions,
+            totalVotes = totalVotes,
+            userVotedOptionId = localUserVotedId
+        )
+    }
+
     @Synchronized
     fun enqueuePendingComment(comment: SocialComment): Boolean {
         if (pendingComments.any { it.id == comment.id }) return true
@@ -303,8 +355,22 @@ class SocialRepository(
     }
 
     @Synchronized
+    fun enqueuePendingPollVote(postId: String, optionId: String, voterPhone: String): Boolean {
+        if (pendingPollVotes.any {
+                it.first == postId &&
+                    it.second == optionId &&
+                    FriendRequestRepository.isSamePhone(it.third, voterPhone)
+            }
+        ) {
+            return true
+        }
+        pendingPollVotes.add(Triple(postId, optionId, voterPhone))
+        return true
+    }
+
+    @Synchronized
     private fun flushPendingEngagements(resolvedPostId: String) {
-        if (pendingComments.isEmpty() && pendingReactions.isEmpty() && pendingCommentReactions.isEmpty()) return
+        if (pendingComments.isEmpty() && pendingReactions.isEmpty() && pendingCommentReactions.isEmpty() && pendingPollVotes.isEmpty()) return
         val commentBatch = pendingComments.filter {
             matchesPostId(it.postId, resolvedPostId) ||
                 com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.postId).let { hex ->
@@ -324,6 +390,12 @@ class SocialRepository(
         pendingCommentReactions.removeAll(commentReactionBatch.toSet())
         commentReactionBatch.forEach { (pid, cid, userEmoji) ->
             applyIncomingCommentReaction(pid, cid, userEmoji.first, userEmoji.second)
+        }
+
+        val pollVoteBatch = pendingPollVotes.filter { matchesPostId(it.first, resolvedPostId) }
+        pendingPollVotes.removeAll(pollVoteBatch.toSet())
+        pollVoteBatch.forEach { (pid, optId, phone) ->
+            applyIncomingPollVote(pid, optId, phone)
         }
     }
 
@@ -560,8 +632,8 @@ class SocialRepository(
                 // Engagement : fusionner, jamais écraser
                 reactions = mergeReactions(existing.reactions, post.reactions),
                 comments = mergeComments(existing.comments, post.comments),
-                // Poll : garder l'existant si absent côté relay
-                poll = post.poll ?: existing.poll,
+                // Poll : fusionner intelligemment sans écraser les votes locaux ou distants
+                poll = mergePolls(existing.poll, post.poll),
                 // Média : bestMediaPath calculé plus haut, URL/type : garder le meilleur
                 mediaPath = bestMediaPath,
                 mediaUrl = post.mediaUrl ?: existing.mediaUrl,
@@ -668,28 +740,33 @@ class SocialRepository(
     }
 
     @Synchronized
-    fun votePoll(postId: String, optionId: String, userPhone: String, isLocalUser: Boolean = false) {
+    fun votePoll(postId: String, optionId: String, userPhone: String, isLocalUser: Boolean = false): Boolean {
         val current = loadPosts().toMutableList()
         val index = current.indexOfFirst {
-            it.id == postId || (postId.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.id).equals(postId, ignoreCase = true))
+            it.id == postId ||
+            (postId.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.id).equals(postId, ignoreCase = true)) ||
+            (it.id.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(postId).equals(it.id, ignoreCase = true))
         }
         if (index >= 0) {
             val post = current[index]
-            val poll = post.poll ?: return
+            val poll = post.poll ?: return false
+
+            val targetOption = poll.options.find { it.id == optionId || it.text.equals(optionId, ignoreCase = true) }
+            val targetOptId = targetOption?.id ?: optionId
 
             // Check if user has already voted for this specific option
             val alreadyVotedThisOption = poll.options.any { opt ->
-                opt.id == optionId && opt.votersPhones.any { FriendRequestRepository.isSamePhone(it, userPhone) }
+                opt.id == targetOptId && opt.votersPhones.any { FriendRequestRepository.isSamePhone(it, userPhone) }
             }
             if (alreadyVotedThisOption) {
                 // Duplicate vote packet, nothing to change
-                return
+                return false
             }
 
             // Remove previous vote by this user if they are switching options or updating
             val updatedOptions = poll.options.map { opt ->
                 val hasUserVotedThis = opt.votersPhones.any { FriendRequestRepository.isSamePhone(it, userPhone) }
-                if (opt.id == optionId) {
+                if (opt.id == targetOptId) {
                     val cleanList = opt.votersPhones.filterNot { FriendRequestRepository.isSamePhone(it, userPhone) } + userPhone
                     opt.copy(voteCount = cleanList.size, votersPhones = cleanList)
                 } else if (hasUserVotedThis) {
@@ -702,7 +779,7 @@ class SocialRepository(
 
             val totalVotesCount = updatedOptions.sumOf { it.voteCount }
             val newLocalVotedId = if (isLocalUser) {
-                optionId
+                targetOptId
             } else {
                 poll.userVotedOptionId
             }
@@ -719,7 +796,58 @@ class SocialRepository(
                     com.sha.orbis.telemetry.FeedTelemetryTracker.trackPollVote(context)
                 } catch (_: Exception) {}
             }
+            return true
         }
+        return false
+    }
+
+    /**
+     * Applique un vote de sondage décentralisé reçu via les relais Nostr (Kind 7 avec tag poll_option).
+     */
+    @Synchronized
+    fun applyIncomingPollVote(postId: String, optionId: String, voterPhone: String): Boolean {
+        ensureDeletedPostsLoaded()
+        if (isPostDeleted(postId)) return false
+        val current = loadPosts().toMutableList()
+        val index = current.indexOfFirst {
+            it.id == postId ||
+            (postId.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.id).equals(postId, ignoreCase = true)) ||
+            (it.id.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(postId).equals(it.id, ignoreCase = true))
+        }
+        if (index < 0) return false
+        val post = current[index]
+        if (isPostDeleted(post.id)) return false
+        val poll = post.poll ?: return false
+
+        val targetOption = poll.options.find { it.id == optionId || it.text.equals(optionId, ignoreCase = true) }
+        val targetOptId = targetOption?.id ?: optionId
+
+        val alreadyVotedThisOption = poll.options.any { opt ->
+            opt.id == targetOptId && opt.votersPhones.any { FriendRequestRepository.isSamePhone(it, voterPhone) }
+        }
+        if (alreadyVotedThisOption) return true
+
+        val updatedOptions = poll.options.map { opt ->
+            val hasUserVotedThis = opt.votersPhones.any { FriendRequestRepository.isSamePhone(it, voterPhone) }
+            if (opt.id == targetOptId) {
+                val cleanList = opt.votersPhones.filterNot { FriendRequestRepository.isSamePhone(it, voterPhone) } + voterPhone
+                opt.copy(voteCount = cleanList.size, votersPhones = cleanList)
+            } else if (hasUserVotedThis) {
+                val cleanList = opt.votersPhones.filterNot { FriendRequestRepository.isSamePhone(it, voterPhone) }
+                opt.copy(voteCount = cleanList.size, votersPhones = cleanList)
+            } else {
+                opt
+            }
+        }
+
+        val totalVotes = updatedOptions.sumOf { it.voteCount }
+        val updatedPoll = poll.copy(
+            options = updatedOptions,
+            totalVotes = totalVotes
+        )
+        current[index] = post.copy(poll = updatedPoll)
+        savePosts(current)
+        return true
     }
 
     /**

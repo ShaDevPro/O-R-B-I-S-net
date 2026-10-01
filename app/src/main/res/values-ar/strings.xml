@@ -2141,5 +2141,6 @@
     <string name="text_show_more">عرض المزيد</string>
     <string name="text_show_less">عرض أقل</string>
     <string name="text_truncated_warning">النص طويل جدًا، تم اقتصاصه للأمان</string>
+    <string name="notif_social_poll_voted">صوّت %1$s في استطلاعك</string>
 </resources>
 

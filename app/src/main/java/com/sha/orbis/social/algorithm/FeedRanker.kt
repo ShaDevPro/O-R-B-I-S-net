@@ -48,8 +48,10 @@ class FeedRanker(
                 stableExploration
 
             val reason = when {
-                post.isOfficialAnnouncement || post.authorRole == UserSocialRole.FOUNDER_DEV || post.isPinned ->
+                post.isOfficialAnnouncement ->
                     RecommendationReason.OFFICIAL_ANNOUNCEMENT
+                post.isPinned ->
+                    RecommendationReason.CIRCLE_AFFINITY
                 matchingTags.isNotEmpty() -> RecommendationReason.USER_INTEREST_MATCH
                 activity + engagement >= 18.0 -> RecommendationReason.TRENDING_VIRAL
                 closeAuthor -> RecommendationReason.CIRCLE_AFFINITY

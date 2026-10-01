@@ -25,8 +25,17 @@ class FriendRequestRepository(
 
     companion object {
         fun isSamePhone(phone1: String, phone2: String): Boolean {
-            val d1 = phone1.filter { it.isDigit() }
-            val d2 = phone2.filter { it.isDigit() }
+            val p1 = phone1.trim()
+            val p2 = phone2.trim()
+            if (p1.isBlank() || p2.isBlank()) return false
+            if (p1.equals(p2, ignoreCase = true)) return true
+
+            val hex1 = resolveNostrPubkeyHex(p1)
+            val hex2 = resolveNostrPubkeyHex(p2)
+            if (hex1 != null && hex2 != null && hex1.equals(hex2, ignoreCase = true)) return true
+
+            val d1 = p1.filter { it.isDigit() }
+            val d2 = p2.filter { it.isDigit() }
             if (d1.isBlank() || d2.isBlank()) return false
             if (d1 == d2) return true
             if (d1.length >= 8 && d2.length >= 8) {
@@ -197,10 +206,8 @@ class FriendRequestRepository(
             isValidNostrKey(contact.publicKey)
         )
         val hasConnectedStatus = contact.status.contains("Connecté", ignoreCase = true) ||
-                contact.status.contains("Connected", ignoreCase = true) ||
-                contact.status.contains("Actif", ignoreCase = true)
-        val hasValidDigits = contact.phone.filter { it.isDigit() }.length >= 6
-        return hasConnectedStatus && (hasKey || hasValidDigits)
+                contact.status.contains("Connected", ignoreCase = true)
+        return hasConnectedStatus && hasKey
     }
 
     @Synchronized

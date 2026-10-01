@@ -2148,5 +2148,6 @@
     <string name="text_show_more">Show more</string>
     <string name="text_show_less">Show less</string>
     <string name="text_truncated_warning">Text too long, truncated for safety</string>
+    <string name="notif_social_poll_voted">%1$s voted on your poll</string>
 </resources>
 

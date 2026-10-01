@@ -117,8 +117,8 @@ fun UserProfileWallScreen(
     }
 
     val friendRepo = remember(activeAccountId) { FriendRequestRepository(context, activeAccountId) }
-    val isFriendWithUser = remember(userPhone, isMyProfile, isDev, activeAccountId) {
-        isMyProfile || isDev || friendRepo.isFriend(userPhone)
+    val isFriendWithUser = remember(userPhone, isMyProfile, activeAccountId) {
+        isMyProfile || friendRepo.isFriend(userPhone)
     }
 
     // Contact Lookup
@@ -302,9 +302,19 @@ fun UserProfileWallScreen(
     }
 
     fun handleVotePoll(postId: String, optId: String) {
-        socialRepo.votePoll(postId, optId, sessionManager.userPhone, isLocalUser = true)
-        refreshPosts()
-        Toast.makeText(context, context.getString(R.string.social_toast_vote_broadcast), Toast.LENGTH_SHORT).show()
+        val voteApplied = socialRepo.votePoll(postId, optId, sessionManager.userPhone, isLocalUser = true)
+        if (voteApplied) {
+            refreshPosts()
+            try {
+                val targetPost = socialRepo.loadPosts().firstOrNull { it.id == postId }
+                val targetAuthorKey = targetPost?.authorPubkey ?: targetPost?.authorPhone ?: userPhone
+                val nostrSync = com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context)
+                nostrSync.publishPollVote(postId, optId, targetAuthorKey)
+            } catch (e: Exception) {
+                android.util.Log.w("UserProfileWall", "Erreur diffusion vote Nostr: ${e.message}")
+            }
+            Toast.makeText(context, context.getString(R.string.social_toast_vote_broadcast), Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun handleEditPost(post: SocialPost, newContent: String, newHashtags: List<String>) {

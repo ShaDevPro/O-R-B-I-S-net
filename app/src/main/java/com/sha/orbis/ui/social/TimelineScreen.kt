@@ -203,8 +203,7 @@ fun TimelineScreen(
                 val fStories = socialRepo.loadStories().filter { story ->
                     !blockedRepo.isBlocked(story.authorPhone) && (
                         com.sha.orbis.storage.FriendRequestRepository.isSamePhone(story.authorPhone, currentPhone) ||
-                        friendRepo.isFriend(story.authorPhone) ||
-                        com.sha.orbis.admin.AdminSecurityHelper.isAdmin(story.authorPhone)
+                        friendRepo.isFriend(story.authorPhone)
                     )
                 }
                 val cPost = commentsTargetId?.let { socialRepo.findPostById(it) }
@@ -581,11 +580,6 @@ fun TimelineScreen(
             .filter { it.isNotBlank() }
             .toSet()
 
-        val connectedContactPhones = contactsSnapshot
-            .map { it.phone.trim() }
-            .filter { it.isNotBlank() }
-            .toSet()
-
         var list = posts.filter { post ->
             val isAuthorSelf = com.sha.orbis.storage.FriendRequestRepository.isSamePhone(post.authorPhone, currentPhone)
 
@@ -602,13 +596,11 @@ fun TimelineScreen(
                 }
             }
 
-            val isOfficialOrAdmin = post.isOfficialAnnouncement ||
-                    post.authorRole == UserSocialRole.FOUNDER_DEV ||
-                    com.sha.orbis.admin.AdminSecurityHelper.isAdmin(post.authorPhone)
+            val isOfficial = post.isOfficialAnnouncement
             val isAuthorFriend = acceptedFriendPhones.any { com.sha.orbis.storage.FriendRequestRepository.isSamePhone(it, post.authorPhone) } ||
-                    connectedContactPhones.any { com.sha.orbis.storage.FriendRequestRepository.isSamePhone(it, post.authorPhone) }
+                    friendRepo.isFriend(post.authorPhone)
 
-            val isAllowedAuthor = isAuthorSelf || isOfficialOrAdmin || isAuthorFriend
+            val isAllowedAuthor = isAuthorSelf || isOfficial || isAuthorFriend
 
             val matchCircle = when (selectedFilterCircleId) {
                 null -> true
@@ -973,10 +965,19 @@ fun TimelineScreen(
                                     Toast.makeText(context, context.getString(R.string.social_toast_reaction_sent), Toast.LENGTH_SHORT).show()
                                 },
                                 onVotePoll = { optionId ->
-                                    socialRepo.votePoll(post.id, optionId, sessionManager.userPhone, isLocalUser = true)
-                                    recommendationEngine.recordInteraction(post, 3.0f)
-                                    refreshFeed()
-                                    Toast.makeText(context, context.getString(R.string.social_toast_vote_broadcast), Toast.LENGTH_SHORT).show()
+                                    val voteApplied = socialRepo.votePoll(post.id, optionId, sessionManager.userPhone, isLocalUser = true)
+                                    if (voteApplied) {
+                                        recommendationEngine.recordInteraction(post, 3.0f)
+                                        refreshFeed()
+                                        try {
+                                            val nostrSync = com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context)
+                                            val targetAuthorKey = post.authorPubkey ?: post.authorPhone
+                                            nostrSync.publishPollVote(post.id, optionId, targetAuthorKey)
+                                        } catch (e: Exception) {
+                                            android.util.Log.w("TimelineScreen", "Erreur diffusion vote Nostr: ${e.message}")
+                                        }
+                                        Toast.makeText(context, context.getString(R.string.social_toast_vote_broadcast), Toast.LENGTH_SHORT).show()
+                                    }
                                 },
                                 onOpenComments = {
                                         activePostForComments = post
