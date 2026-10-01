@@ -60,22 +60,31 @@ class AppUpdateManager private constructor(private val context: Context) {
     private fun loadCachedConfig(): RemoteAppConfig {
         val raw = prefs.getString(KEY_CACHED_CONFIG, null) ?: return RemoteAppConfig.DEFAULT
         return try {
-            RemoteAppConfig.fromJson(JSONObject(raw))
+            val cfg = RemoteAppConfig.fromJson(JSONObject(raw))
+            if (!cfg.forceUpdate) {
+                cfg.copy(minRequiredVersionCode = 100, minRequiredVersionName = "1.0.0")
+            } else {
+                cfg
+            }
         } catch (_: Exception) {
             RemoteAppConfig.DEFAULT
         }
     }
 
     private fun saveCachedConfig(config: RemoteAppConfig) {
-        _cachedConfig = config
-        prefs.edit().putString(KEY_CACHED_CONFIG, RemoteAppConfig.toJson(config).toString()).apply()
-        evaluateStatus(config)
+        val safeConfig = if (!config.forceUpdate) {
+            config.copy(minRequiredVersionCode = 100, minRequiredVersionName = "1.0.0")
+        } else {
+            config
+        }
+        _cachedConfig = safeConfig
+        prefs.edit().putString(KEY_CACHED_CONFIG, RemoteAppConfig.toJson(safeConfig).toString()).apply()
+        evaluateStatus(safeConfig)
     }
 
     fun evaluateStatus(config: RemoteAppConfig) {
         val myVersionCode = BuildConfig.VERSION_CODE
-        val isForced = (myVersionCode < config.minRequiredVersionCode) ||
-                       (config.forceUpdate && myVersionCode < config.latestVersionCode)
+        val isForced = config.forceUpdate && (myVersionCode < config.minRequiredVersionCode || myVersionCode < config.latestVersionCode)
 
         _updateStatus.value = when {
             isForced -> UpdateStatus.ForceUpdateRequired(config)
