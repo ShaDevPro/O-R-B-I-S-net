@@ -13,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -95,6 +96,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.style.TextAlign
@@ -241,6 +243,7 @@ fun ConversationScreen(
         com.sha.orbis.data.OrbisBadgeHub.markConversationRead(context, conversationId)
         if (targetPhone.isNotBlank()) {
             com.sha.orbis.call.OrbisMissedCallManager.cancelMissedCallNotification(context, targetPhone)
+            com.sha.orbis.sync.scheduler.SovereignSyncScheduler.onConversationOpened(context, targetPhone)
         }
     }
     DisposableEffect(conversationId, targetPhone) {
@@ -277,6 +280,15 @@ fun ConversationScreen(
     var showE2eeInfoDialog by remember { mutableStateOf(false) }
     val currentCallSession by OrbisCallManager.callState.collectAsState()
     var ephemeralTimerMs by remember { mutableLongStateOf(EphemeralMessageManager.getTimerForConversation(context, conversationId)) }
+
+    var showLanguageDialog by remember { mutableStateOf(false) }
+    var currentContactLang by remember(targetPhone) {
+        mutableStateOf(com.sha.orbis.ai.affinity.OrbisPeerLanguageEngine.getPreferredLanguage(context, targetPhone))
+    }
+
+    LaunchedEffect(targetPhone, messages.size) {
+        currentContactLang = com.sha.orbis.ai.affinity.OrbisPeerLanguageEngine.getPreferredLanguage(context, targetPhone)
+    }
 
     val currentConversation = remember(conversationId) {
         repository.loadConversations().find { it.id == conversationId }
@@ -393,6 +405,9 @@ fun ConversationScreen(
         if (incoming.isNotBlank()) {
             OrbisReplyEngine.learnFromUserSentMessage(context, incoming, plainText)
         }
+
+        // Télémétrie autonome messagerie (texte, note audio, photo, doc, vidéo)
+        com.sha.orbis.telemetry.MessagingTelemetryTracker.trackMessagePayload(context, plainText)
 
         val identity = sessionManager.getOrCreateIdentity()
         val defaultKey = friendRequestRepo.getGroupKeyForPhone(targetPhone)
@@ -994,19 +1009,42 @@ fun ConversationScreen(
                     } else {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
-                            Box(
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(7.dp)
+                                        .clip(CircleShape)
+                                        .background(if (isOnline) OrbisColorPalette.StatusActive else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                                )
+                                Text(
+                                    text = if (isOnline) stringResource(R.string.presence_online) else stringResource(R.string.presence_offline),
+                                    fontSize = 11.sp,
+                                    color = if (isOnline) OrbisColorPalette.StatusActive else MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            // Pastille Langue Interlocuteur (Affinité & Forçage Manuel)
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f),
+                                border = BorderStroke(0.6.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
                                 modifier = Modifier
-                                    .size(7.dp)
-                                    .clip(CircleShape)
-                                    .background(if (isOnline) OrbisColorPalette.StatusActive else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
-                            )
-                            Text(
-                                text = if (isOnline) stringResource(R.string.presence_online) else stringResource(R.string.presence_offline),
-                                fontSize = 11.sp,
-                                color = if (isOnline) OrbisColorPalette.StatusActive else MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .clickable { showLanguageDialog = true }
+                            ) {
+                                Text(
+                                    text = com.sha.orbis.ai.affinity.OrbisPeerLanguageEngine.getLanguageBadgeText(currentContactLang),
+                                    fontSize = 9.5.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -1337,6 +1375,18 @@ fun ConversationScreen(
 
         val distinctMessages = remember(messages) { messages.distinctBy { it.id } }
 
+        // Préchargement asynchrone sécurisé des aperçus de liens pour la discussion
+        LaunchedEffect(distinctMessages) {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                for (msg in distinctMessages.takeLast(25)) {
+                    val url = LinkPreviewHelper.extractFirstUrl(msg.text)
+                    if (!url.isNullOrBlank()) {
+                        LinkPreviewHelper.prefetch(context, url)
+                    }
+                }
+            }
+        }
+
         if (isChatLockedForSender) {
             Column(
                 modifier = Modifier
@@ -1433,28 +1483,46 @@ fun ConversationScreen(
                                  (myDigits.length >= 8 && FriendRequestRepository.isSamePhone(message.senderId, myPhone))
                     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
 
-                    // Capture 1 UI: Rich Slate Indigo/Purple for Sender, Soft Lavender-Grey for Receiver
+                    val bubbleShapeSender = androidx.compose.foundation.shape.RoundedCornerShape(
+                        topStart = 22.dp, topEnd = 6.dp, bottomStart = 22.dp, bottomEnd = 22.dp
+                    )
+                    val bubbleShapeReceiver = androidx.compose.foundation.shape.RoundedCornerShape(
+                        topStart = 6.dp, topEnd = 22.dp, bottomStart = 22.dp, bottomEnd = 22.dp
+                    )
+
+                    // WhatsApp Premium palette (sender light-blue, receiver white/dark)
                     val bubbleBg = when {
-                        isMine && isDark -> androidx.compose.ui.graphics.Color(0xFF4C5899) // Capture 1 sender purple in dark mode
-                        isMine -> androidx.compose.ui.graphics.Color(0xFF5E6BB2)           // Capture 1 sender periwinkle/indigo purple
-                        isDark -> androidx.compose.ui.graphics.Color(0xFF1E2235)           // Capture 1 receiver slate in dark mode
-                        else -> androidx.compose.ui.graphics.Color(0xFFEEF0F8)             // Capture 1 receiver soft pale lavender-grey
+                        isMine && isDark -> androidx.compose.ui.graphics.Color(0xFF1E3A5F)
+                        isMine -> androidx.compose.ui.graphics.Color(0xFFDCF0FA)
+                        isDark -> androidx.compose.ui.graphics.Color(0xFF1E293B)
+                        else -> androidx.compose.ui.graphics.Color(0xFFFFFFFF)
                     }
                     val bubbleBorder = when {
-                        isMine -> androidx.compose.ui.graphics.Color.Transparent
-                        isDark -> androidx.compose.ui.graphics.Color(0xFF2A3047)
-                        else -> androidx.compose.ui.graphics.Color(0xFFE2E4EF)
+                        isMine && isDark -> androidx.compose.ui.graphics.Color(0xFF2B4C7E)
+                        isMine -> androidx.compose.ui.graphics.Color(0xFFBAE6FD)
+                        isDark -> androidx.compose.ui.graphics.Color(0xFF334155)
+                        else -> androidx.compose.ui.graphics.Color(0xFFE2E8F0)
                     }
                     val bubbleTextColor = when {
-                        isMine -> androidx.compose.ui.graphics.Color(0xFFFFFFFF)           // Crisp white text on purple bubble
-                        isDark -> androidx.compose.ui.graphics.Color(0xFFF1F5F9)           // White/slate text on dark receiver
-                        else -> androidx.compose.ui.graphics.Color(0xFF2D3748)             // Dark slate text on light receiver
+                        isMine && isDark -> androidx.compose.ui.graphics.Color(0xFFFFFFFF)
+                        isMine -> androidx.compose.ui.graphics.Color(0xFF0F172A)
+                        isDark -> androidx.compose.ui.graphics.Color(0xFFF1F5F9)
+                        else -> androidx.compose.ui.graphics.Color(0xFF2D3748)
                     }
                     val bubbleSubtextColor = when {
-                        isMine -> androidx.compose.ui.graphics.Color(0xFFFFFFFF).copy(alpha = 0.75f) // Translucent white on purple
+                        isMine && isDark -> androidx.compose.ui.graphics.Color(0xFFFFFFFF).copy(alpha = 0.75f)
+                        isMine -> androidx.compose.ui.graphics.Color(0xFF64748B)
                         isDark -> androidx.compose.ui.graphics.Color(0xFF94A3B8)
                         else -> androidx.compose.ui.graphics.Color(0xFF64748B)
                     }
+
+                    val innerBubbleShape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                    val innerBubbleBg = bubbleBg.copy(alpha = if (isMine) 0.75f else 0.92f)
+                    val innerBubbleBorder = bubbleBorder.copy(alpha = 0.6f)
+                    val quoteCardBg = bubbleBorder.copy(alpha = if (isMine) 0.18f else 0.28f)
+                    val quoteAccent = if (isMine) androidx.compose.ui.graphics.Color(0xFF0284C7) else bubbleTextColor.copy(alpha = 0.9f)
+                    val linkPreviewBg = innerBubbleBg
+                    val linkPreviewBorder = innerBubbleBorder
 
                     val timeFormatted = remember(message.timestamp) {
                         SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(message.timestamp))
@@ -1479,13 +1547,12 @@ fun ConversationScreen(
                                 )
                             ) {
                                 if (isMine) {
-                                    // SENDER (Moi / Droite) : Bulle Indigo/Purple Style Capture 1
                                     Card(
-                                        shape = RoundedCornerShape(16.dp),
+                                        shape = bubbleShapeSender,
                                         colors = CardDefaults.cardColors(
                                             containerColor = bubbleBg
                                         ),
-                                        border = if (bubbleBorder != androidx.compose.ui.graphics.Color.Transparent) androidx.compose.foundation.BorderStroke(1.dp, bubbleBorder) else null,
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, bubbleBorder),
                                         elevation = CardDefaults.cardElevation(defaultElevation = if (isDark) 0.dp else 0.6.dp),
                                         modifier = Modifier
                                             .widthIn(min = 54.dp, max = 310.dp)
@@ -1545,7 +1612,9 @@ fun ConversationScreen(
                                                             }
                                                         }
                                                     }
-                                                }
+                                                },
+                                                timestamp = message.timestamp,
+                                                deliveryStatus = message.status
                                             )
                                         }
 
@@ -1628,9 +1697,9 @@ fun ConversationScreen(
                                                 Column(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .clip(RoundedCornerShape(12.dp))
-                                                        .background(MaterialTheme.colorScheme.surface)
-                                                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                                                        .clip(innerBubbleShape)
+                                                        .background(innerBubbleBg)
+                                                        .border(1.dp, innerBubbleBorder, innerBubbleShape)
                                                         .padding(10.dp),
                                                     verticalArrangement = Arrangement.spacedBy(6.dp)
                                                 ) {
@@ -1641,32 +1710,42 @@ fun ConversationScreen(
                                                         Icon(
                                                             imageVector = Icons.Default.LocationOn,
                                                             contentDescription = null,
-                                                            tint = MaterialTheme.colorScheme.error,
+                                                            tint = quoteAccent,
                                                             modifier = Modifier.size(18.dp)
                                                         )
                                                         Text(
                                                             text = stringResource(R.string.media_gps_label),
                                                             fontWeight = FontWeight.Bold,
                                                             fontSize = 12.sp,
-                                                            color = MaterialTheme.colorScheme.onSurface
+                                                            color = bubbleTextColor
                                                         )
                                                     }
 
                                                     Text(
                                                         text = "Lat: ${"%.5f".format(coords.first)}, Lon: ${"%.5f".format(coords.second)}",
                                                         fontSize = 11.sp,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        color = bubbleSubtextColor
                                                     )
 
-                                                    Button(
+                                                    androidx.compose.material3.Button(
                                                         onClick = {
                                                             LocationGpsHelper.openInMaps(context, coords.first, coords.second)
                                                         },
-                                                        modifier = Modifier.fillMaxWidth().height(32.dp),
-                                                        shape = RoundedCornerShape(8.dp),
-                                                        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(32.dp),
+                                                        shape = innerBubbleShape,
+                                                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            containerColor = quoteCardBg,
+                                                            contentColor = quoteAccent
+                                                        )
                                                     ) {
-                                                        Text(stringResource(R.string.media_gps_open_maps), fontSize = 11.sp)
+                                                        Text(
+                                                            text = stringResource(R.string.media_gps_open_maps),
+                                                            fontSize = 11.sp,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
                                                     }
                                                 }
                                             }
@@ -1691,9 +1770,9 @@ fun ConversationScreen(
                                                 }
 
                                                 Card(
-                                                    shape = RoundedCornerShape(12.dp),
-                                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                                    shape = innerBubbleShape,
+                                                    colors = CardDefaults.cardColors(containerColor = innerBubbleBg),
+                                                    border = androidx.compose.foundation.BorderStroke(1.dp, innerBubbleBorder),
                                                     modifier = Modifier.fillMaxWidth()
                                                 ) {
                                                     Column(
@@ -1714,14 +1793,14 @@ fun ConversationScreen(
                                                                     text = shared.authorName,
                                                                     fontSize = 12.sp,
                                                                     fontWeight = FontWeight.Bold,
-                                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                                    color = bubbleTextColor,
                                                                     maxLines = 1,
                                                                     overflow = TextOverflow.Ellipsis
                                                                 )
                                                                 Text(
                                                                     text = stringResource(R.string.social_share_bubble_header),
                                                                     fontSize = 10.sp,
-                                                                    color = MaterialTheme.colorScheme.primary,
+                                                                    color = quoteAccent,
                                                                     fontWeight = FontWeight.Medium
                                                                 )
                                                             }
@@ -1730,7 +1809,7 @@ fun ConversationScreen(
                                                         Text(
                                                             text = shared.contentSnippet,
                                                             fontSize = 11.sp,
-                                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                            color = bubbleSubtextColor,
                                                             lineHeight = 16.sp,
                                                             maxLines = 3,
                                                             overflow = TextOverflow.Ellipsis
@@ -1740,7 +1819,7 @@ fun ConversationScreen(
                                                             Text(
                                                                 text = shared.hashtags.joinToString(" ") { "#$it" },
                                                                 fontSize = 10.sp,
-                                                                color = MaterialTheme.colorScheme.primary,
+                                                                color = quoteAccent,
                                                                 fontWeight = FontWeight.SemiBold
                                                             )
                                                         }
@@ -1748,8 +1827,8 @@ fun ConversationScreen(
                                                         Box(
                                                             modifier = Modifier
                                                                 .fillMaxWidth()
-                                                                .clip(RoundedCornerShape(8.dp))
-                                                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
+                                                                .clip(innerBubbleShape)
+                                                                .background(quoteCardBg)
                                                                 .clickable {
                                                                     val role = com.sha.orbis.admin.AdminSecurityHelper.getUserSocialRole(shared.authorPhone, context)
                                                                     onOpenWall?.invoke(shared.authorPhone, shared.authorName, shared.authorAvatarPath, role)
@@ -1761,7 +1840,7 @@ fun ConversationScreen(
                                                                 text = stringResource(R.string.social_share_view_wall_btn),
                                                                 fontSize = 10.sp,
                                                                 fontWeight = FontWeight.Bold,
-                                                                color = MaterialTheme.colorScheme.primary
+                                                                color = quoteAccent
                                                             )
                                                         }
                                                     }
@@ -1781,7 +1860,7 @@ fun ConversationScreen(
                                                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                                     Card(
                                                         shape = RoundedCornerShape(8.dp),
-                                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                                                        colors = CardDefaults.cardColors(containerColor = quoteCardBg),
                                                         modifier = Modifier.fillMaxWidth()
                                                     ) {
                                                         Row(
@@ -1794,19 +1873,19 @@ fun ConversationScreen(
                                                                     .width(3.dp)
                                                                     .height(26.dp)
                                                                     .clip(RoundedCornerShape(2.dp))
-                                                                    .background(MaterialTheme.colorScheme.primary)
+                                                                    .background(quoteAccent)
                                                             )
                                                             Column {
                                                                 Text(
                                                                     text = quoteAuthor,
                                                                     fontSize = 10.sp,
                                                                     fontWeight = FontWeight.Bold,
-                                                                    color = MaterialTheme.colorScheme.primary
+                                                                    color = quoteAccent
                                                                 )
                                                                 Text(
                                                                     text = quoteContent,
                                                                     fontSize = 11.sp,
-                                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                                    color = bubbleSubtextColor,
                                                                     maxLines = 1,
                                                                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                                                 )
@@ -1819,12 +1898,14 @@ fun ConversationScreen(
                                                             text = actualMsg,
                                                             style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp),
                                                             color = bubbleTextColor,
-                                                            linkColor = MaterialTheme.colorScheme.primary
+                                                            linkColor = quoteAccent
                                                         )
                                                         if (!quotedUrl.isNullOrBlank()) {
                                                             SocialLinkPreviewCard(
                                                                 url = quotedUrl,
-                                                                isMsgMine = true
+                                                                isMsgMine = true,
+                                                                bubbleBgOverride = linkPreviewBg,
+                                                                bubbleBorderOverride = linkPreviewBorder
                                                             )
                                                         }
                                                     }
@@ -1836,12 +1917,14 @@ fun ConversationScreen(
                                                         text = text,
                                                         style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp),
                                                         color = bubbleTextColor,
-                                                        linkColor = MaterialTheme.colorScheme.primary
+                                                        linkColor = quoteAccent
                                                     )
                                                     if (!detectedUrl.isNullOrBlank()) {
                                                         SocialLinkPreviewCard(
                                                             url = detectedUrl,
-                                                            isMsgMine = true
+                                                            isMsgMine = true,
+                                                            bubbleBgOverride = linkPreviewBg,
+                                                            bubbleBorderOverride = linkPreviewBorder
                                                         )
                                                     }
                                                 }
@@ -1856,12 +1939,14 @@ fun ConversationScreen(
                                                     text = text,
                                                     style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp),
                                                     color = bubbleTextColor,
-                                                    linkColor = MaterialTheme.colorScheme.primary
+                                                    linkColor = quoteAccent
                                                 )
                                                 if (!detectedUrl.isNullOrBlank()) {
                                                     SocialLinkPreviewCard(
                                                         url = detectedUrl,
-                                                        isMsgMine = true
+                                                        isMsgMine = true,
+                                                        bubbleBgOverride = linkPreviewBg,
+                                                        bubbleBorderOverride = linkPreviewBorder
                                                     )
                                                 }
                                             }
@@ -1877,7 +1962,7 @@ fun ConversationScreen(
                                         )
                                     }
 
-                                    if (!MediaAttachmentHelper.isImagePayload(text) && !MediaAttachmentHelper.isDocPayload(text) && !MediaAttachmentHelper.isAlbumPayload(text)) {
+                                    if (!MediaAttachmentHelper.isImagePayload(text) && !MediaAttachmentHelper.isDocPayload(text) && !MediaAttachmentHelper.isAlbumPayload(text) && !VideoMediaHelper.isVideoPayload(text) && !text.startsWith("[AUDIO:")) {
                                         Row(
                                             modifier = Modifier.align(Alignment.End),
                                             verticalAlignment = Alignment.CenterVertically,
@@ -1906,9 +1991,8 @@ fun ConversationScreen(
                                 }
                             }
                         } else {
-                            // RECEIVER (Destinataire / Gauche) : Bulle Gris-Lavande Style Capture 1
                             Card(
-                                shape = RoundedCornerShape(16.dp),
+                                shape = bubbleShapeReceiver,
                                 colors = CardDefaults.cardColors(
                                     containerColor = bubbleBg
                                 ),
@@ -1983,7 +2067,9 @@ fun ConversationScreen(
                                                             }
                                                         }
                                                     }
-                                                }
+                                                },
+                                                timestamp = message.timestamp,
+                                                deliveryStatus = message.status
                                             )
                                         }
 
@@ -2063,9 +2149,25 @@ fun ConversationScreen(
                                         LocationGpsHelper.parseGpsPayload(text) != null -> {
                                             val coords = LocationGpsHelper.parseGpsPayload(text)
                                             if (coords != null) {
-                                                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                                                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                                        Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .clip(innerBubbleShape)
+                                                        .background(innerBubbleBg)
+                                                        .border(1.dp, innerBubbleBorder, innerBubbleShape)
+                                                        .padding(10.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                                ) {
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                                    ) {
+                                                        Icon(
+                                                            Icons.Default.LocationOn,
+                                                            contentDescription = null,
+                                                            tint = quoteAccent,
+                                                            modifier = Modifier.size(16.dp)
+                                                        )
                                                         Text(
                                                             text = stringResource(R.string.media_gps_label),
                                                             fontWeight = FontWeight.Bold,
@@ -2078,18 +2180,22 @@ fun ConversationScreen(
                                                         fontSize = 11.sp,
                                                         color = bubbleSubtextColor
                                                     )
-                                                    Box(
+                                                    androidx.compose.material3.Button(
+                                                        onClick = { LocationGpsHelper.openInMaps(context, coords.first, coords.second) },
                                                         modifier = Modifier
-                                                            .clip(RoundedCornerShape(8.dp))
-                                                            .background(MaterialTheme.colorScheme.primary)
-                                                            .clickable { LocationGpsHelper.openInMaps(context, coords.first, coords.second) }
-                                                            .padding(horizontal = 10.dp, vertical = 5.dp)
+                                                            .fillMaxWidth()
+                                                            .height(32.dp),
+                                                        shape = innerBubbleShape,
+                                                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            containerColor = quoteCardBg,
+                                                            contentColor = quoteAccent
+                                                        )
                                                     ) {
                                                         Text(
                                                             text = "🗺️ ${stringResource(R.string.media_gps_open_maps)}",
                                                             fontSize = 11.sp,
-                                                            fontWeight = FontWeight.Bold,
-                                                            color = MaterialTheme.colorScheme.onPrimary
+                                                            fontWeight = FontWeight.Bold
                                                         )
                                                     }
                                                 }
@@ -2115,9 +2221,9 @@ fun ConversationScreen(
                                                 }
 
                                                 Card(
-                                                    shape = RoundedCornerShape(12.dp),
-                                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                                    shape = innerBubbleShape,
+                                                    colors = CardDefaults.cardColors(containerColor = innerBubbleBg),
+                                                    border = androidx.compose.foundation.BorderStroke(1.dp, innerBubbleBorder),
                                                     modifier = Modifier.fillMaxWidth()
                                                 ) {
                                                     Column(
@@ -2138,14 +2244,14 @@ fun ConversationScreen(
                                                                     text = shared.authorName,
                                                                     fontSize = 12.sp,
                                                                     fontWeight = FontWeight.Bold,
-                                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                                    color = bubbleTextColor,
                                                                     maxLines = 1,
                                                                     overflow = TextOverflow.Ellipsis
                                                                 )
                                                                 Text(
                                                                     text = stringResource(R.string.social_share_bubble_header),
                                                                     fontSize = 10.sp,
-                                                                    color = MaterialTheme.colorScheme.primary,
+                                                                    color = quoteAccent,
                                                                     fontWeight = FontWeight.Medium
                                                                 )
                                                             }
@@ -2154,7 +2260,7 @@ fun ConversationScreen(
                                                         Text(
                                                             text = shared.contentSnippet,
                                                             fontSize = 11.sp,
-                                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                            color = bubbleSubtextColor,
                                                             lineHeight = 16.sp,
                                                             maxLines = 3,
                                                             overflow = TextOverflow.Ellipsis
@@ -2164,7 +2270,7 @@ fun ConversationScreen(
                                                             Text(
                                                                 text = shared.hashtags.joinToString(" ") { "#$it" },
                                                                 fontSize = 10.sp,
-                                                                color = MaterialTheme.colorScheme.primary,
+                                                                color = quoteAccent,
                                                                 fontWeight = FontWeight.SemiBold
                                                             )
                                                         }
@@ -2172,8 +2278,8 @@ fun ConversationScreen(
                                                         Box(
                                                             modifier = Modifier
                                                                 .fillMaxWidth()
-                                                                .clip(RoundedCornerShape(8.dp))
-                                                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
+                                                                .clip(innerBubbleShape)
+                                                                .background(quoteCardBg)
                                                                 .clickable {
                                                                     val role = com.sha.orbis.admin.AdminSecurityHelper.getUserSocialRole(shared.authorPhone, context)
                                                                     onOpenWall?.invoke(shared.authorPhone, shared.authorName, shared.authorAvatarPath, role)
@@ -2185,7 +2291,7 @@ fun ConversationScreen(
                                                                 text = stringResource(R.string.social_share_view_wall_btn),
                                                                 fontSize = 10.sp,
                                                                 fontWeight = FontWeight.Bold,
-                                                                color = MaterialTheme.colorScheme.primary
+                                                                color = quoteAccent
                                                             )
                                                         }
                                                     }
@@ -2205,7 +2311,7 @@ fun ConversationScreen(
                                                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                                     Card(
                                                         shape = RoundedCornerShape(8.dp),
-                                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                                                        colors = CardDefaults.cardColors(containerColor = quoteCardBg),
                                                         modifier = Modifier.fillMaxWidth()
                                                     ) {
                                                         Row(
@@ -2218,19 +2324,19 @@ fun ConversationScreen(
                                                                     .width(3.dp)
                                                                     .height(26.dp)
                                                                     .clip(RoundedCornerShape(2.dp))
-                                                                    .background(MaterialTheme.colorScheme.primary)
+                                                                    .background(quoteAccent)
                                                             )
                                                             Column {
                                                                 Text(
                                                                     text = quoteAuthor,
                                                                     fontSize = 10.sp,
                                                                     fontWeight = FontWeight.Bold,
-                                                                    color = MaterialTheme.colorScheme.primary
+                                                                    color = quoteAccent
                                                                 )
                                                                 Text(
                                                                     text = quoteContent,
                                                                     fontSize = 11.sp,
-                                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                                    color = bubbleSubtextColor,
                                                                     maxLines = 1,
                                                                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                                                 )
@@ -2243,12 +2349,14 @@ fun ConversationScreen(
                                                             text = actualMsg,
                                                             style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp),
                                                             color = bubbleTextColor,
-                                                            linkColor = MaterialTheme.colorScheme.primary
+                                                            linkColor = quoteAccent
                                                         )
                                                         if (!quotedUrl.isNullOrBlank()) {
                                                             SocialLinkPreviewCard(
                                                                 url = quotedUrl,
-                                                                isMsgMine = false
+                                                                isMsgMine = false,
+                                                                bubbleBgOverride = linkPreviewBg,
+                                                                bubbleBorderOverride = linkPreviewBorder
                                                             )
                                                         }
                                                     }
@@ -2260,12 +2368,14 @@ fun ConversationScreen(
                                                         text = text,
                                                         style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp),
                                                         color = bubbleTextColor,
-                                                        linkColor = MaterialTheme.colorScheme.primary
+                                                        linkColor = quoteAccent
                                                     )
                                                     if (!detectedUrl.isNullOrBlank()) {
                                                         SocialLinkPreviewCard(
                                                             url = detectedUrl,
-                                                            isMsgMine = false
+                                                            isMsgMine = false,
+                                                            bubbleBgOverride = linkPreviewBg,
+                                                            bubbleBorderOverride = linkPreviewBorder
                                                         )
                                                     }
                                                 }
@@ -2280,19 +2390,21 @@ fun ConversationScreen(
                                                     text = text,
                                                     style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp),
                                                     color = bubbleTextColor,
-                                                    linkColor = MaterialTheme.colorScheme.primary
+                                                    linkColor = quoteAccent
                                                 )
                                                 if (!detectedUrl.isNullOrBlank()) {
                                                     SocialLinkPreviewCard(
                                                         url = detectedUrl,
-                                                        isMsgMine = false
+                                                        isMsgMine = false,
+                                                        bubbleBgOverride = linkPreviewBg,
+                                                        bubbleBorderOverride = linkPreviewBorder
                                                     )
                                                 }
                                             }
                                         }
                                     }
 
-                                    if (!MediaAttachmentHelper.isImagePayload(text) && !MediaAttachmentHelper.isDocPayload(text) && !MediaAttachmentHelper.isAlbumPayload(text)) {
+                                    if (!MediaAttachmentHelper.isImagePayload(text) && !MediaAttachmentHelper.isDocPayload(text) && !MediaAttachmentHelper.isAlbumPayload(text) && !VideoMediaHelper.isVideoPayload(text) && !text.startsWith("[AUDIO:")) {
                                         Row(
                                             modifier = Modifier.align(Alignment.End),
                                             verticalAlignment = Alignment.CenterVertically,
@@ -2332,7 +2444,7 @@ fun ConversationScreen(
                             val quickChatEmojis = listOf("❤️", "👍", "😂", "🔥", "😮", "😢", "👏", "💡")
                             Row(
                                 modifier = Modifier
-                                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -2342,11 +2454,11 @@ fun ConversationScreen(
                                     }
                                     Box(
                                         modifier = Modifier
-                                            .size(32.dp)
+                                            .size(36.dp)
                                             .clip(CircleShape)
                                             .background(
-                                                if (isReacted) MaterialTheme.colorScheme.primary.copy(alpha = 0.22f)
-                                                else MaterialTheme.colorScheme.surfaceVariant
+                                                if (isReacted) quoteCardBg
+                                                else bubbleBorder.copy(alpha = 0.12f)
                                             )
                                             .clickable {
                                                 sendReaction(message, emoji)
@@ -2354,16 +2466,33 @@ fun ConversationScreen(
                                             },
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(text = emoji, fontSize = 16.sp)
+                                        Text(text = emoji, fontSize = 18.sp)
                                     }
                                 }
                             }
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                            HorizontalDivider(color = bubbleBorder.copy(alpha = 0.4f))
 
                             if (MediaAttachmentHelper.isImagePayload(message.text)) {
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.chat_action_open_image)) },
-                                    leadingIcon = { Icon(Icons.Default.Visibility, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    text = {
+                                        androidx.compose.foundation.layout.Box(
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        ) {
+                                            Text(
+                                                stringResource(R.string.chat_action_open_image),
+                                                fontSize = 13.sp,
+                                                lineHeight = 18.sp
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Visibility,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
                                     onClick = {
                                         val img = MediaAttachmentHelper.parseImagePayload(message.text)
                                         if (img != null) {
@@ -2371,24 +2500,66 @@ fun ConversationScreen(
                                             fullScreenImageCaption = img.caption
                                         }
                                         selectedMessageForMenu = null
-                                    }
+                                    },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    )
                                 )
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.media_download_image)) },
-                                    leadingIcon = { Icon(Icons.Default.FileDownload, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    text = {
+                                        androidx.compose.foundation.layout.Box(
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        ) {
+                                            Text(
+                                                stringResource(R.string.media_download_image),
+                                                fontSize = 13.sp,
+                                                lineHeight = 18.sp
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.FileDownload,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
                                     onClick = {
                                         val img = MediaAttachmentHelper.parseImagePayload(message.text)
                                         if (img != null) {
                                             MediaDownloadManager.saveImageAsync(context, img.base64Data, img.caption)
                                         }
                                         selectedMessageForMenu = null
-                                    }
+                                    },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    )
                                 )
                             }
                             if (MediaAttachmentHelper.isDocPayload(message.text)) {
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.chat_action_open_doc)) },
-                                    leadingIcon = { Icon(Icons.AutoMirrored.Filled.OpenInNew, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    text = {
+                                        androidx.compose.foundation.layout.Box(
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        ) {
+                                            Text(
+                                                stringResource(R.string.chat_action_open_doc),
+                                                fontSize = 13.sp,
+                                                lineHeight = 18.sp
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.OpenInNew,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
                                     onClick = {
                                         val doc = MediaAttachmentHelper.parseDocPayload(message.text)
                                         if (doc != null) {
@@ -2398,45 +2569,130 @@ fun ConversationScreen(
                                             }
                                         }
                                         selectedMessageForMenu = null
-                                    }
+                                    },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    )
                                 )
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.media_download_doc)) },
-                                    leadingIcon = { Icon(Icons.Default.FileDownload, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    text = {
+                                        androidx.compose.foundation.layout.Box(
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        ) {
+                                            Text(
+                                                stringResource(R.string.media_download_doc),
+                                                fontSize = 13.sp,
+                                                lineHeight = 18.sp
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.FileDownload,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
                                     onClick = {
                                         val doc = MediaAttachmentHelper.parseDocPayload(message.text)
                                         if (doc != null) {
                                             MediaDownloadManager.saveDocAsync(context, doc.base64Data, doc.fileName)
                                         }
                                         selectedMessageForMenu = null
-                                    }
+                                    },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    )
                                 )
                             }
 
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.chat_action_reply)) },
-                                leadingIcon = { Icon(Icons.AutoMirrored.Filled.Reply, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                text = {
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier.padding(horizontal = 4.dp)
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.chat_action_reply),
+                                            fontSize = 13.sp,
+                                            lineHeight = 18.sp
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.Reply,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
                                 onClick = {
                                     replyingToMessage = message
                                     selectedMessageForMenu = null
-                                }
+                                },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 8.dp
+                                )
                             )
                             if (isMine && message.status == MessageDeliveryStatus.FAILED) {
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.msg_retry_btn), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
-                                    leadingIcon = { Icon(Icons.Default.Refresh, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    text = {
+                                        androidx.compose.foundation.layout.Box(
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        ) {
+                                            Text(
+                                                stringResource(R.string.msg_retry_btn),
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                fontSize = 13.sp,
+                                                lineHeight = 18.sp
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Refresh,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
                                     onClick = {
                                         val textToRetry = message.text
                                         messages = messages.filterNot { it.id == message.id }
                                         repository.saveMessages(conversationId, messages)
                                         sendMessage(textToRetry)
                                         selectedMessageForMenu = null
-                                    }
+                                    },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    )
                                 )
                             }
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.chat_action_copy)) },
-                                leadingIcon = { Icon(Icons.Default.ContentCopy, contentDescription = null) },
+                                text = {
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier.padding(horizontal = 4.dp)
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.chat_action_copy),
+                                            fontSize = 13.sp,
+                                            lineHeight = 18.sp
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.ContentCopy,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
                                 onClick = {
                                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                     val textToCopy = when {
@@ -2453,31 +2709,99 @@ fun ConversationScreen(
                                     clipboard.setPrimaryClip(ClipData.newPlainText("Orbis Message", textToCopy))
                                     Toast.makeText(context, context.getString(R.string.chat_copied_toast), Toast.LENGTH_SHORT).show()
                                     selectedMessageForMenu = null
-                                }
+                                },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 8.dp
+                                )
                             )
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.chat_action_share_friends)) },
-                                leadingIcon = { Icon(Icons.Default.Share, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                text = {
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier.padding(horizontal = 4.dp)
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.chat_action_share_friends),
+                                            fontSize = 13.sp,
+                                            lineHeight = 18.sp
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Share,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
                                 onClick = {
                                     messageToShareFriends = message
                                     selectedMessageForMenu = null
-                                }
+                                },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 8.dp
+                                )
                             )
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.chat_action_share_wall)) },
-                                leadingIcon = { Icon(Icons.Default.DynamicFeed, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                text = {
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier.padding(horizontal = 4.dp)
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.chat_action_share_wall),
+                                            fontSize = 13.sp,
+                                            lineHeight = 18.sp
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.DynamicFeed,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
                                 onClick = {
                                     messageToShareWall = message
                                     selectedMessageForMenu = null
-                                }
+                                },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 8.dp
+                                )
                             )
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.chat_action_delete), color = MaterialTheme.colorScheme.error) },
-                                leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
+                                text = {
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier.padding(horizontal = 4.dp)
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.chat_action_delete),
+                                            color = MaterialTheme.colorScheme.error,
+                                            fontSize = 13.sp,
+                                            lineHeight = 18.sp
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
                                 onClick = {
                                     messageToDelete = message
                                     selectedMessageForMenu = null
-                                }
+                                },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 8.dp
+                                )
                             )
                         }
                     }
@@ -2525,6 +2849,12 @@ fun ConversationScreen(
                 )
             }
         } else {
+            val inputIsDark = androidx.compose.foundation.isSystemInDarkTheme()
+            val inputBarBg = if (inputIsDark) androidx.compose.ui.graphics.Color(0xFF1E293B) else androidx.compose.ui.graphics.Color(0xFFFFFFFF)
+            val inputBarBorder = if (inputIsDark) androidx.compose.ui.graphics.Color(0xFF334155) else androidx.compose.ui.graphics.Color(0xFFE2E8F0)
+            val inputTextColor = if (inputIsDark) androidx.compose.ui.graphics.Color(0xFFF1F5F9) else androidx.compose.ui.graphics.Color(0xFF2D3748)
+            val inputSubtextColor = if (inputIsDark) androidx.compose.ui.graphics.Color(0xFF94A3B8) else androidx.compose.ui.graphics.Color(0xFF64748B)
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -2636,8 +2966,8 @@ fun ConversationScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clip(RoundedCornerShape(22.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(22.dp))
+                            .background(inputBarBg)
+                            .border(1.dp, inputBarBorder, RoundedCornerShape(22.dp))
                             .padding(horizontal = 14.dp, vertical = 10.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
@@ -2645,7 +2975,7 @@ fun ConversationScreen(
                             Text(
                                 text = stringResource(R.string.chat_input_placeholder),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = inputSubtextColor
                             )
                         }
 
@@ -2653,7 +2983,7 @@ fun ConversationScreen(
                             value = draft,
                             onValueChange = { draft = it },
                             textStyle = TextStyle(
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = inputTextColor,
                                 fontSize = 14.sp
                             ),
                             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -3017,6 +3347,94 @@ fun ConversationScreen(
             dismissButton = {
                 TextButton(onClick = { showBlockContactDialog = false }) {
                     Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    // 5. Contact Language Selection / Manual Override Dialog
+    if (showLanguageDialog) {
+        val availableLangs = listOf(
+            "dz" to stringResource(R.string.contact_lang_option_dz),
+            "fr" to stringResource(R.string.contact_lang_option_fr),
+            "en" to stringResource(R.string.contact_lang_option_en),
+            "ar" to stringResource(R.string.contact_lang_option_ar)
+        )
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            title = {
+                Text(
+                    text = stringResource(R.string.contact_lang_dialog_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.contact_lang_dialog_desc),
+                        fontSize = 12.5.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 17.sp
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    availableLangs.forEach { (code, label) ->
+                        val isSelected = currentContactLang.equals(code, ignoreCase = true)
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
+                                    else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                            border = BorderStroke(
+                                width = if (isSelected) 1.5.dp else 0.5.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .clickable {
+                                    showLanguageDialog = false
+                                    currentContactLang = code
+                                    com.sha.orbis.ai.affinity.OrbisPeerLanguageEngine.setManualLanguage(context, targetPhone, code)
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.contact_lang_updated_toast, label),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = label,
+                                    fontSize = 13.5.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                )
+                                if (isSelected) {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) {
+                    Text(text = stringResource(R.string.cancel))
                 }
             }
         )

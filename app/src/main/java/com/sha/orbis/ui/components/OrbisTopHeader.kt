@@ -154,7 +154,7 @@ fun OrbisTopHeader(
                                 text = title,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontSize = 21.sp,
+                                fontSize = if (title.length > 22) 16.sp else if (title.length > 16) 18.sp else 21.sp,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis

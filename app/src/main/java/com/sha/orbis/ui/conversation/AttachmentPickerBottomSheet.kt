@@ -66,8 +66,16 @@ fun AttachmentPickerBottomSheet(
                 .navigationBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            Box(
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f))
+            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -180,7 +188,7 @@ private fun AttachmentActionItem(
     ) {
         Box(
             modifier = Modifier
-                .size(56.dp)
+                .size(60.dp)
                 .clip(CircleShape)
                 .background(gradient),
             contentAlignment = Alignment.Center
@@ -189,15 +197,15 @@ private fun AttachmentActionItem(
                 imageVector = icon,
                 contentDescription = label,
                 tint = Color.White,
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
             text = label,
-            fontSize = 12.sp,
-            lineHeight = 15.sp,
-            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             maxLines = 2,

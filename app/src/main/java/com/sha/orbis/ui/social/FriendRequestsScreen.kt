@@ -334,6 +334,11 @@ fun FriendRequestsScreen(
                                                 avatarBase64 = myAvatarThumb
                                             )
                                             nostrSync?.refreshSubscriptions()
+                                            com.sha.orbis.sync.scheduler.SovereignSyncScheduler.onFriendAddedOrAccepted(
+                                                context = context,
+                                                peerPhone = req.senderPhone,
+                                                peerPubkey = req.senderPublicKey
+                                            )
                                         } catch (e: Exception) {
                                             android.util.Log.w("FriendRequests", "Nostr ACK error: ${e.message}")
                                         }
@@ -472,7 +477,7 @@ fun FriendRequestsScreen(
                                 ModernSentRequestCard(
                                     request = req,
                                     onCancel = {
-                                        friendRequestRepo.rejectRequest(req.id)
+                                        friendRequestRepo.cancelSentRequestForPhone(req.senderPhone)
                                         refreshAll()
                                     }
                                 )

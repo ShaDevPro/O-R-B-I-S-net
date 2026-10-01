@@ -189,6 +189,8 @@ class NostrForegroundService : Service() {
         }
     }
 
+    private var lastScreenReconnectTime = 0L
+
     private fun registerScreenStateReceiver() {
         if (screenReceiver != null) return
         screenReceiver = object : BroadcastReceiver() {
@@ -196,6 +198,9 @@ class NostrForegroundService : Service() {
                 when (intent?.action) {
                     Intent.ACTION_SCREEN_ON,
                     Intent.ACTION_USER_PRESENT -> {
+                        val now = System.currentTimeMillis()
+                        if (now - lastScreenReconnectTime < 5000L) return
+                        lastScreenReconnectTime = now
                         Log.d(TAG, "Écran allumé / Déverrouillé -> Vérification immédiate du maillage Nostr")
                         serviceScope.launch {
                             val pool = RelayPoolManager.getInstance(this@NostrForegroundService)
@@ -284,8 +289,8 @@ class NostrForegroundService : Service() {
             // 2. Déclencher un travail immédiat WorkManager en filet de sécurité
             NostrSyncWorker.scheduleImmediate(applicationContext)
 
-            // 3. Réactiver la connexion active du pool
-            start(applicationContext)
+            // 3. Ne PAS relancer ici: le process est mourant, les AlarmManager/WorkManager s'en chargent
+            // start(applicationContext)
         } catch (e: Exception) {
             Log.e(TAG, "Erreur dans onTaskRemoved: ", e)
         }
@@ -296,6 +301,12 @@ class NostrForegroundService : Service() {
         Log.i(TAG, "NostrForegroundService onDestroy()")
         keepAliveJob?.cancel()
         serviceScope.cancel()
+        // Fermer les WebSockets et tuer les threads non-daemon pour éviter un processus zombie → ANR
+        try {
+            RelayPoolManager.getInstance(this).stop()
+        } catch (e: Exception) {
+            Log.w(TAG, "Erreur lors de l'arrêt du relay pool: ${e.message}")
+        }
         screenReceiver?.let {
             try {
                 unregisterReceiver(it)

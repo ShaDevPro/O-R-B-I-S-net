@@ -280,7 +280,7 @@ fun ExternalShareTargetDialog(
                                 Column(modifier = Modifier.weight(1f)) {
                                     if (!payload.text.isNullOrBlank()) {
                                         Text(
-                                            text = payload.text,
+                                            text = payload.text.take(300),
                                             fontSize = 12.sp,
                                             maxLines = 3,
                                             overflow = TextOverflow.Ellipsis,
@@ -328,9 +328,10 @@ fun ExternalShareTargetDialog(
                         excludedPhonesCount = excludedPhones.size,
                         onOpenExcludePicker = { showExcludePicker = true },
                         onOpenAdvancedOptions = {
-                            val contentText = payload.text ?: ""
-                            val fullContent = if (noteText.isNotBlank()) {
-                                "${noteText.trim()}\n\n$contentText".trim()
+                            val contentText = (payload.text ?: "").take(4096)
+                            val note = noteText.trim().take(1000)
+                            val fullContent = if (note.isNotBlank()) {
+                                "$note\n\n$contentText".trim()
                             } else {
                                 contentText
                             }
@@ -381,9 +382,10 @@ fun ExternalShareTargetDialog(
 
                             scope.launch(Dispatchers.IO) {
                                 try {
-                                    val contentText = payload.text ?: ""
-                                    val fullContent = if (noteText.isNotBlank()) {
-                                        "${noteText.trim()}\n\n$contentText".trim()
+                                    val contentText = (payload.text ?: "").take(4096)
+                                    val note = noteText.trim().take(1000)
+                                    val fullContent = if (note.isNotBlank()) {
+                                        "$note\n\n$contentText".trim()
                                     } else {
                                         contentText
                                     }
@@ -494,6 +496,7 @@ fun ExternalShareTargetDialog(
                                                         senderName = sessionManager.userName,
                                                         senderAvatarBase64 = myAvatarThumb
                                                     )
+                                                    com.sha.orbis.telemetry.MessagingTelemetryTracker.trackMessagePayload(context, fullContent)
                                                 } catch (e: Throwable) {
                                                     Log.e("ExternalShare", "Nostr send DM error: ${e.message}")
                                                 }

@@ -47,12 +47,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -120,15 +123,14 @@ fun SelectContactScreen(
     }
 
     // Contact List State
-    val deviceContacts = remember { mutableStateListOf<ContactsPickerHelper.PickedContact>() }
+    var deviceContacts by remember { mutableStateOf<List<ContactsPickerHelper.PickedContact>>(emptyList()) }
 
     fun refreshContacts() {
         if (hasContactsPermission) {
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
                 val fetched = ContactsPickerHelper.fetchDeviceContacts(context)
                 kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                    deviceContacts.clear()
-                    deviceContacts.addAll(fetched)
+                    deviceContacts = fetched
                 }
             }
         }
@@ -155,6 +157,8 @@ fun SelectContactScreen(
     // Dialogs
     var showDirectNumberDialog by remember { mutableStateOf(false) }
     var showQrDialog by remember { mutableStateOf(false) }
+    var contactToCancelInvite by remember { mutableStateOf<ContactsPickerHelper.PickedContact?>(null) }
+    var pendingInviteVersion by remember { mutableIntStateOf(0) }
     val sessionManager = remember { SessionManager(context) }
     val friendRepo = remember(context) { FriendRequestRepository(context) }
     val nostrSync = remember(context) {
@@ -551,7 +555,7 @@ fun SelectContactScreen(
                     ContactsPickerHelper.normalizePhoneNumber(contact.phoneNumber, dialCode)
                 }
                 val isFriend = remember(normalizedPhone) { friendRepo.isFriend(normalizedPhone) }
-                val isPendingSent = remember(normalizedPhone) { friendRepo.getPendingSentForPhone(normalizedPhone) != null }
+                val isPendingSent = remember(normalizedPhone, pendingInviteVersion) { friendRepo.getPendingSentForPhone(normalizedPhone) != null }
 
                 WhatsAppContactRow(
                     name = contact.name,
@@ -572,11 +576,7 @@ fun SelectContactScreen(
                             )
                             onStartDirectChat(conv)
                         } else if (isPendingSent) {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.contacts_status_pending_toast, contact.name),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            contactToCancelInvite = contact
                         } else {
                             contactForChooseDialog = contact
                         }
@@ -643,6 +643,7 @@ fun SelectContactScreen(
                     repository.saveContacts(contacts)
 
                     OrbisBadgeHub.refresh(context)
+                    pendingInviteVersion++
                     Toast.makeText(context, context.getString(R.string.invite_sent_success), Toast.LENGTH_SHORT).show()
                     contactForChooseDialog = null
                 },
@@ -653,6 +654,70 @@ fun SelectContactScreen(
                     contactForChooseDialog = null
                 },
                 onDismiss = { contactForChooseDialog = null }
+            )
+        }
+
+        contactToCancelInvite?.let { target ->
+            AlertDialog(
+                onDismissRequest = { contactToCancelInvite = null },
+                title = {
+                    Text(
+                        text = stringResource(R.string.contacts_cancel_invite_dialog_title),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.contacts_cancel_invite_dialog_message, target.name),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val dialCode = com.sha.orbis.model.CountryCode.defaultCountry(context).dialCode
+                            val normalizedPhone = ContactsPickerHelper.normalizePhoneNumber(target.phoneNumber, dialCode)
+                            friendRepo.cancelSentRequestForPhone(normalizedPhone)
+
+                            val contacts = repository.loadContacts().toMutableList()
+                            val existingIdx = contacts.indexOfFirst { it.phone == normalizedPhone || it.name.equals(target.name, ignoreCase = true) }
+                            if (existingIdx >= 0) {
+                                contacts[existingIdx] = contacts[existingIdx].copy(status = "")
+                                repository.saveContacts(contacts)
+                            }
+
+                            OrbisBadgeHub.refresh(context)
+                            pendingInviteVersion++
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.contacts_cancel_invite_success, target.name),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            contactToCancelInvite = null
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.contacts_cancel_invite_dialog_confirm),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { contactToCancelInvite = null }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.contacts_cancel_invite_dialog_dismiss),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                },
+                shape = RoundedCornerShape(18.dp)
             )
         }
 
@@ -774,7 +839,7 @@ private fun WhatsAppContactRow(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "Connecté 🛡️",
+                            text = stringResource(R.string.contacts_status_connected_badge),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary

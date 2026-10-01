@@ -379,28 +379,74 @@ object MediaAttachmentHelper {
         // 1. Check L1 memory cache (< 1ms)
         MediaMemoryCache.get(pathOrBase64)?.let { return it }
 
-        // 2. Try file path
+        // 2. Try file path if it starts with '/' or contains file separator
+        val isLikelyFilePath = pathOrBase64.startsWith("/") ||
+                pathOrBase64.startsWith("file://") ||
+                pathOrBase64.contains(File.separator)
+
+        if (isLikelyFilePath) {
+            try {
+                val cleanPath = pathOrBase64.removePrefix("file://")
+                val file = File(cleanPath)
+                if (file.exists() && file.isFile && file.length() > 0L) {
+                    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    BitmapFactory.decodeFile(file.absolutePath, bounds)
+                    if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+
+                    val maxDim = 1080
+                    var sampleSize = 1
+                    if (bounds.outWidth > maxDim || bounds.outHeight > maxDim) {
+                        val halfWidth = bounds.outWidth / 2
+                        val halfHeight = bounds.outHeight / 2
+                        while ((halfWidth / sampleSize) >= maxDim || (halfHeight / sampleSize) >= maxDim) {
+                            sampleSize *= 2
+                        }
+                    }
+                    val decodeOptions = BitmapFactory.Options().apply {
+                        inSampleSize = sampleSize
+                        inPreferredConfig = Bitmap.Config.RGB_565
+                    }
+                    val bitmap = BitmapFactory.decodeFile(file.absolutePath, decodeOptions)
+                    if (bitmap != null) {
+                        val finalBitmap = scaleDownIfNeeded(bitmap, maxDim)
+                        MediaMemoryCache.put(pathOrBase64, finalBitmap)
+                        return finalBitmap
+                    }
+                }
+            } catch (_: Throwable) {}
+            // A file path is never a Base64 string — do NOT fall through to Base64 decoder
+            return null
+        }
+
+        // 3. Try Base64 string
         try {
-            val file = File(pathOrBase64)
-            if (file.exists() && file.length() > 0L) {
-                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                if (bitmap != null) {
-                    MediaMemoryCache.put(pathOrBase64, bitmap)
-                    return bitmap
+            val cleanBase64 = if (pathOrBase64.contains(",")) pathOrBase64.substringAfter(",") else pathOrBase64
+            val decoded = Base64.decode(cleanBase64.trim(), Base64.DEFAULT)
+            val raw = try { BinarySmsCompressor.decompress(decoded) } catch (_: Exception) { decoded }
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(raw, 0, raw.size, bounds)
+            if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+
+            val maxDim = 1080
+            var sampleSize = 1
+            if (bounds.outWidth > maxDim || bounds.outHeight > maxDim) {
+                val halfWidth = bounds.outWidth / 2
+                val halfHeight = bounds.outHeight / 2
+                while ((halfWidth / sampleSize) >= maxDim || (halfHeight / sampleSize) >= maxDim) {
+                    sampleSize *= 2
                 }
             }
-        } catch (_: Exception) {}
-
-        // 3. Try Base64
-        try {
-            val decoded = Base64.decode(pathOrBase64.trim(), Base64.DEFAULT)
-            val raw = try { BinarySmsCompressor.decompress(decoded) } catch (_: Exception) { decoded }
-            val bitmap = BitmapFactory.decodeByteArray(raw, 0, raw.size)
-            if (bitmap != null) {
-                MediaMemoryCache.put(pathOrBase64, bitmap)
-                return bitmap
+            val decodeOptions = BitmapFactory.Options().apply {
+                inSampleSize = sampleSize
+                inPreferredConfig = Bitmap.Config.RGB_565
             }
-        } catch (_: Exception) {}
+            val bitmap = BitmapFactory.decodeByteArray(raw, 0, raw.size, decodeOptions)
+            if (bitmap != null) {
+                val finalBitmap = scaleDownIfNeeded(bitmap, maxDim)
+                MediaMemoryCache.put(pathOrBase64, finalBitmap)
+                return finalBitmap
+            }
+        } catch (_: Throwable) {}
 
         return null
     }

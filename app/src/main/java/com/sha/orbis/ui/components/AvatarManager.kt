@@ -23,7 +23,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,7 +63,7 @@ object AvatarManager {
         return try {
             val dir = File(context.filesDir, "avatars").apply { if (!exists()) mkdirs() }
             val destFile = File(dir, "orbis_official_logo.png")
-            val versionMarker = File(dir, "orbis_official_logo.v2")
+            val versionMarker = File(dir, "orbis_official_logo.v3")
             if (!destFile.exists() || destFile.length() == 0L || !versionMarker.exists()) {
                 val drawable = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_orbis_app_avatar)
                     ?: androidx.core.content.ContextCompat.getDrawable(context, R.mipmap.ic_launcher)
@@ -255,13 +261,51 @@ object AvatarManager {
         com.sha.orbis.cache.AvatarMemoryCache.get(path)?.let { return it }
 
         return try {
-            val file = File(path)
-            val bitmap = if (file.exists() && file.length() > 0) {
-                BitmapFactory.decodeFile(file.absolutePath)
+            val maxAvatarDim = 256
+            val isLikelyFilePath = path.startsWith("/") || path.startsWith("file://") || path.contains(File.separator)
+
+            val bitmap = if (isLikelyFilePath) {
+                val cleanPath = path.removePrefix("file://")
+                val file = File(cleanPath)
+                if (file.exists() && file.isFile && file.length() > 0) {
+                    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    BitmapFactory.decodeFile(file.absolutePath, bounds)
+                    if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+
+                    var sampleSize = 1
+                    if (bounds.outWidth > maxAvatarDim || bounds.outHeight > maxAvatarDim) {
+                        val halfWidth = bounds.outWidth / 2
+                        val halfHeight = bounds.outHeight / 2
+                        while ((halfWidth / sampleSize) >= maxAvatarDim || (halfHeight / sampleSize) >= maxAvatarDim) {
+                            sampleSize *= 2
+                        }
+                    }
+                    val opts = BitmapFactory.Options().apply {
+                        inSampleSize = sampleSize
+                        inPreferredConfig = Bitmap.Config.RGB_565
+                    }
+                    BitmapFactory.decodeFile(file.absolutePath, opts)
+                } else null
             } else if (path.length > 50 && (path.startsWith("/9j/") || path.startsWith("iVBOR") || path.startsWith("data:image") || !path.contains(File.separator))) {
                 val clean = if (path.contains(",")) path.substringAfter(",") else path
                 val bytes = Base64.decode(clean.trim(), Base64.DEFAULT)
-                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+                if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+
+                var sampleSize = 1
+                if (bounds.outWidth > maxAvatarDim || bounds.outHeight > maxAvatarDim) {
+                    val halfWidth = bounds.outWidth / 2
+                    val halfHeight = bounds.outHeight / 2
+                    while ((halfWidth / sampleSize) >= maxAvatarDim || (halfHeight / sampleSize) >= maxAvatarDim) {
+                        sampleSize *= 2
+                    }
+                }
+                val opts = BitmapFactory.Options().apply {
+                    inSampleSize = sampleSize
+                    inPreferredConfig = Bitmap.Config.RGB_565
+                }
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
             } else {
                 null
             }
@@ -269,7 +313,7 @@ object AvatarManager {
                 com.sha.orbis.cache.AvatarMemoryCache.put(path, bitmap)
             }
             bitmap
-        } catch (e: Exception) {
+        } catch (_: Throwable) {
             null
         }
     }
@@ -409,8 +453,18 @@ fun OrbisAvatar(
     isOnline: Boolean? = null,
     onClick: (() -> Unit)? = null
 ) {
-    val bitmap = remember(avatarPath) {
-        AvatarManager.loadAvatarBitmap(avatarPath)
+    var bitmap by remember(avatarPath) {
+        mutableStateOf(avatarPath?.let { com.sha.orbis.cache.AvatarMemoryCache.get(it) })
+    }
+
+    LaunchedEffect(avatarPath) {
+        if (avatarPath.isNullOrBlank() || bitmap != null) return@LaunchedEffect
+        val loaded = withContext(Dispatchers.IO) {
+            AvatarManager.loadAvatarBitmap(avatarPath)
+        }
+        if (loaded != null) {
+            bitmap = loaded
+        }
     }
 
     val isOfficialOrbis = remember(name) {
@@ -436,9 +490,10 @@ fun OrbisAvatar(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (bitmap != null) {
+            val currentBitmap = bitmap
+            if (currentBitmap != null) {
                 Image(
-                    bitmap = bitmap.asImageBitmap(),
+                    bitmap = currentBitmap.asImageBitmap(),
                     contentDescription = name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

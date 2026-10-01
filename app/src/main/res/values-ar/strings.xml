@@ -327,7 +327,7 @@
     <string name="settings_diagnostics">الفحص الذاتي للنظام</string>
     <string name="settings_diagnostics_sub">اختبار خوارزميات AES و RSA ومحرك GSM</string>
     <string name="settings_diagnostics_ok">كافة الأنظمة تعمل بنسبة 100%.</string>
-    <string name="settings_version_footer">أوربيس v1.3.0 • بنية لا مركزية عبر Nostr</string>
+    <string name="settings_version_footer">أوربيس v1.4.0 • بنية لا مركزية عبر Nostr</string>
     <string name="app_copyright_footer">S.H.A dev. All rights reserved. 2026.</string>
 
     <!-- Groups & Sovereign Circles -->
@@ -697,7 +697,7 @@
     <string name="not_friend_send_standard_sms">دعوة عبر رسالة تثبيت عادية</string>
     <string name="invite_sent_success">تم إرسال رسالة دعوة أوربيس عبر SMS!</string>
     <string name="standard_invite_sent">تم إرسال رسالة الدعوة العادية!</string>
-    <string name="standard_invite_text">مرحبًا! أدعوك للمراسلة بسرية تامة عبر OrbisNet (تطبيق مشفر يعمل بشكل لامركزي). حمّل التطبيق من هنا: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="standard_invite_text">مرحبًا! أدعوك للمراسلة بسرية تامة عبر OrbisNet (تطبيق مشفر يعمل بشكل لامركزي). حمّل التطبيق من هنا: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="install_warning_tooltip">إذا لم يكن لدى المستلم تطبيق OrbisNet مثبتًا، فلن تظهر رسائل البيانات المشفرة على هاتفه.</string>
 
     <!-- Social P2P Suite & Dev Mode -->
@@ -797,7 +797,7 @@
     <string name="invitation_share_key_btn">مشاركة مفتاح التحقق</string>
     <string name="invitation_free_reception_note">✅ تم قبول الدعوة! المفاتيح متزامنة (الاستقبال المجاني مفعّل).</string>
     <string name="invitation_direct_unlocked_toast">تم تفعيل القناة المشفرة E2EE مع %1$s 🛡️</string>
-    <string name="share_invite_text">مرحباً! يدعوك %1$s للانضمام إلى OrbisNet للتواصل بسرية تامة عبر شبكة نوستر والمكالمات المشفرة E2EE. التحميل: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="share_invite_text">مرحباً! يدعوك %1$s للانضمام إلى OrbisNet للتواصل بسرية تامة عبر شبكة نوستر والمكالمات المشفرة E2EE. التحميل: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="share_invite_chooser_title">مشاركة دعوة OrbisNet</string>
 
     <!-- User Profile Wall & Enriched Profile -->
@@ -853,7 +853,9 @@
     <string name="feed_tab_trending">الرائج</string>
     <string name="feed_action_like">إعجاب</string>
     <string name="feed_reactions_count">%1$d تفاعلات</string>
+    <string name="feed_see_who_reacted">عرض من تفاعل</string>
     <string name="feed_view_all_comments">عرض كل %1$d تعليقات</string>
+    <string name="feed_view_one_comment">عرض التعليق</string>
     <string name="feed_post_more_options">المزيد من الخيارات</string>
     <string name="feed_hero_default_name">أنت</string>
     <string name="feed_edit_post_hashtags_example">#tech #crypto</string>
@@ -960,7 +962,7 @@
     <string name="help_tip_dual_sim_switch">انقر على صورتك الرمزية مع علامة SIM في الشريط العلوي للتبديل بين الخطوط بنقرة واحدة.</string>
     <string name="help_about_title">حول نظام Orbis السيادي</string>
     <string name="help_about_desc">Orbis هي منصة تواصل اجتماعي ومراسلة لامركزية تعمل لامركزي وبدون أي خوادم مركزية، محمية بالتشفير الشامل من البداية إلى النهاية.</string>
-    <string name="help_about_version">الإصدار 1.3.0 • بنية سيادية لامركزي</string>
+    <string name="help_about_version">الإصدار 1.4.0 • بنية سيادية لامركزي</string>
 
     <string name="help_topic_offline_title">كيف يعمل Orbis لامركزي؟</string>
     <string name="help_topic_offline_summary">تواصل مباشر من عبر مرحّلات Nostr عبر رسائل GSM SMS القصيرة.</string>
@@ -1494,7 +1496,7 @@
     <string name="invite_install_option_has_app_desc">إرسال مباشر عبر الإنترنت (شبكة نوستر السيادية، بدون أي رسائل SMS)</string>
     <string name="invite_install_option_no_app">دعوة لتثبيت التطبيق (عبر SMS)</string>
     <string name="invite_install_option_no_app_desc">إرسال رسالة نصية واضحة ومحترمة تحتوي على رابط التحميل الرسمي</string>
-    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="invite_install_chooser_title">دعوة صديق إلى OrbisNet</string>
     <string name="friends_hero_invite_title">ادعُ أصدقائك وعائلتك</string>
     <string name="friends_hero_invite_desc">تواصل بسيادة مطلقة وأمان تام، بدون خوادم مركزية أو مراقبة.</string>
@@ -1914,8 +1916,14 @@
 
     <!-- Contacts Screen UX -->
     <string name="contacts_list_empty_hint">لم يتم العثور على جهات اتصال في دفتر هاتفك</string>
+    <string name="contacts_status_connected_badge">متصل 🛡️</string>
     <string name="contacts_status_pending_badge">في الانتظار ⏳</string>
     <string name="contacts_status_pending_toast">تم إرسال الدعوة بالفعل إلى %1$s. في انتظار قبوله.</string>
+    <string name="contacts_cancel_invite_dialog_title">إلغاء الدعوة؟</string>
+    <string name="contacts_cancel_invite_dialog_message">هل ترغب في إلغاء دعوة الصداقة المرسلة إلى %1$s؟</string>
+    <string name="contacts_cancel_invite_dialog_confirm">إلغاء الدعوة</string>
+    <string name="contacts_cancel_invite_dialog_dismiss">إبقاء</string>
+    <string name="contacts_cancel_invite_success">تم إلغاء الدعوة لـ %1$s</string>
 
     <!-- Sovereign Local Self-SMS Verification (Solution A - Cryptographic Hash & Bi-SIM) -->
     <string name="auth_self_sms_title">تأكيد أمان الخط الهاتفي</string>
@@ -2055,5 +2063,83 @@
     <string name="story_viewers_empty">لا توجد مشاهدات بعد</string>
     <string name="story_reactors_empty">لا توجد تفاعلات بعد</string>
     <string name="story_viewers_close">إغلاق</string>
+    <string name="video_play">تشغيل الفيديو</string>
+
+    <!-- Call Guard History Badges & Actions -->
+    <string name="call_guard_badge_verified">موثوق</string>
+    <string name="call_guard_badge_unknown">غير معروف</string>
+    <string name="call_guard_badge_suspicious">مشتبه به</string>
+    <string name="call_guard_action_block_report">حظر وإبلاغ</string>
+    <string name="call_guard_block_dialog_title">حظر هذا الرقم ؟</string>
+    <string name="call_guard_block_dialog_desc">لن يتمكن هذا المتصل من الاتصال بك أو مراسلتك مجدداً.</string>
+    <string name="call_guard_block_success">تم حظر الرقم والإبلاغ عنه بنجاح</string>
+    <string name="call_guard_tooltip_trust">درجة الموثوقية : %1$d%%</string>
+
+    <!-- Smart Recall Contextual -->
+    <string name="smart_recall_dialog_title">إعادة اتصال في وقت متأخر</string>
+    <string name="smart_recall_dialog_desc">الوقت متأخر وقد يكون الطرف الآخر نائماً. هل تفضل إرسال رسالة نصية ؟</string>
+    <string name="smart_recall_btn_send_message">إرسال رسالة</string>
+    <string name="smart_recall_btn_call_anyway">الاتصال على أي حال</string>
+    <string name="smart_recall_msg_sent">تم إرسال الرسالة</string>
+
+    <!-- Auto Decline & Driving Mode -->
+    <string name="call_guard_auto_declined_driving">تم رفض المكالمة تلقائياً (وضع القيادة)</string>
+    <string name="call_guard_auto_declined_dnd">تم رفض المكالمة تلقائياً (عدم الإزعاج)</string>
+
+    <!-- Call Unanswered Fallback & Walkie-Talkie PTT -->
+    <string name="call_fallback_unanswered_title">المتصل غير متاح</string>
+    <string name="call_fallback_ptt_action">ترك رسالة صوتية مشفرة</string>
+    <string name="call_fallback_chat_action">فتح المحادثة</string>
+
+    <!-- Silent Spam & Burst Filter -->
+    <string name="call_guard_silent_spam_title">تم كتم مكالمة مشبوهة بصمت</string>
+    <string name="call_guard_silent_spam_desc">تنبيه أمان Guard: تم رصد اتصالات متتالية مشبوهة (%1$s).</string>
+
+    <!-- Contact Language Affinity & Manual Override -->
+    <string name="contact_lang_dialog_title">لغة جهة الاتصال</string>
+    <string name="contact_lang_dialog_desc">اختر اللغة المستخدمة من قبل الذكاء الاصطناعي لاقتراحات الاتصال والردود التلقائية مع جهة الاتصال هذه.</string>
+    <string name="contact_lang_option_dz">🇩🇿 الدارجة الجزائرية (DZ)</string>
+    <string name="contact_lang_option_fr">🇫🇷 الفرنسية (FR)</string>
+    <string name="contact_lang_option_en">🇬🇧 الإنجليزية (EN)</string>
+    <string name="contact_lang_option_ar">🇸🇦 العربية الفصحى (AR)</string>
+    <string name="contact_lang_updated_toast">تم تحديث لغة جهة الاتصال: %1$s</string>
+
+    <!-- Smart Telecom & VoIP Automation Settings -->
+    <string name="settings_voip_telecom_section_title">الأتمتة الذكية للمكالمات والاتصالات</string>
+    <string name="settings_voip_telecom_banner_desc">الأتمتة السيادية تكيف إدارة المكالمات الواردة وفق حالتك الفعلية (القيادة، النوم، الاجتماعات) ولغة المتصل.</string>
+    <string name="settings_driving_mode_title">وضع القيادة (رفض تلقائي ذكي)</string>
+    <string name="settings_driving_mode_desc">رفض المكالمات الواردة تلقائياً مع إرسال رسالة اعتذار سياقية بلغة المتصل عند الاتصال بنظام صوت السيارة.</string>
+    <string name="settings_dnd_mode_title">الرفض التلقائي أثناء عدم الإزعاج</string>
+    <string name="settings_dnd_mode_desc">رفض المكالمات الواردة بهدوء وإرسال رد تلقائي مهذب عند تفعيل وضع عدم الإزعاج في النظام.</string>
+    <string name="settings_smart_recall_title">الاسترجاع الذكي (حماية الساعات المتأخرة)</string>
+    <string name="settings_smart_recall_desc">اقتراح إرسال رسالة نصية سريعة بدلاً من الاتصال الصوتي في الساعات المتأخرة أو الفجر (22:00 - 08:00).</string>
+    <string name="settings_silent_burst_title">درع حظر الهجمات والإزعاج الصامت</string>
+    <string name="settings_silent_burst_desc">كتم صوت الرنين فوراً في حالة محاولات الاتصال المكثف المتكرر أو التهديدات المشبوهة عالية الخطورة.</string>
+
+    <!-- Walkie-Talkie Post-Call Voice Memo -->
+    <string name="call_ended_walkie_talkie_hint">ترك رسالة صوتية مشفرة فورية:</string>
+    <string name="call_ended_recording_press_hold">انقر أو اضغط باستمرار على الميكروفون للتسجيل</string>
+    <string name="call_ended_recording_in_progress">جاري تسجيل الرسالة الصوتية (%1$02d:%2$02d)...</string>
+    <string name="call_ended_voice_memo_sent">تم إرسال الرسالة الصوتية المشفرة بنجاح!</string>
+    <string name="call_action_leave_voice_note">رسالة صوتية</string>
+    <string name="call_voice_memo_send">إرسال</string>
+    <string name="call_voice_memo_cancel">إلغاء</string>
+    <string name="call_voice_recording_failed">تعذر بدء التسجيل الصوتي</string>
+
+    <!-- Additional AI Settings Section Titles -->
+    <string name="ai_proprietary_engines_title">محركات الذكاء الاصطناعي السيادية الخاصة بـ ORBIS</string>
+    <string name="ai_proprietary_engines_desc">تعمل نماذج ORBIS بشكل كامل بدون اتصال بالإنترنت في لغة Kotlin الأصلية المعالجة شعاعياً، بدون خوادم بعيدة، مما يوفر البطارية ويضمن الخصوصية المطلقة.</string>
+    <string name="ai_section_switches_title">مفاتيح تشغيل النماذج</string>
+    <string name="ai_section_benchmark_title">اختبار الأداء والقياس عن بُعد للأجهزة</string>
+    <string name="ai_master_enabled_toast">تم تفعيل جميع محركات الذكاء الاصطناعي</string>
+    <string name="ai_master_disabled_toast">تم تعطيل جميع محركات الذكاء الاصطناعي</string>
+
+    <!-- Sovereign Peer-to-Peer Auto-Synchronization -->
+    <string name="sync_sovereign_peer_title">المزامنة السيادية</string>
+    <string name="sync_sovereign_peer_desc">تبادل ثنائي آمن بين الأصدقاء</string>
+    <string name="sync_sovereign_peer_success">تمت مزامنة البيانات بنجاح</string>
+    <string name="text_show_more">عرض المزيد</string>
+    <string name="text_show_less">عرض أقل</string>
+    <string name="text_truncated_warning">النص طويل جدًا، تم اقتصاصه للأمان</string>
 </resources>
 

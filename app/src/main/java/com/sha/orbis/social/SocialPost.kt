@@ -310,7 +310,14 @@ data class SocialPost(
         put("repostOriginalPostId", repostOriginalPostId ?: "")
         put("repostsCount", repostsCount)
         if (!mediaType.isNullOrBlank()) put("mediaType", mediaType)
-        if (!mediaPath.isNullOrBlank()) put("mediaPath", mediaPath)
+        val validMediaPath = mediaPath?.takeIf { path ->
+            if (path.isBlank() || path.endsWith("/")) return@takeIf false
+            try {
+                val f = java.io.File(path)
+                !f.isDirectory && (!f.exists() || (f.isFile && f.length() > 0L))
+            } catch (_: Exception) { false }
+        }
+        if (!validMediaPath.isNullOrBlank()) put("mediaPath", validMediaPath)
         if (!mediaUrl.isNullOrBlank()) put("mediaUrl", mediaUrl)
         // Always serialize mediaData (base64) for photos without mediaUrl
         if (!mediaData.isNullOrBlank()) put("mediaData", mediaData)
@@ -330,6 +337,15 @@ data class SocialPost(
                 UserSocialRole.STANDARD
             }
             val finalRole = if (isAuthorAdmin) UserSocialRole.FOUNDER_DEV else parsedRole
+
+            val rawMediaPath = json.optString("mediaPath").ifBlank { null }
+            val cleanMediaPath = rawMediaPath?.takeIf { path ->
+                if (path.isBlank() || path.endsWith("/")) return@takeIf false
+                try {
+                    val f = java.io.File(path)
+                    !f.isDirectory && (!f.exists() || (f.isFile && f.length() > 0L))
+                } catch (_: Exception) { false }
+            }
 
             return SocialPost(
                 id = json.optString("id"),
@@ -364,11 +380,11 @@ data class SocialPost(
                 repostOriginalPostId = json.optString("repostOriginalPostId").ifBlank { null },
                 repostsCount = json.optInt("repostsCount", 0),
                 mediaType = json.optString("mediaType").ifBlank {
-                    val p = json.optString("mediaPath")
+                    val p = cleanMediaPath
                     val u = json.optString("mediaUrl")
-                    if (p.endsWith(".mp4", ignoreCase = true) || u.contains(".mp4", ignoreCase = true)) "video" else null
+                    if (p?.endsWith(".mp4", ignoreCase = true) == true || u.contains(".mp4", ignoreCase = true)) "video" else null
                 },
-                mediaPath = json.optString("mediaPath").ifBlank { null },
+                mediaPath = cleanMediaPath,
                 mediaData = json.optString("mediaData").ifBlank { null },
                 mediaUrl = json.optString("mediaUrl").ifBlank { null },
                 authorPubkey = json.optString("authorPubkey").ifBlank { null },

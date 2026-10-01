@@ -80,12 +80,14 @@ class RelayClient(
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             Log.d(tag, "WebSocket fermé: $code / $reason")
+            try { webSocket.cancel() } catch (_: Exception) {}
             state = State.DISCONNECTED
             scheduleReconnect()
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             Log.w(tag, "Erreur connexion relais $url: ${t.message}")
+            try { webSocket.cancel() } catch (_: Exception) {}
             state = State.ERROR
             scheduleReconnect()
         }
@@ -98,6 +100,8 @@ class RelayClient(
         lastConnectAttempt = System.currentTimeMillis()
 
         try {
+            try { webSocket?.cancel() } catch (_: Exception) {}
+            webSocket = null
             val request = Request.Builder()
                 .url(url)
                 .build()
@@ -113,7 +117,7 @@ class RelayClient(
         isManuallyClosed.set(true)
         handler.removeCallbacksAndMessages(null)
         try {
-            webSocket?.close(1000, "Normal Closure")
+            webSocket?.cancel() // Force-kill: close() laisse le reader thread bloqué sur recvfrom → ANR
         } catch (ignored: Exception) {}
         webSocket = null
         state = State.DISCONNECTED

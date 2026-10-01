@@ -19,16 +19,30 @@ class LocalMessageStore(
 
     private val dir: File = AccountStorageManager.getAccountSubdir(context, "messages", currentAccountId)
 
-    private fun isSpamSystemMessage(msg: Message): Boolean {
-        if (msg.senderId == "system") return true
-        val text = msg.text.trim()
-        return text.startsWith("🔒 Demande d'invitation") ||
-               text.startsWith("✅ Invitation acceptée") ||
-               text.startsWith("🔒 Invitation reçue") ||
-               text.contains("Acceptez pour activer le canal chiffré") ||
-               text.contains("Clés de sécurité synchronisées") ||
-               text.contains("Clés synchronisées")
+    companion object {
+        fun isSpamOrSyncMessage(msg: Message): Boolean {
+            if (msg.senderId == "system") return true
+            val text = msg.text.trim()
+            if (text.startsWith("[ORBIS_PEER_SYNC_V1]") ||
+                text.contains("[ORBIS_PEER_SYNC_V1]") ||
+                text.contains("\"action\":\"EXCHANGE_REQUEST\"") ||
+                text.contains("\"action\":\"EXCHANGE_RESPONSE\"") ||
+                text.contains("\"action\":\"DELTA_EXCHANGE\"") ||
+                text.contains("\"action\":\"HEARTBEAT\"") ||
+                (text.startsWith("{") && text.contains("\"bundle\":{"))
+            ) {
+                return true
+            }
+            return text.startsWith("🔒 Demande d'invitation") ||
+                   text.startsWith("✅ Invitation acceptée") ||
+                   text.startsWith("🔒 Invitation reçue") ||
+                   text.contains("Acceptez pour activer le canal chiffré") ||
+                   text.contains("Clés de sécurité synchronisées") ||
+                   text.contains("Clés synchronisées")
+        }
     }
+
+    private fun isSpamSystemMessage(msg: Message): Boolean = isSpamOrSyncMessage(msg)
 
     fun saveConversationMessages(conversationId: String, messages: List<Message>) {
         val file = File(dir, "$conversationId.json")

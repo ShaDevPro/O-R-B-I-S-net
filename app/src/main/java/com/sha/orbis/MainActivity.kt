@@ -113,8 +113,11 @@ class MainActivity : FragmentActivity() {
         val action = intent.action ?: return null
         if (action != Intent.ACTION_SEND && action != Intent.ACTION_SEND_MULTIPLE) return null
 
-        val text = intent.getStringExtra(Intent.EXTRA_TEXT)
-        val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT)
+        val rawText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        val text = if (!rawText.isNullOrBlank()) {
+            if (rawText.length > 4096) rawText.take(4096) else rawText
+        } else null
+        val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT)?.take(256)
         val mimeType = intent.type
 
         val singleUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -302,6 +305,11 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // ── Protection contre les captures d'écran et enregistrements d'écran dans toute l'application ──
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         val call = com.sha.orbis.call.OrbisCallManager.callState.value
         val isIncomingCall = intent?.getBooleanExtra("extra_incoming_call", false) == true || call != null
         val isRinging = isIncomingCall || call?.status == com.sha.orbis.call.CallStatus.INCOMING_RINGING || call?.status == com.sha.orbis.call.CallStatus.OUTGOING_RINGING
@@ -356,6 +364,7 @@ class MainActivity : FragmentActivity() {
                             } else {
                                 com.sha.orbis.nostr.service.NostrForegroundService.start(this@MainActivity)
                                 com.sha.orbis.nostr.service.NostrSyncManager.getInstance(this@MainActivity).reconnect(force = false)
+                                com.sha.orbis.sync.scheduler.SovereignSyncScheduler.onAppOpened(this@MainActivity)
                                 com.sha.orbis.data.OrbisBadgeHub.refresh(this@MainActivity)
                             }
                         } else {

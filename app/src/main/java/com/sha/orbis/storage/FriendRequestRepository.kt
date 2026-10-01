@@ -274,6 +274,67 @@ class FriendRequestRepository(
         return removed
     }
 
+    /**
+     * Annule une invitation envoyée en attente pour un numéro donné.
+     * Supprime la requête SENT de friend_requests.json et réinitialise le statut du contact local.
+     */
+    @Synchronized
+    fun cancelSentRequestForPhone(phone: String): Boolean {
+        if (phone.isBlank()) return false
+        val current = loadRequests().toMutableList()
+        val removed = current.removeAll { isSamePhone(it.senderPhone, phone) && it.direction == RequestDirection.SENT }
+        if (removed) {
+            saveRequests(current)
+        }
+        try {
+            val contacts = convRepo.loadContacts().toMutableList()
+            var modified = false
+            contacts.forEachIndexed { idx, c ->
+                if (isSamePhone(c.phone, phone)) {
+                    val newStatus = if (c.status.contains("attente", ignoreCase = true) || c.status.contains("pending", ignoreCase = true)) "" else c.status
+                    contacts[idx] = c.copy(status = newStatus)
+                    modified = true
+                }
+            }
+            if (modified) {
+                convRepo.saveContacts(contacts)
+            }
+        } catch (_: Exception) {}
+        return removed
+    }
+
+    /**
+     * Annule une invitation envoyée en attente par son ID de requête.
+     */
+    @Synchronized
+    fun cancelSentRequest(requestId: String): Boolean {
+        if (requestId.isBlank()) return false
+        val current = loadRequests().toMutableList()
+        val target = current.find { it.id == requestId }
+        val phone = target?.senderPhone
+        val removed = current.removeAll { it.id == requestId && it.direction == RequestDirection.SENT }
+        if (removed) {
+            saveRequests(current)
+        }
+        if (!phone.isNullOrBlank()) {
+            try {
+                val contacts = convRepo.loadContacts().toMutableList()
+                var modified = false
+                contacts.forEachIndexed { idx, c ->
+                    if (isSamePhone(c.phone, phone)) {
+                        val newStatus = if (c.status.contains("attente", ignoreCase = true) || c.status.contains("pending", ignoreCase = true)) "" else c.status
+                        contacts[idx] = c.copy(status = newStatus)
+                        modified = true
+                    }
+                }
+                if (modified) {
+                    convRepo.saveContacts(contacts)
+                }
+            } catch (_: Exception) {}
+        }
+        return removed
+    }
+
     @Synchronized
     fun ensureAcceptedFriend(
         phone: String,

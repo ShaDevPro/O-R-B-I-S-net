@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -127,13 +128,24 @@ fun SplashScreen(onFinish: () -> Unit) {
                     )
                 }
 
-                // Core Shield Icon (Sky Blue)
-                Icon(
-                    imageVector = Icons.Default.Shield,
-                    contentDescription = null,
-                    tint = androidx.compose.ui.graphics.Color(0xFF00A3FF),
-                    modifier = Modifier.size(42.dp)
-                )
+                // Core Shield Icon (Sky Blue) with White Phone Handset
+                Box(
+                    modifier = Modifier.size(44.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Shield,
+                        contentDescription = null,
+                        tint = androidx.compose.ui.graphics.Color(0xFF00A3FF),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Call,
+                        contentDescription = null,
+                        tint = androidx.compose.ui.graphics.Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(28.dp))

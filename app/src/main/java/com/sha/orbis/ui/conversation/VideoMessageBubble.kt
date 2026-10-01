@@ -136,25 +136,40 @@ fun VideoMessageBubble(
     }
 
     val bubbleShape = if (isMsgMine) {
-        RoundedCornerShape(topStart = 18.dp, topEnd = 4.dp, bottomStart = 18.dp, bottomEnd = 18.dp)
+        RoundedCornerShape(topStart = 22.dp, topEnd = 6.dp, bottomStart = 22.dp, bottomEnd = 22.dp)
     } else {
-        RoundedCornerShape(topStart = 4.dp, topEnd = 18.dp, bottomStart = 18.dp, bottomEnd = 18.dp)
+        RoundedCornerShape(topStart = 6.dp, topEnd = 22.dp, bottomStart = 22.dp, bottomEnd = 22.dp)
+    }
+
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+
+    val bubbleBg = when {
+        isMsgMine && isDark -> Color(0xFF1E3A5F)
+        isMsgMine -> Color(0xFFDCF0FA)
+        isDark -> Color(0xFF1E293B)
+        else -> Color(0xFFFFFFFF)
+    }
+    val bubbleBorder = when {
+        isMsgMine && isDark -> Color(0xFF2B4C7E)
+        isMsgMine -> Color(0xFFBAE6FD)
+        isDark -> Color(0xFF334155)
+        else -> Color(0xFFE2E8F0)
+    }
+    val captionTextColor = when {
+        isDark -> Color(0xFFF8FAFC)
+        else -> Color(0xFF0F172A)
+    }
+    val subTextColor = when {
+        isDark -> Color(0xFF94A3B8)
+        else -> Color(0xFF64748B)
     }
 
     Column(
         modifier = Modifier
             .width(280.dp)
             .clip(bubbleShape)
-            .background(
-                if (isMsgMine) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f)
-                else MaterialTheme.colorScheme.surfaceVariant
-            )
-            .border(
-                1.dp,
-                if (isMsgMine) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                else MaterialTheme.colorScheme.outlineVariant,
-                bubbleShape
-            )
+            .background(bubbleBg)
+            .border(1.dp, bubbleBorder, bubbleShape)
     ) {
         if (isPlayingInline && hasPlayableSource) {
             // Lecteur vidéo interactif in-line
@@ -319,7 +334,7 @@ fun VideoMessageBubble(
                 Text(
                     text = videoPayload.caption,
                     fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = captionTextColor,
                     lineHeight = 17.sp
                 )
             }
@@ -332,7 +347,7 @@ fun VideoMessageBubble(
                 Text(
                     text = timeFormatted,
                     fontSize = 10.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    color = subTextColor
                 )
 
                 if (isMsgMine) {
@@ -346,7 +361,7 @@ fun VideoMessageBubble(
                             imageVector = statusIcon,
                             contentDescription = null,
                             tint = if (deliveryStatus == MessageDeliveryStatus.READ) Color(0xFF38BDF8)
-                            else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                            else subTextColor,
                             modifier = Modifier
                                 .padding(start = 4.dp)
                                 .size(13.dp)

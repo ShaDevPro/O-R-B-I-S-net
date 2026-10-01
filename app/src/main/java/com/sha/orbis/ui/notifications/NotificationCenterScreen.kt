@@ -340,6 +340,11 @@ fun NotificationCenterScreen(
                 avatarBase64 = myAvatarThumb
             )
             nostrSync.refreshSubscriptions()
+            com.sha.orbis.sync.scheduler.SovereignSyncScheduler.onFriendAddedOrAccepted(
+                context = context,
+                peerPhone = resolvedPhone,
+                peerPubkey = resolvedPubkey
+            )
         } catch (e: Exception) {
             android.util.Log.w("NotifCenter", "Nostr ACK error: ${e.message}")
         }

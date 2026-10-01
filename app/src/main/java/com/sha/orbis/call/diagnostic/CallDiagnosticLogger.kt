@@ -70,6 +70,21 @@ object CallDiagnosticLogger {
         getReportFile(context).absolutePath
 
     /**
+     * Supprime le fichier de rapport existant afin qu'un nouvel appel démarre sur une base vierge.
+     */
+    fun resetReportFile(context: Context) {
+        try {
+            val file = getReportFile(context)
+            if (file.exists()) {
+                file.delete()
+                Log.i(TAG, "Fichier rapport diagnostic réinitialisé pour la nouvelle session.")
+            }
+        } catch (e: Throwable) {
+            Log.w(TAG, "Impossible de supprimer le rapport précédent : ${e.message}")
+        }
+    }
+
+    /**
      * Génère et met à jour le rapport texte complet à chaque essai.
      */
     suspend fun generateAndSaveReport(
@@ -264,17 +279,25 @@ object CallDiagnosticLogger {
         sb.append(LastCallDebugTracker.buildCallEventsSection())
         sb.appendLine()
 
-        // 7. Section d'aide pour le développeur
+        // 7. Diagnostic de navigation et de défilement du fil d'actualité (Social Feed)
+        sb.append(FeedDebugTracker.buildReportSection(context))
+        sb.appendLine()
+
+        // 8. Flux chronologique détaillé des événements Feed
+        sb.append(FeedDebugTracker.buildFeedEventsSection(context))
+        sb.appendLine()
+
+        // 9. Section d'aide pour le développeur
         val failingSteps = state.stepResults.filter { it.value.status == DiagnosticStatus.FAILED || it.value.status == DiagnosticStatus.WARNING }
         if (failingSteps.isNotEmpty()) {
-            sb.appendLine("[7. ANOMALIES NON RÉSOLUES & RECOMMANDATIONS]")
+            sb.appendLine("[9. ANOMALIES NON RÉSOLUES & RECOMMANDATIONS]")
             for ((step, res) in failingSteps) {
                 sb.appendLine("- ${step.name} [${res.status.name}]: ${res.detail}")
             }
             sb.appendLine()
             sb.appendLine("Veuillez envoyer ce fichier texte au développeur pour implémenter un correctif spécifique pour ce modèle d'appareil.")
         } else {
-            sb.appendLine("[7. CONCLUSION]")
+            sb.appendLine("[9. CONCLUSION]")
             sb.appendLine("Tous les tests du moteur sont au vert.")
         }
 
@@ -354,17 +377,25 @@ object CallDiagnosticLogger {
         sb.append(LastCallDebugTracker.buildCallEventsSection())
         sb.appendLine()
 
-        // 7. Section d'aide pour le développeur
+        // 7. Diagnostic de navigation et de défilement du fil d'actualité (Social Feed)
+        sb.append(FeedDebugTracker.buildReportSection(context))
+        sb.appendLine()
+
+        // 8. Flux chronologique détaillé des événements Feed
+        sb.append(FeedDebugTracker.buildFeedEventsSection(context))
+        sb.appendLine()
+
+        // 9. Section d'aide pour le développeur
         val failingSteps = state.stepResults.filter { it.value.status == DiagnosticStatus.FAILED || it.value.status == DiagnosticStatus.WARNING }
         if (failingSteps.isNotEmpty()) {
-            sb.appendLine("[7. ANOMALIES NON RÉSOLUES & RECOMMANDATIONS]")
+            sb.appendLine("[9. ANOMALIES NON RÉSOLUES & RECOMMANDATIONS]")
             for ((step, res) in failingSteps) {
                 sb.appendLine("- ${step.name} [${res.status.name}]: ${res.detail}")
             }
             sb.appendLine()
             sb.appendLine("Veuillez envoyer ce fichier texte au développeur pour implémenter un correctif spécifique pour ce modèle d'appareil.")
         } else {
-            sb.appendLine("[7. CONCLUSION]")
+            sb.appendLine("[9. CONCLUSION]")
             sb.appendLine("Tous les tests du moteur sont au vert.")
         }
 

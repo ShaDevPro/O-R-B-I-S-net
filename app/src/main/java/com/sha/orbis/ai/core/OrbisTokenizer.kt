@@ -151,7 +151,7 @@ object OrbisTokenizer {
     }
 
     /**
-     * Detects dominant language: "ar" (Arabic), "darija" (Franco-Arabe), "fr" (French), or "en" (English).
+     * Detects dominant language: "ar" (Arabic), "dz" (Darija algérienne / Arabizi), "fr" (French), or "en" (English).
      */
     fun detectLanguage(text: String): String {
         if (hasArabicScript(text)) return "ar"
@@ -159,9 +159,12 @@ object OrbisTokenizer {
         val lower = text.lowercase(Locale.ROOT)
 
         val darijaKeywords = listOf(
-            "salam", "khoya", "khti", "labas", "kidayr", "fink", "fein", "daba",
-            "wach", "ghadi", "chhal", "bikhir", "mezyan", "safie", "safi", "smehli",
-            "bzaf", "choukrane", "barak", "dyal", "dyalek", "rak", "m3ana", "3lik", "kount"
+            "salam", "khoya", "khouya", "khti", "labas", "wach", "rak", "raki",
+            "kifech", "kifah", "dork", "dorka", "win", "winek", "khedma", "n3awed",
+            "mlih", "sahit", "bessah", "hak", "baraka", "nchalah", "yakhi",
+            "3lah", "3lach", "wlh", "rani", "rahi", "gaa", "ga3", "hna",
+            "smahli", "choukran", "bezzaf", "yatik", "sahha", "khatr", "kayen",
+            "wahed", "chhal", "3andek", "3andi", "matkhafch", "nroh", "nji"
         )
         val hasArabiziNumbers = lower.contains(Regex("\\b\\w*[379]\\w*\\b"))
 
@@ -179,10 +182,10 @@ object OrbisTokenizer {
         }
 
         return when {
-            darijaScore >= 2 && darijaScore > frScore && darijaScore > enScore -> "darija"
+            darijaScore >= 2 && darijaScore > frScore && darijaScore > enScore -> "dz"
             enScore > frScore && enScore > darijaScore -> "en"
             frScore > enScore && frScore > darijaScore -> "fr"
-            darijaScore >= 2 -> "darija"
+            darijaScore >= 2 -> "dz"
             else -> "fr"
         }
     }

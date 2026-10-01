@@ -224,6 +224,9 @@ fun CreateGroupScreen(
         }
 
         isCreating = false
+        try {
+            com.sha.orbis.telemetry.FeedTelemetryTracker.trackGroupAction(context)
+        } catch (_: Exception) {}
         Toast.makeText(
             context,
             context.getString(R.string.group_created_toast_format, groupName.trim(), selectedContacts.size),

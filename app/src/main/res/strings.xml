@@ -280,7 +280,7 @@
     <string name="settings_diagnostics">Auto-diagnostic du système</string>
     <string name="settings_diagnostics_sub">Tester les routines AES, Schnorr et le protocole Nostr</string>
     <string name="settings_diagnostics_ok">Tous les systèmes sont 100% opérationnels.</string>
-    <string name="settings_version_footer">Orbis v1.3.0 • Architecture Décentralisée Nostr</string>
+    <string name="settings_version_footer">Orbis v1.4.0 • Architecture Décentralisée Nostr</string>
     <string name="app_copyright_footer">S.H.A dev. All rights reserved. 2026.</string>
 
     <!-- Groups & Sovereign Circles -->
@@ -628,7 +628,7 @@
     <string name="not_friend_send_standard_sms">Inviter via Nostr d\'installation</string>
     <string name="invite_sent_success">SMS d\'invitation OrbisNet envoyé !</string>
     <string name="standard_invite_sent">SMS d\'invitation standard envoyé !</string>
-    <string name="standard_invite_text">Bonjour ! Je t\'invite à communiquer en toute confidentialité sur OrbisNet (messagerie chiffrée décentralisée). Installe l\'application ici : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="standard_invite_text">Bonjour ! Je t\'invite à communiquer en toute confidentialité sur OrbisNet (messagerie chiffrée décentralisée). Installe l\'application ici : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="install_warning_tooltip">Si le destinataire n\'a pas OrbisNet installé, les messages chiffrés ne seront pas visibles sur son téléphone.</string>
 
     <!-- Social P2P Suite & Dev Mode -->
@@ -720,7 +720,7 @@
     <string name="invitation_share_key_btn">Partager la clé de validation</string>
     <string name="invitation_free_reception_note">✅ Invitation acceptée ! Clés synchronisées (Réception gratuite active).</string>
     <string name="invitation_direct_unlocked_toast">Canal chiffré E2EE activé avec %1$s 🛡️</string>
-    <string name="share_invite_text">Bonjour ! %1$s vous invite à rejoindre OrbisNet pour communiquer en toute confidentialité via le réseau décentralisé Nostr et les appels WebRTC chiffrés E2EE. Téléchargement : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="share_invite_text">Bonjour ! %1$s vous invite à rejoindre OrbisNet pour communiquer en toute confidentialité via le réseau décentralisé Nostr et les appels WebRTC chiffrés E2EE. Téléchargement : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="share_invite_chooser_title">Partager l\'invitation OrbisNet</string>
 
     <!-- User Profile Wall & Enriched Profile -->
@@ -874,7 +874,7 @@
     <string name="help_tip_dual_sim_switch">Touchez votre avatar avec la pastille SIM dans l\'en-tête pour changer de ligne active en 1 clic.</string>
     <string name="help_about_title">À propos d\'Orbis Écosystème Souverain</string>
     <string name="help_about_desc">Orbis est une plateforme de messagerie et de réseau social décentralisé et décentralisée, sans aucun serveur centralisé, protégée par chiffrement de bout en bout.</string>
-    <string name="help_about_version">Version 1.3.0 • Architecture Souveraine Décentralisé</string>
+    <string name="help_about_version">Version 1.4.0 • Architecture Souveraine Décentralisé</string>
 
     <string name="help_topic_offline_title">Comment Orbis fonctionne-t-il sans Internet ?</string>
     <string name="help_topic_offline_summary">Communication directe de téléphone à téléphone via Nostr.</string>
@@ -1433,7 +1433,7 @@
     <string name="invite_install_option_has_app_desc">Envoi direct par Internet (Réseau Nostr souverain, sans aucun SMS)</string>
     <string name="invite_install_option_no_app">Inviter à installer OrbisNet (Par SMS)</string>
     <string name="invite_install_option_no_app_desc">Envoie un SMS clair, poli et soigné avec le lien de téléchargement officiel</string>
-    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="invite_install_chooser_title">Inviter un proche sur OrbisNet</string>
     <string name="friends_hero_invite_title">Invitez vos proches sur OrbisNet</string>
     <string name="friends_hero_invite_desc">Communiquez en toute souveraineté, sans serveur central ni surveillance.</string>

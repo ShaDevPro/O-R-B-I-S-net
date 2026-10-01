@@ -510,6 +510,30 @@ class NostrSyncManager private constructor(private val context: Context) {
             if (cleanDigits.length >= 6) "conv_$cleanDigits" else "conv_${parsed.senderPubkey.take(16)}"
         }
 
+        // Intercepter en priorité les paquets de synchronisation inter-amis souveraine (Herméticité absolue du chat)
+        val isSyncPacket = com.sha.orbis.sync.protocol.SovereignSyncProtocol.isSyncPacket(parsed.text) ||
+            parsed.text.trim().startsWith("[ORBIS_PEER_SYNC_V1]") ||
+            parsed.text.contains("[ORBIS_PEER_SYNC_V1]") ||
+            parsed.text.contains("\"action\":\"EXCHANGE_REQUEST\"") ||
+            parsed.text.contains("\"action\":\"EXCHANGE_RESPONSE\"") ||
+            parsed.text.contains("\"action\":\"DELTA_EXCHANGE\"") ||
+            parsed.text.contains("\"action\":\"HEARTBEAT\"") ||
+            (parsed.text.trim().startsWith("{") && parsed.text.contains("\"bundle\":{"))
+
+        if (isSyncPacket) {
+            Log.d(TAG, "Paquet de synchronisation inter-amis hermétique intercepté de ${parsed.senderPubkey.take(8)}")
+            try {
+                com.sha.orbis.sync.engine.SovereignPeerSyncEngine.getInstance(context).integrateIncomingSyncPacket(
+                    rawPayload = parsed.text,
+                    senderPubkey = parsed.senderPubkey,
+                    senderPhoneCandidate = cleanPhoneCandidate
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Erreur intégration paquet de synchronisation: ${e.message}", e)
+            }
+            return
+        }
+
         // Handle revocation (delete for everyone) packet.
         // New packets carry several matching keys; old [REVOKE:id] packets remain supported.
         val revocationTarget = com.sha.orbis.model.MessageRevocation.parse(parsed.text)
@@ -952,8 +976,17 @@ class NostrSyncManager private constructor(private val context: Context) {
                 return
             }
 
+            // Ne bloquer que si le commentaire est RÉELLEMENT présent dans le post.
+            // Un event peut avoir été "processed" alors que le post parent n'existait pas encore,
+            // auquel cas le commentaire n'a jamais été ajouté et doit être ré-essayé.
             if (processedEventsRepo.isProcessed(event.id) || processedEventsRepo.isProcessed(comment.id)) {
-                return
+                val parentPost = socialRepo.findPostById(comment.postId)
+                val commentAlreadyInPost = parentPost?.comments?.any { it.id == comment.id } == true
+                if (commentAlreadyInPost) {
+                    return
+                }
+                // Le commentaire n'est PAS dans le post → continuer pour le ré-ajouter
+                Log.d(TAG, "Commentaire ${comment.id} marqué processed mais absent du post → ré-ajout")
             }
 
             val savedAvatar = if (!comment.authorAvatarPath.isNullOrBlank() && comment.authorAvatarPath!!.length > 50) {
@@ -1164,6 +1197,7 @@ class NostrSyncManager private constructor(private val context: Context) {
         val targetPostId = event.tags.find { it.size >= 2 && it[0] == "post_id" }?.get(1)
             ?: event.tags.find { it.size >= 2 && it[0] == "e" }?.get(1)
             ?: return
+        val targetCommentId = event.tags.find { it.size >= 2 && it[0] == "comment_id" }?.get(1)?.trim()
 
         if (socialRepo.isPostDeleted(targetPostId)) {
             Log.d(TAG, "Réaction ignorée : post cible supprimé ($targetPostId)")
@@ -1194,14 +1228,28 @@ class NostrSyncManager private constructor(private val context: Context) {
             return
         }
 
-        val applied = socialRepo.applyIncomingReaction(targetPostId, userIdentifier, emoji) ||
-            socialRepo.enqueuePendingReaction(targetPostId, userIdentifier, emoji)
+        val isCommentReaction = !targetCommentId.isNullOrBlank()
+        val applied: Boolean = if (isCommentReaction) {
+            socialRepo.applyIncomingCommentReaction(targetPostId, targetCommentId!!, userIdentifier, emoji) ||
+                socialRepo.enqueuePendingCommentReaction(targetPostId, targetCommentId, userIdentifier, emoji)
+        } else {
+            socialRepo.applyIncomingReaction(targetPostId, userIdentifier, emoji) ||
+                socialRepo.enqueuePendingReaction(targetPostId, userIdentifier, emoji)
+        }
         if (applied) {
             processedEventsRepo.markProcessed(event.id)
         }
-        val isNewlyAdded = applied && socialRepo.findPostById(targetPostId)?.reactions?.any {
-            FriendRequestRepository.isSamePhone(it.userPhone, userIdentifier) && it.emoji == emoji
-        } == true
+        val isNewlyAdded: Boolean = if (isCommentReaction) {
+            applied && socialRepo.findPostById(targetPostId)?.comments?.any { c ->
+                c.id == targetCommentId && c.reactions.any {
+                    FriendRequestRepository.isSamePhone(it.userPhone, userIdentifier) && it.emoji == emoji
+                }
+            } == true
+        } else {
+            applied && socialRepo.findPostById(targetPostId)?.reactions?.any {
+                FriendRequestRepository.isSamePhone(it.userPhone, userIdentifier) && it.emoji == emoji
+            } == true
+        }
 
         // Rafraîchir le feed en temps réel — sans ce broadcast, les réactions
         // n'apparaissent que lors du prochain événement post (arrivée notification OK, affichage NON).
@@ -1209,7 +1257,7 @@ class NostrSyncManager private constructor(private val context: Context) {
             android.content.Intent(com.sha.orbis.notification.OrbisEventBus.ACTION_ORBIS_REACTION_RECEIVED)
         )
 
-        // Si la réaction vise notre publication et ne vient pas de nous-même, créer une notification sociale
+        // Si la réaction vise notre publication/commentaire et ne vient pas de nous-même, créer une notification sociale
         val myPubkey = identityManager.publicKeyHex
         val myNpub = try { Bech32.npubEncode(myPubkey) } catch (_: Exception) { "" }
         val isFromMe = event.pubkey.equals(myPubkey, ignoreCase = true) ||
@@ -1226,8 +1274,16 @@ class NostrSyncManager private constructor(private val context: Context) {
                 val isMyPost = FriendRequestRepository.isSamePhone(targetPost.authorPhone, sessionManager.userPhone) ||
                     (myNpub.isNotBlank() && targetPost.authorPhone == myNpub) ||
                     targetPost.authorPhone.equals(myPubkey, ignoreCase = true)
+                val targetComment = if (isCommentReaction) {
+                    targetPost.comments.firstOrNull { it.id == targetCommentId }
+                } else null
+                val isMyComment = isCommentReaction && targetComment != null && (
+                    FriendRequestRepository.isSamePhone(targetComment.authorPhone, sessionManager.userPhone) ||
+                        (myNpub.isNotBlank() && targetComment.authorPhone == myNpub) ||
+                        targetComment.authorPhone.equals(myPubkey, ignoreCase = true)
+                    )
 
-                if (isMyPost) {
+                if (isMyPost || isMyComment) {
                     val savedAvatar = if (!tagAuthorAvatar.isNullOrBlank() && tagAuthorAvatar.length > 50) {
                         com.sha.orbis.ui.components.AvatarManager.saveAvatarFromBase64(
                             context,
@@ -1269,10 +1325,19 @@ class NostrSyncManager private constructor(private val context: Context) {
 
                     val notifId = "notif_reaction_${event.id.take(16)}"
                     val notifAlreadyExists = notifRepo.hasNotificationForEvent(notifId)
+                    val likedCommentAuthorName = targetComment?.authorName?.takeIf { it.isNotBlank() && !it.startsWith("npub1") }
+                    val notifDescription = when {
+                        isCommentReaction && likedCommentAuthorName != null && !isMyComment -> {
+                            context.getString(R.string.notif_social_liked_comment_author, likedCommentAuthorName)
+                        }
+                        isCommentReaction -> context.getString(R.string.notif_social_liked_comment)
+                        else -> context.getString(R.string.notif_social_liked_post)
+                    }
+                    val notifAction = if (isCommentReaction) "COMMENT_LIKE" else "LIKE"
                     val notif = com.sha.orbis.model.AppNotification(
                         id = notifId,
                         title = cleanSenderName,
-                        description = context.getString(R.string.notif_social_liked_post),
+                        description = notifDescription,
                         timestamp = event.createdAt * 1000L,
                         type = com.sha.orbis.model.NotificationType.SOCIAL,
                         isRead = false,
@@ -1280,7 +1345,7 @@ class NostrSyncManager private constructor(private val context: Context) {
                         senderName = cleanSenderName,
                         senderAvatarPath = effectiveAvatar,
                         targetPostId = targetPost.id,
-                        actionType = "LIKE"
+                        actionType = notifAction
                     )
                     val addedToNotifRepo = notifRepo.addNotification(notif)
 
@@ -1291,9 +1356,9 @@ class NostrSyncManager private constructor(private val context: Context) {
                         SmsNotificationHelper.showSocialNotification(
                             context = context,
                             title = cleanSenderName,
-                            text = context.getString(R.string.notif_social_liked_post),
+                            text = notifDescription,
                             postId = targetPost.id,
-                            actionType = "LIKE"
+                            actionType = notifAction
                         )
                     }
                     com.sha.orbis.data.OrbisBadgeHub.refresh(context)
@@ -1597,6 +1662,14 @@ class NostrSyncManager private constructor(private val context: Context) {
     fun publishPost(post: SocialPost): NostrEvent {
         val event = NostrProtocolEngine.buildPostEvent(identityManager, post)
         relayPool.publish(event)
+        try {
+            val isExtra = !post.id.startsWith("post_") && post.authorPhone.isBlank()
+            val hasMedia = !post.mediaPath.isNullOrBlank() || !post.mediaUrl.isNullOrBlank()
+            com.sha.orbis.telemetry.FeedTelemetryTracker.trackPostCreated(context, isExtraOrbis = isExtra, hasMedia = hasMedia)
+            if (!post.targetCircleId.isNullOrBlank()) {
+                com.sha.orbis.telemetry.FeedTelemetryTracker.trackCircleAction(context)
+            }
+        } catch (_: Exception) {}
         return event
     }
 
@@ -1655,6 +1728,44 @@ class NostrSyncManager private constructor(private val context: Context) {
             authorAvatarBase64 = myAvatar
         )
         relayPool.publish(event)
+        try {
+            com.sha.orbis.telemetry.FeedTelemetryTracker.trackReaction(context)
+        } catch (_: Exception) {}
+        return event
+    }
+
+    /**
+     * Publie une réaction sur un COMMENTAIRE (Kind 7 avec tag "comment_id").
+     * Identité locale persistée d'abord par l'appelant ; cette méthode s'occupe uniquement de la diffusion Nostr.
+     */
+    fun publishCommentReaction(
+        postId: String,
+        commentId: String,
+        postAuthorNpubOrHex: String,
+        emoji: String = "❤️",
+        senderName: String? = null,
+        senderPhone: String? = null,
+        senderAvatarBase64: String? = null
+    ): NostrEvent {
+        val authorPubkeyHex = resolveAuthorPubkeyHex(postAuthorNpubOrHex)
+        val myName = senderName ?: sessionManager.userName.trim().takeIf { it.isNotBlank() }
+        val myPhone = senderPhone ?: sessionManager.userPhone.trim().takeIf { it.isNotBlank() }
+        val myAvatar = senderAvatarBase64 ?: com.sha.orbis.ui.components.AvatarManager.getAvatarAsBase64Thumbnail(sessionManager.userAvatarPath, 96)
+
+        val event = NostrProtocolEngine.buildReactionEvent(
+            identityManager = identityManager,
+            postId = postId,
+            postAuthorPubkey = authorPubkeyHex,
+            emoji = emoji,
+            authorName = myName,
+            authorPhone = myPhone,
+            authorAvatarBase64 = myAvatar,
+            commentId = commentId
+        )
+        relayPool.publish(event)
+        try {
+            com.sha.orbis.telemetry.FeedTelemetryTracker.trackReaction(context)
+        } catch (_: Exception) {}
         return event
     }
 
@@ -1671,6 +1782,9 @@ class NostrSyncManager private constructor(private val context: Context) {
             comment = comment
         )
         relayPool.publish(event)
+        try {
+            com.sha.orbis.telemetry.FeedTelemetryTracker.trackComment(context)
+        } catch (_: Exception) {}
         return event
     }
 
@@ -2149,6 +2263,13 @@ class NostrSyncManager private constructor(private val context: Context) {
         // 4. Diffusion broadcast pour rafraîchir la liste d'amis et discussions
         val intent = Intent(OrbisEventBus.ACTION_REFRESH_CONVERSATIONS)
         context.sendBroadcast(intent)
+
+        // 5. Déclencher l'auto-synchronisation souveraine bilatérale avec le nouvel ami
+        com.sha.orbis.sync.scheduler.SovereignSyncScheduler.onFriendAddedOrAccepted(
+            context = context,
+            peerPhone = cleanPhone,
+            peerPubkey = parsed.responderPubkey
+        )
 
         // 5. Rafraîchir immédiatement les abonnements Nostr pour inclure ce nouvel ami dans la Timeline et les Stories
         refreshSubscriptions()

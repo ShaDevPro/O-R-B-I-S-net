@@ -56,8 +56,16 @@ class ConversationRepository(
     }
 
     fun saveConversations(conversations: List<Conversation>) {
+        val sanitized = conversations.map { conv ->
+            if (conv.lastMessage.contains("[ORBIS_PEER_SYNC_V1]") ||
+                conv.lastMessage.contains("\"action\":\"EXCHANGE_") ||
+                (conv.lastMessage.startsWith("{") && conv.lastMessage.contains("\"bundle\":{"))
+            ) {
+                conv.copy(lastMessage = "")
+            } else conv
+        }
         val array = JSONArray()
-        conversations.forEach { array.put(it.toJson()) }
+        sanitized.forEach { array.put(it.toJson()) }
         storageFile.writeText(JSONObject().put("conversations", array).toString(2), Charsets.UTF_8)
     }
 
@@ -66,7 +74,15 @@ class ConversationRepository(
         val rawList = try {
             val obj = JSONObject(storageFile.readText(Charsets.UTF_8))
             val array = obj.optJSONArray("conversations") ?: JSONArray()
-            List(array.length()) { index -> Conversation.fromJson(array.getJSONObject(index)) }
+            List(array.length()) { index ->
+                val conv = Conversation.fromJson(array.getJSONObject(index))
+                if (conv.lastMessage.contains("[ORBIS_PEER_SYNC_V1]") ||
+                    conv.lastMessage.contains("\"action\":\"EXCHANGE_") ||
+                    (conv.lastMessage.startsWith("{") && conv.lastMessage.contains("\"bundle\":{"))
+                ) {
+                    conv.copy(lastMessage = "")
+                } else conv
+            }
         } catch (_: Exception) {
             emptyList()
         }
@@ -505,6 +521,12 @@ class ConversationRepository(
     fun addMessage(conversationId: String, message: Message) {
         val store = messageStore
         store.addMessage(conversationId, message)
+        if (message.senderId != "me" && message.text.isNotBlank()) {
+            val peerId = message.senderId.ifBlank { conversationId }
+            try {
+                com.sha.orbis.ai.affinity.OrbisPeerLanguageEngine.onIncomingMessageReceived(context, peerId, message.text)
+            } catch (_: Exception) {}
+        }
     }
 
     fun saveMessages(conversationId: String, messages: List<Message>) {

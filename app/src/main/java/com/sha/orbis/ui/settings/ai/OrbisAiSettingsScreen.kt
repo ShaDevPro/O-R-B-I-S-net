@@ -26,10 +26,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.HourglassBottom
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Speed
@@ -93,6 +96,10 @@ fun OrbisAiSettingsScreen(
 
     var isGuardActive by remember { mutableStateOf(aiPrefs.isGuardEnabled) }
     var isReplyActive by remember { mutableStateOf(aiPrefs.isReplyEnabled) }
+    var isDrivingActive by remember { mutableStateOf(aiPrefs.isDrivingAutoDeclineEnabled) }
+    var isDndActive by remember { mutableStateOf(aiPrefs.isDndAutoDeclineEnabled) }
+    var isSmartRecallActive by remember { mutableStateOf(aiPrefs.isSmartRecallEnabled) }
+    var isSilentBurstActive by remember { mutableStateOf(aiPrefs.isSilentBurstShieldEnabled) }
 
     val isMasterActive = isGuardActive && isReplyActive
 
@@ -181,7 +188,7 @@ fun OrbisAiSettingsScreen(
 
                         Column {
                             Text(
-                                text = "Moteurs LLM Propriétaires ORBIS",
+                                text = stringResource(R.string.ai_proprietary_engines_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -197,7 +204,7 @@ fun OrbisAiSettingsScreen(
                     }
 
                     Text(
-                        text = "Les modèles ORBIS sont exécutés 100% hors-ligne en Kotlin natif vectorisé. Ils fonctionnent sans serveurs distants, préservent votre batterie et garantissent la confidentialité absolue de vos communications.",
+                        text = stringResource(R.string.ai_proprietary_engines_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         lineHeight = 16.sp
@@ -207,7 +214,7 @@ fun OrbisAiSettingsScreen(
 
             // Section 1: Activation & Commutateurs
             Text(
-                text = "COMMUTATEURS DES MODÈLES",
+                text = stringResource(R.string.ai_section_switches_title),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -217,216 +224,202 @@ fun OrbisAiSettingsScreen(
             // Master Toggle Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Tune,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                            Column {
-                                Text(
-                                    text = stringResource(R.string.ai_master_switch_title),
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = stringResource(R.string.ai_master_switch_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val targetState = !isMasterActive
+                            isGuardActive = targetState
+                            isReplyActive = targetState
+                            aiPrefs.setMasterEnabled(targetState)
+                            Toast.makeText(
+                                context,
+                                if (targetState) context.getString(R.string.ai_master_enabled_toast) else context.getString(R.string.ai_master_disabled_toast),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-
-                        Switch(
-                            checked = isMasterActive,
-                            onCheckedChange = { targetState ->
-                                isGuardActive = targetState
-                                isReplyActive = targetState
-                                aiPrefs.setMasterEnabled(targetState)
-                                Toast.makeText(
-                                    context,
-                                    if (targetState) "Tous les moteurs IA activés" else "Tous les moteurs IA désactivés",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer
-                            )
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.ai_master_switch_title),
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 14.5.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = stringResource(R.string.ai_master_switch_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontSize = 11.5.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            lineHeight = 15.sp
+                        )
+                    }
+
+                    Switch(
+                        checked = isMasterActive,
+                        onCheckedChange = { targetState ->
+                            isGuardActive = targetState
+                            isReplyActive = targetState
+                            aiPrefs.setMasterEnabled(targetState)
+                            Toast.makeText(
+                                context,
+                                if (targetState) context.getString(R.string.ai_master_enabled_toast) else context.getString(R.string.ai_master_disabled_toast),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
                 }
             }
 
-            // Engine 1: ORBIS Guard-LLM
+            // Engine Models Grouped Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(
-                                        if (isGuardActive) OrbisColorPalette.StatusActive.copy(alpha = 0.15f)
-                                        else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Shield,
-                                    contentDescription = null,
-                                    tint = if (isGuardActive) OrbisColorPalette.StatusActive else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                            Column {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.ai_guard_switch_title),
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    StatusChip(isActive = isGuardActive)
-                                }
-                                Text(
-                                    text = stringResource(R.string.ai_guard_switch_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-
-                        Switch(
-                            checked = isGuardActive,
-                            onCheckedChange = { checked ->
-                                isGuardActive = checked
-                                aiPrefs.isGuardEnabled = checked
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = OrbisColorPalette.StatusActive,
-                                checkedTrackColor = OrbisColorPalette.StatusActive.copy(alpha = 0.3f)
-                            )
-                        )
-                    }
+                Column {
+                    AutomationRow(
+                        icon = Icons.Default.Shield,
+                        title = stringResource(R.string.ai_guard_switch_title),
+                        desc = stringResource(R.string.ai_guard_switch_desc),
+                        checked = isGuardActive,
+                        onCheckedChange = { checked ->
+                            isGuardActive = checked
+                            aiPrefs.isGuardEnabled = checked
+                        },
+                        activeColor = OrbisColorPalette.StatusActive
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 62.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+                        thickness = 0.5.dp
+                    )
+                    AutomationRow(
+                        icon = Icons.Default.AutoAwesome,
+                        title = stringResource(R.string.ai_reply_switch_title),
+                        desc = stringResource(R.string.ai_reply_switch_desc),
+                        checked = isReplyActive,
+                        onCheckedChange = { checked ->
+                            isReplyActive = checked
+                            aiPrefs.isReplyEnabled = checked
+                        },
+                        activeColor = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
 
-            // Engine 2: ORBIS Reply-LLM
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(
-                                        if (isReplyActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                                        else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AutoAwesome,
-                                    contentDescription = null,
-                                    tint = if (isReplyActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                            Column {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.ai_reply_switch_title),
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    StatusChip(isActive = isReplyActive)
-                                }
-                                Text(
-                                    text = stringResource(R.string.ai_reply_switch_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-
-                        Switch(
-                            checked = isReplyActive,
-                            onCheckedChange = { checked ->
-                                isReplyActive = checked
-                                aiPrefs.isReplyEnabled = checked
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        )
-                    }
-                }
-            }
-
-            // Section 2: Benchmark & Hardware Telemetry
+            // Section 2: Télécom & VoIP Automation
             Text(
-                text = "BANC D'ÉVALUATION & BENCHMARK MATÉRIEL",
+                text = stringResource(R.string.settings_voip_telecom_section_title),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+
+            // Télécom & VoIP Grouped Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            ) {
+                Column {
+                    AutomationRow(
+                        icon = Icons.Default.DirectionsCar,
+                        title = stringResource(R.string.settings_driving_mode_title),
+                        desc = stringResource(R.string.settings_driving_mode_desc),
+                        checked = isDrivingActive,
+                        onCheckedChange = { checked ->
+                            isDrivingActive = checked
+                            aiPrefs.isDrivingAutoDeclineEnabled = checked
+                        },
+                        activeColor = Color(0xFFF59E0B)
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 62.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+                        thickness = 0.5.dp
+                    )
+                    AutomationRow(
+                        icon = Icons.Default.HourglassBottom,
+                        title = stringResource(R.string.settings_dnd_mode_title),
+                        desc = stringResource(R.string.settings_dnd_mode_desc),
+                        checked = isDndActive,
+                        onCheckedChange = { checked ->
+                            isDndActive = checked
+                            aiPrefs.isDndAutoDeclineEnabled = checked
+                        },
+                        activeColor = Color(0xFF8B5CF6)
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 62.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+                        thickness = 0.5.dp
+                    )
+                    AutomationRow(
+                        icon = Icons.Default.Schedule,
+                        title = stringResource(R.string.settings_smart_recall_title),
+                        desc = stringResource(R.string.settings_smart_recall_desc),
+                        checked = isSmartRecallActive,
+                        onCheckedChange = { checked ->
+                            isSmartRecallActive = checked
+                            aiPrefs.isSmartRecallEnabled = checked
+                        },
+                        activeColor = MaterialTheme.colorScheme.primary
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 62.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+                        thickness = 0.5.dp
+                    )
+                    AutomationRow(
+                        icon = Icons.Default.Shield,
+                        title = stringResource(R.string.settings_silent_burst_title),
+                        desc = stringResource(R.string.settings_silent_burst_desc),
+                        checked = isSilentBurstActive,
+                        onCheckedChange = { checked ->
+                            isSilentBurstActive = checked
+                            aiPrefs.isSilentBurstShieldEnabled = checked
+                        },
+                        activeColor = OrbisColorPalette.StatusActive
+                    )
+                }
+            }
+
+            // Section 3: Benchmark & Hardware Telemetry
+            Text(
+                text = stringResource(R.string.ai_section_benchmark_title),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -750,5 +743,80 @@ private fun MetricCard(
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
+
+@Composable
+private fun AutomationRow(
+    icon: ImageVector,
+    title: String,
+    desc: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    activeColor: Color = MaterialTheme.colorScheme.primary
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!checked) }
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(
+                    if (checked) activeColor.copy(alpha = 0.15f)
+                    else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = if (checked) activeColor else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                StatusChip(isActive = checked)
+            }
+            Text(
+                text = desc,
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 11.5.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 15.sp
+            )
+        }
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = activeColor,
+                checkedTrackColor = activeColor.copy(alpha = 0.3f)
+            ),
+            modifier = Modifier.padding(top = 2.dp)
+        )
     }
 }

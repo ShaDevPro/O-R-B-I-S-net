@@ -23,3 +23,17 @@ github_token.txt
 *.token
 *.key
 GUIDE_MISE_A_JOUR_ORBIS.md
+
+# Build Artifacts & Binaries (Never push APKs to Git)
+*.apk
+*.aab
+/app/release/
+app/release/
+/release/
+app/orbis_keystore
+crash_capture.txt
+logcat_capture.txt
+logcat_all_capture.txt
+recovery-codes.txt
+.trae/
+.kotlin/

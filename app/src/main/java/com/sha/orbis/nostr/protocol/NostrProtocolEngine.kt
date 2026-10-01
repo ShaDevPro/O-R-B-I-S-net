@@ -398,8 +398,9 @@ object NostrProtocolEngine {
     }
 
     /**
-     * Publie une réaction (Like / Emoji) sur un post (Kind 7).
+     * Publie une réaction (Like / Emoji) sur un post OU un commentaire (Kind 7).
      * Conforme NIP-25 avec hash 64-hex pour 'e', type 'k'=1, et 'p' uniquement si 64-hex valide.
+     * Quand [commentId] est fourni : ajoute tag "comment_id" + "t"="comment_reaction" (cible = commentaire, pas le post).
      */
     fun buildReactionEvent(
         identityManager: NostrIdentityManager,
@@ -408,7 +409,8 @@ object NostrProtocolEngine {
         emoji: String = "❤️",
         authorName: String? = null,
         authorPhone: String? = null,
-        authorAvatarBase64: String? = null
+        authorAvatarBase64: String? = null,
+        commentId: String? = null
     ): NostrEvent {
         val hexPostId = toNostrHex(postId)
         val tags = mutableListOf(
@@ -417,6 +419,10 @@ object NostrProtocolEngine {
             listOf("post_id", postId),
             listOf("t", TAG_ORBISNET)
         )
+        if (!commentId.isNullOrBlank()) {
+            tags.add(listOf("comment_id", commentId.trim()))
+            tags.add(listOf("t", "comment_reaction"))
+        }
         if (!authorName.isNullOrBlank()) {
             tags.add(listOf("author_name", authorName.trim()))
         }

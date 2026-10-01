@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PushPin
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ fun FeedPostHeaderActions(
     showPostOptionsMenu: Boolean,
     onShowPostOptionsMenuChange: (Boolean) -> Unit,
     onRequestBlockConfirm: () -> Unit,
+    onHidePost: (() -> Unit)? = null,
     onEditClick: (() -> Unit)?,
     onTogglePin: (() -> Unit)?,
     onDeletePost: (() -> Unit)?
@@ -118,6 +120,23 @@ fun FeedPostHeaderActions(
                     expanded = showPostOptionsMenu,
                     onDismissRequest = { onShowPostOptionsMenuChange(false) }
                 ) {
+                    // Hide this post
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.social_action_hide_post)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.VisibilityOff,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        },
+                        onClick = {
+                            onShowPostOptionsMenuChange(false)
+                            onHidePost?.invoke()
+                        }
+                    )
+                    // Block user
                     DropdownMenuItem(
                         text = {
                             Text(

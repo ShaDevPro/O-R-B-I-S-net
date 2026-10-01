@@ -68,6 +68,10 @@ fun VoiceRecordingBar(
 
     val recordingSeconds = recordingMillis / 1000
 
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val barBg = if (isDark) Color(0xFF1E293B) else Color(0xFFFFFFFF)
+    val barBorder = if (isDark) Color(0xFF334155) else Color(0xFFE2E8F0)
+
     val infiniteTransition = rememberInfiniteTransition(label = "rec_pulse")
     val pulseAlpha by infiniteTransition.animateFloat(
         initialValue = 0.4f,
@@ -109,8 +113,8 @@ fun VoiceRecordingBar(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(22.dp))
+            .background(barBg)
+            .border(1.dp, barBorder, RoundedCornerShape(22.dp))
             .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {

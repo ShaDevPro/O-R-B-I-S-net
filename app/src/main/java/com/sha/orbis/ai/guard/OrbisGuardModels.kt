@@ -39,3 +39,38 @@ data class GuardAnalysisResult(
     val isDangerous: Boolean
         get() = threatLevel == ThreatLevel.HIGH_RISK || threatLevel == ThreatLevel.CRITICAL
 }
+
+/**
+ * Category of incoming VoIP call risk identified by ORBIS Guard-LLM.
+ */
+enum class CallThreatType {
+    VERIFIED_CONTACT,        // Known address-book contact or established mutual peer
+    TRUSTED_USER,            // User with verified Nostr identity and clean history
+    UNKNOWN_CALLER,          // Peer not found in contacts, first interaction
+    SUSPICIOUS_IDENTITY,     // Impersonates authority, bank, carrier or support in name/metadata
+    RAPID_BURST_FLOODING,    // High-frequency incoming calls in short time window (Call Storm)
+    PING_CALL_HARASSMENT,    // Short ring-and-drop pattern attempting callback trap
+    ANOMALOUS_OFF_HOURS,     // Suspicious late-night unsolicited call from unknown peer
+    POTENTIAL_SPAMMER        // Peer flagged in local heuristic blacklist or recurrent harassment
+}
+
+/**
+ * Result of Call Guard evaluation on an incoming or missed VoIP call.
+ */
+data class CallGuardAnalysisResult(
+    val threatLevel: ThreatLevel,
+    val threatType: CallThreatType,
+    val trustScore: Int,            // 0 (Dangerous) to 100 (Absolute Trust)
+    val threatTitle: String,
+    val explanation: String,
+    val riskFactors: List<String> = emptyList(),
+    val isVerifiedContact: Boolean = false,
+    val shouldWarnUser: Boolean = false
+) {
+    val isSafe: Boolean
+        get() = threatLevel == ThreatLevel.SAFE
+
+    val isDangerous: Boolean
+        get() = threatLevel == ThreatLevel.HIGH_RISK || threatLevel == ThreatLevel.CRITICAL
+}
+

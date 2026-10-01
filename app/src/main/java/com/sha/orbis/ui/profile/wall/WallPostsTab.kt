@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -64,7 +64,7 @@ fun LazyListScope.wallPostsTab(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = if (isRepostsTab) Icons.Default.Repeat else Icons.Default.Article,
+                        imageVector = if (isRepostsTab) Icons.Default.Repeat else Icons.AutoMirrored.Filled.Article,
                         contentDescription = null,
                         modifier = Modifier.size(36.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
@@ -101,8 +101,13 @@ fun LazyListScope.wallPostsTab(
             }
         }
     } else {
-        items(posts, key = { it.id }) { post ->
-            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+        val safePosts = posts.filter { it.id.isNotBlank() }.distinctBy { it.id.trim() }
+        items(
+            items = safePosts,
+            key = { it.id },
+            contentType = { "social_post" }
+        ) { post ->
+            Box(modifier = Modifier.fillMaxWidth()) {
                 SocialPostCard(
                     post = post,
                     currentPhone = currentPhone,

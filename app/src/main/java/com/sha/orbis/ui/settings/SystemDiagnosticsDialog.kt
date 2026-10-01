@@ -167,7 +167,7 @@ fun SystemDiagnosticsDialog(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "Orbis v1.3.0 • 100% Souverain",
+                                text = "Orbis v${com.sha.orbis.BuildConfig.VERSION_NAME} • 100% Souverain",
                                 fontSize = 11.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

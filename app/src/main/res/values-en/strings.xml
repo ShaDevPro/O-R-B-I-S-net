@@ -308,7 +308,7 @@
     <string name="settings_diagnostics">System Self-Test</string>
     <string name="settings_diagnostics_sub">Test AES, RSA routines and GSM SMS engine</string>
     <string name="settings_diagnostics_ok">All systems are 100% operational.</string>
-    <string name="settings_version_footer">Orbis v1.3.0 • Decentralized Nostr Architecture</string>
+    <string name="settings_version_footer">Orbis v1.4.0 • Decentralized Nostr Architecture</string>
     <string name="app_copyright_footer">S.H.A dev. All rights reserved. 2026.</string>
 
     <!-- Groups & Backup -->
@@ -661,7 +661,7 @@
     <string name="not_friend_send_standard_sms">Send Install SMS</string>
     <string name="invite_sent_success">Orbis invitation sent successfully!</string>
     <string name="standard_invite_sent">Standard invitation SMS sent!</string>
-    <string name="standard_invite_text">Hello! I invite you to chat privately on OrbisNet (decentralized encrypted messenger). Install the app here: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="standard_invite_text">Hello! I invite you to chat privately on OrbisNet (decentralized encrypted messenger). Install the app here: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="install_warning_tooltip">If the recipient does not have OrbisNet installed, secure data messages will not be visible on their phone.</string>
 
     <!-- Social P2P Suite & Dev Mode -->
@@ -757,7 +757,7 @@
     <string name="invitation_share_key_btn">Share validation key</string>
     <string name="invitation_free_reception_note">✅ Invitation accepted! Keys synchronized (Free reception active).</string>
     <string name="invitation_direct_unlocked_toast">E2EE encrypted channel activated with %1$s 🛡️</string>
-    <string name="share_invite_text">Hello! %1$s invites you to join OrbisNet to communicate privately via E2EE encrypted messaging on decentralized Nostr relays. Download: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="share_invite_text">Hello! %1$s invites you to join OrbisNet to communicate privately via E2EE encrypted messaging on decentralized Nostr relays. Download: https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="share_invite_chooser_title">Share OrbisNet Invitation</string>
 
     <!-- User Profile Wall & Enriched Profile -->
@@ -911,7 +911,7 @@
     <string name="help_tip_dual_sim_switch">Tap your avatar with the SIM pill in the top header to switch active line in 1 tap.</string>
     <string name="help_about_title">About OrbisNet Sovereign Ecosystem</string>
     <string name="help_about_desc">Orbis is a decentralized, decentralized social and messaging platform with zero central servers, protected by end-to-end encryption.</string>
-    <string name="help_about_version">Version 1.3.0 • Decentralized Nostr Architecture</string>
+    <string name="help_about_version">Version 1.4.0 • Decentralized Nostr Architecture</string>
 
     <string name="help_topic_offline_title">How does OrbisNet work with Nostr relays?</string>
     <string name="help_topic_offline_summary">Direct phone-to-phone communication via Nostr relays SMS.</string>
@@ -1475,7 +1475,7 @@
     <string name="invite_install_option_has_app_desc">Direct delivery via Internet (Sovereign Nostr mesh, no SMS)</string>
     <string name="invite_install_option_no_app">Invite to install OrbisNet (Via SMS)</string>
     <string name="invite_install_option_no_app_desc">Send a clear, polite SMS invitation with official download link</string>
-    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk</string>
+    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
     <string name="invite_install_chooser_title">Invite friend to OrbisNet</string>
     <string name="friends_hero_invite_title">Invite Friends &amp; Family</string>
     <string name="friends_hero_invite_desc">Communicate with complete sovereignty, without central servers or surveillance.</string>
@@ -1906,8 +1906,14 @@
 
     <!-- Contacts Screen UX -->
     <string name="contacts_list_empty_hint">No contacts found in your phonebook</string>
+    <string name="contacts_status_connected_badge">Connected 🛡️</string>
     <string name="contacts_status_pending_badge">Invite Sent ⏳</string>
     <string name="contacts_status_pending_toast">Invitation already sent to %1$s. Waiting for their acceptance.</string>
+    <string name="contacts_cancel_invite_dialog_title">Cancel invitation?</string>
+    <string name="contacts_cancel_invite_dialog_message">Do you want to cancel the friend invitation sent to %1$s?</string>
+    <string name="contacts_cancel_invite_dialog_confirm">Cancel invitation</string>
+    <string name="contacts_cancel_invite_dialog_dismiss">Keep</string>
+    <string name="contacts_cancel_invite_success">Invitation canceled for %1$s</string>
 
     <!-- Sovereign Local Self-SMS Verification (Solution A - Cryptographic Hash & Bi-SIM) -->
     <string name="auth_self_sms_title">Line Security Certification</string>
@@ -2047,5 +2053,84 @@
     <string name="story_viewers_empty">No views yet</string>
     <string name="story_reactors_empty">No reactions yet</string>
     <string name="story_viewers_close">Close</string>
+    <string name="video_play">Play video</string>
+
+    <!-- Call Guard History Badges & Actions -->
+    <string name="call_guard_badge_verified">Verified</string>
+    <string name="call_guard_badge_unknown">Unknown</string>
+    <string name="call_guard_badge_suspicious">Suspicious</string>
+    <string name="call_guard_action_block_report">Block and report</string>
+    <string name="call_guard_block_dialog_title">Block this number?</string>
+    <string name="call_guard_block_dialog_desc">This caller will no longer be able to call or message you.</string>
+    <string name="call_guard_block_success">Number blocked and reported successfully</string>
+    <string name="call_guard_tooltip_trust">Guard Trust Score: %1$d%%</string>
+
+    <!-- Smart Recall Contextual -->
+    <string name="smart_recall_dialog_title">Off-hours Recall</string>
+    <string name="smart_recall_dialog_desc">It is late, your contact might be resting. Prefer sending a message?</string>
+    <string name="smart_recall_btn_send_message">Send message</string>
+    <string name="smart_recall_btn_call_anyway">Call anyway</string>
+    <string name="smart_recall_msg_sent">Message sent</string>
+
+    <!-- Auto Decline & Driving Mode -->
+    <string name="call_guard_auto_declined_driving">Call auto-declined (Driving Mode)</string>
+    <string name="call_guard_auto_declined_dnd">Call auto-declined (Do Not Disturb)</string>
+
+    <!-- Call Unanswered Fallback & Walkie-Talkie PTT -->
+    <string name="call_fallback_unanswered_title">Contact unavailable</string>
+    <string name="call_fallback_ptt_action">Leave sovereign voice note</string>
+    <string name="call_fallback_chat_action">Open chat</string>
+
+    <!-- Silent Spam & Burst Filter -->
+    <string name="call_guard_silent_spam_title">Suspicious call muted silently</string>
+    <string name="call_guard_silent_spam_desc">Guard security alert: abnormal call burst detected (%1$s).</string>
+
+    <!-- Contact Language Affinity & Manual Override -->
+    <string name="contact_lang_dialog_title">Contact language</string>
+    <string name="contact_lang_dialog_desc">Select the language used by Sovereign AI for suggestions and auto-replies with this contact.</string>
+    <string name="contact_lang_option_dz">🇩🇿 Algerian Darija (DZ)</string>
+    <string name="contact_lang_option_fr">🇫🇷 French (FR)</string>
+    <string name="contact_lang_option_en">🇬🇧 English (EN)</string>
+    <string name="contact_lang_option_ar">🇸🇦 Standard Arabic (AR)</string>
+    <string name="contact_lang_updated_toast">Contact language updated: %1$s</string>
+
+    <!-- Smart Telecom & VoIP Automation Settings -->
+    <string name="settings_voip_telecom_section_title">SMART TELECOM &amp; VOIP AUTOMATION</string>
+    <string name="settings_voip_telecom_banner_desc">Sovereign automation intelligently manages incoming calls according to your real-time status (driving, sleeping, meetings) and caller language.</string>
+    <string name="settings_driving_mode_title">Driving Mode (Auto-Decline)</string>
+    <string name="settings_driving_mode_desc">Automatically declines calls with a polite contextual message in the caller\'s language when connected to car audio.</string>
+    <string name="settings_dnd_mode_title">Do Not Disturb Auto-Decline</string>
+    <string name="settings_dnd_mode_desc">Silently declines incoming calls and sends a polite auto-reply when system Do Not Disturb is active.</string>
+    <string name="settings_smart_recall_title">Smart Recall (Off-Hours Protection)</string>
+    <string name="settings_smart_recall_desc">Recommends sending a text message instead of calling during late night or early morning hours (22h00 - 08h00).</string>
+    <string name="settings_silent_burst_title">Silent Spam &amp; Burst Shield</string>
+    <string name="settings_silent_burst_desc">Instantly mutes ringtones for rapid call bursts, flooding attempts, and critical spam threats.</string>
+
+    <!-- Walkie-Talkie Post-Call Voice Memo -->
+    <string name="call_ended_walkie_talkie_hint">Leave an instant encrypted voice memo:</string>
+    <string name="call_ended_recording_press_hold">Tap or hold microphone to record</string>
+    <string name="call_ended_recording_in_progress">Recording voice memo (%1$02d:%2$02d)...</string>
+    <string name="call_ended_voice_memo_sent">Encrypted voice memo sent successfully!</string>
+    <string name="call_action_leave_voice_note">Voice note</string>
+    <string name="call_voice_memo_send">Send</string>
+    <string name="call_voice_memo_cancel">Cancel</string>
+    <string name="call_voice_recording_failed">Failed to start audio recording</string>
+
+    <!-- Additional AI Settings Section Titles -->
+    <string name="ai_proprietary_engines_title">ORBIS Proprietary LLM Engines</string>
+    <string name="ai_proprietary_engines_desc">ORBIS models execute 100% offline in vectorized native Kotlin. Zero remote servers, preserving battery and guaranteeing absolute confidentiality.</string>
+    <string name="ai_section_switches_title">MODEL SWITCHES</string>
+    <string name="ai_section_benchmark_title">BENCHMARK &amp; HARDWARE TELEMETRY</string>
+    <string name="ai_master_enabled_toast">All AI engines enabled</string>
+    <string name="ai_master_disabled_toast">All AI engines disabled</string>
+
+    <!-- Sovereign Peer-to-Peer Auto-Synchronization -->
+    <string name="sync_sovereign_peer_title">Sovereign Synchronization</string>
+    <string name="sync_sovereign_peer_desc">Secure bilateral friend exchange</string>
+    <string name="sync_sovereign_peer_success">Data synchronized successfully</string>
+    <string name="text_show_more">Show more</string>
+    <string name="text_show_less">Show less</string>
+    <string name="text_truncated_warning">Text too long, truncated for safety</string>
 </resources>
+
 

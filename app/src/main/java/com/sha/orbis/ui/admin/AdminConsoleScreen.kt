@@ -534,7 +534,7 @@ private fun AdminToolsTab(
                 onClick = {
                     val sessionManager = SessionManager(context)
                     val diagJson = JSONObject().apply {
-                        put("appVersion", "1.3.0")
+                        put("appVersion", com.sha.orbis.BuildConfig.VERSION_NAME)
                         put("androidSdk", Build.VERSION.SDK_INT)
                         put("device", "${Build.MANUFACTURER} ${Build.MODEL}")
                         put("userPhone", sessionManager.userPhone)

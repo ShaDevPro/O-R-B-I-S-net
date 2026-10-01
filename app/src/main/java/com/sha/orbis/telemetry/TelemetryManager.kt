@@ -88,8 +88,9 @@ class TelemetryManager private constructor(private val context: Context) {
         .readTimeout(12, TimeUnit.SECONDS)
         .build()
 
-    // Buffer d'événements en mémoire : thread-safe et coût CPU nul
+    // Buffer d'événements et d'erreurs en mémoire : thread-safe et coût CPU nul
     private val eventCounters = ConcurrentHashMap<String, AtomicInteger>()
+    private val errorCounters = ConcurrentHashMap<String, AtomicInteger>()
 
     val installIdHash: String by lazy { getOrCreateInstallIdHash() }
 
@@ -120,12 +121,38 @@ class TelemetryManager private constructor(private val context: Context) {
     }
 
     /**
+     * Enregistre un incident technique anonymisé par catégorie (webrtc, relay, storage, media, network).
+     */
+    fun recordError(category: String, count: Int = 1) {
+        val safeCat = category.lowercase().replace(Regex("[^a-z0-9_]"), "").take(32).ifBlank { "system" }
+        errorCounters.computeIfAbsent(safeCat) { AtomicInteger(0) }.addAndGet(count)
+    }
+
+    private fun detectNetworkType(): String {
+        return try {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager ?: return "UNKNOWN"
+            val net = cm.activeNetwork ?: return "OFFLINE"
+            val caps = cm.getNetworkCapabilities(net) ?: return "OFFLINE"
+            when {
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) -> "WIFI"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) -> "CELLULAR"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET) -> "ETHERNET"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_VPN) -> "VPN"
+                else -> "OTHER"
+            }
+        } catch (_: Exception) {
+            "UNKNOWN"
+        }
+    }
+
+    /**
      * Transmet le lot d'événements anonymisés vers le serveur Vercel.
      * En retour, extrait la configuration de version et met à jour AppUpdateManager.
      */
     suspend fun syncTelemetry(): Boolean = withContext(Dispatchers.IO) {
+        val eventsSnapshot = mutableListOf<FeatureCount>()
+        val errorsSnapshot = mutableListOf<TechnicalErrorCount>()
         try {
-            val eventsSnapshot = mutableListOf<FeatureCount>()
             for ((key, atomicCount) in eventCounters) {
                 val c = atomicCount.getAndSet(0)
                 if (c > 0) {
@@ -133,13 +160,30 @@ class TelemetryManager private constructor(private val context: Context) {
                 }
             }
 
+            for ((key, atomicCount) in errorCounters) {
+                val c = atomicCount.getAndSet(0)
+                if (c > 0) {
+                    errorsSnapshot.add(TechnicalErrorCount(key, c))
+                }
+            }
+
+            val isBatteryExempt = com.sha.orbis.security.BatteryOptimizationHelper.isIgnoringBatteryOptimizations(context)
+            val poolHealth = com.sha.orbis.nostr.client.RelayPoolManager.getInstance(context).poolHealth.value
+
             val payload = JSONObject().apply {
                 put("installIdHash", installIdHash)
                 put("appVersionCode", BuildConfig.VERSION_CODE)
                 put("appVersionName", BuildConfig.VERSION_NAME)
                 put("osVersion", Build.VERSION.SDK_INT)
+                put("androidRelease", Build.VERSION.RELEASE ?: "")
                 put("deviceModel", "${Build.MANUFACTURER} ${Build.MODEL}".trim())
                 put("locale", Locale.getDefault().toString())
+                put("networkType", detectNetworkType())
+                put("isBatteryExempt", isBatteryExempt)
+                put("nostrRelays", JSONObject().apply {
+                    put("total", poolHealth.totalRelays)
+                    put("connected", poolHealth.connectedCount)
+                })
 
                 val eventsArray = JSONArray()
                 for (ev in eventsSnapshot) {
@@ -149,6 +193,15 @@ class TelemetryManager private constructor(private val context: Context) {
                     })
                 }
                 put("events", eventsArray)
+
+                val errorsArray = JSONArray()
+                for (err in errorsSnapshot) {
+                    errorsArray.put(JSONObject().apply {
+                        put("category", err.category)
+                        put("count", err.count)
+                    })
+                }
+                put("errors", errorsArray)
             }
 
             val mediaType = "application/json; charset=utf-8".toMediaType()
@@ -179,10 +232,19 @@ class TelemetryManager private constructor(private val context: Context) {
                 for (ev in eventsSnapshot) {
                     recordEvent(FeatureType.values().firstOrNull { it.key == ev.feature } ?: continue, ev.count)
                 }
+                for (err in errorsSnapshot) {
+                    errorCounters.computeIfAbsent(err.category) { AtomicInteger(0) }.addAndGet(err.count)
+                }
                 Log.w(TAG, "Échec de l'envoi de la télémétrie HTTP ${response.code}")
                 return@withContext false
             }
         } catch (e: Exception) {
+            for (ev in eventsSnapshot) {
+                recordEvent(FeatureType.values().firstOrNull { it.key == ev.feature } ?: continue, ev.count)
+            }
+            for (err in errorsSnapshot) {
+                errorCounters.computeIfAbsent(err.category) { AtomicInteger(0) }.addAndGet(err.count)
+            }
             Log.d(TAG, "Serveur de télémétrie non joignable (${e.message})")
             return@withContext false
         }

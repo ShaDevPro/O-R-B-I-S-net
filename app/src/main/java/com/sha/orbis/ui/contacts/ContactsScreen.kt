@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,6 +34,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -138,8 +140,9 @@ fun ContactsScreen(
         )
     }
 
-    val deviceContacts = remember { mutableStateListOf<ContactsPickerHelper.PickedContact>() }
+    var deviceContacts by remember { mutableStateOf<List<ContactsPickerHelper.PickedContact>>(emptyList()) }
     var contactForChooseDialog by remember { mutableStateOf<ContactsPickerHelper.PickedContact?>(null) }
+    var contactToCancelInvite by remember { mutableStateOf<ContactsPickerHelper.PickedContact?>(null) }
     var inviteContactForInstall by remember { mutableStateOf<Pair<String, String>?>(null) }
 
     fun refreshContacts() {
@@ -147,8 +150,7 @@ fun ContactsScreen(
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
                 val fetched = ContactsPickerHelper.fetchDeviceContacts(context)
                 kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                    deviceContacts.clear()
-                    deviceContacts.addAll(fetched)
+                    deviceContacts = fetched
                 }
             }
         }
@@ -641,11 +643,7 @@ fun ContactsScreen(
                             }
                             onContactClick?.invoke(contact)
                         } else if (isPendingSent) {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.contacts_status_pending_toast, item.name),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            contactToCancelInvite = item
                         } else {
                             contactForChooseDialog = item
                         }
@@ -728,6 +726,70 @@ fun ContactsScreen(
                     contactForChooseDialog = null
                 },
                 onDismiss = { contactForChooseDialog = null }
+            )
+        }
+
+        contactToCancelInvite?.let { target ->
+            AlertDialog(
+                onDismissRequest = { contactToCancelInvite = null },
+                title = {
+                    Text(
+                        text = stringResource(R.string.contacts_cancel_invite_dialog_title),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.contacts_cancel_invite_dialog_message, target.name),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val dialCode = com.sha.orbis.model.CountryCode.defaultCountry(context).dialCode
+                            val normalizedPhone = ContactsPickerHelper.normalizePhoneNumber(target.phoneNumber, dialCode)
+                            friendRepo.cancelSentRequestForPhone(normalizedPhone)
+
+                            val contacts = repository.loadContacts().toMutableList()
+                            val existingIdx = contacts.indexOfFirst { it.phone == normalizedPhone || it.name.equals(target.name, ignoreCase = true) }
+                            if (existingIdx >= 0) {
+                                contacts[existingIdx] = contacts[existingIdx].copy(status = "")
+                                repository.saveContacts(contacts)
+                            }
+
+                            OrbisBadgeHub.refresh(context, activeAccountId)
+                            blockedVersion++
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.contacts_cancel_invite_success, target.name),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            contactToCancelInvite = null
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.contacts_cancel_invite_dialog_confirm),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { contactToCancelInvite = null }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.contacts_cancel_invite_dialog_dismiss),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                },
+                shape = RoundedCornerShape(18.dp)
             )
         }
 
@@ -1002,7 +1064,7 @@ private fun UnifiedContactRow(
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Connecté 🛡️",
+                        text = stringResource(R.string.contacts_status_connected_badge),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary

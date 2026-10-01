@@ -225,6 +225,9 @@ fun UserProfileWallScreen(
         if (activePostForComments != null) {
             activePostForComments = socialRepo.findPostById(activePostForComments?.id)
         }
+        if (activePostForReactions != null) {
+            activePostForReactions = socialRepo.findPostById(activePostForReactions?.id)
+        }
     }
 
     androidx.compose.runtime.DisposableEffect(Unit) {
@@ -233,7 +236,10 @@ fun UserProfileWallScreen(
                 refreshPosts()
             }
         }
-        val filter = android.content.IntentFilter(com.sha.orbis.notification.OrbisEventBus.ACTION_ORBIS_POST_RECEIVED)
+        val filter = android.content.IntentFilter().apply {
+            addAction(com.sha.orbis.notification.OrbisEventBus.ACTION_ORBIS_POST_RECEIVED)
+            addAction(com.sha.orbis.notification.OrbisEventBus.ACTION_ORBIS_REACTION_RECEIVED)
+        }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(receiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED)
         } else {
@@ -273,7 +279,7 @@ fun UserProfileWallScreen(
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                "Profil Souverain OrbisNet : $profileName ($userPhone)\nRejoignez le réseau souverain décentralisé Nostr !\nTélécharger l'application : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk"
+                "Profil Souverain OrbisNet : $profileName ($userPhone)\nRejoignez le réseau souverain décentralisé Nostr !\nTélécharger l'application : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk"
             )
             type = "text/plain"
         }
@@ -284,7 +290,7 @@ fun UserProfileWallScreen(
         socialRepo.addReaction(postId, sessionManager.userPhone, emoji)
         refreshPosts()
 
-        val targetPost = allPosts.firstOrNull { it.id == postId }
+        val targetPost = socialRepo.findPostById(postId)
         try {
             val nostrSync = com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context)
             val authorTargetKey = targetPost?.authorPubkey ?: targetPost?.authorPhone ?: ""
@@ -455,6 +461,8 @@ fun UserProfileWallScreen(
         CommentsBottomSheet(
             post = currentActivePost,
             currentPhone = sessionManager.userPhone,
+            currentUserName = sessionManager.userName.ifBlank { "Moi" },
+            currentUserAvatarPath = sessionManager.userAvatarPath,
             onDismiss = { activePostForComments = null },
             onAddComment = { text, replyToId, replyToName ->
                 val comment = SocialComment(
@@ -520,6 +528,15 @@ fun UserProfileWallScreen(
                 socialRepo.addCommentReaction(currentActivePost.id, commentId, sessionManager.userPhone, emoji)
                 refreshPosts()
                 activePostForComments = socialRepo.findPostById(currentActivePost.id)
+
+                // Broadcast Comment Reaction via Nostr (Kind 7 with comment_id tag)
+                try {
+                    val nostrSync = com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context)
+                    val authorTargetKey = currentActivePost.authorPubkey ?: currentActivePost.authorPhone
+                    nostrSync.publishCommentReaction(currentActivePost.id, commentId, authorTargetKey, emoji)
+                } catch (e: Exception) {
+                    android.util.Log.w("UserProfileWall", "Erreur diffusion reaction-commentaire Nostr: ${e.message}")
+                }
             }
         )
     }

@@ -69,6 +69,9 @@ class FriendCircleRepository(
             if (!circle.memberPhones.contains(phone)) {
                 current[index] = circle.copy(memberPhones = circle.memberPhones + phone)
                 saveCircles(current)
+                try {
+                    com.sha.orbis.telemetry.FeedTelemetryTracker.trackCircleAction(context)
+                } catch (_: Exception) {}
             }
         }
     }
@@ -81,6 +84,9 @@ class FriendCircleRepository(
             val circle = current[index]
             current[index] = circle.copy(memberPhones = circle.memberPhones - phone)
             saveCircles(current)
+            try {
+                com.sha.orbis.telemetry.FeedTelemetryTracker.trackCircleAction(context)
+            } catch (_: Exception) {}
         }
     }
 

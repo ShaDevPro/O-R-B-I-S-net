@@ -69,22 +69,22 @@ object OrbisReplyEngine {
         var boostGratitude = 0f
         var boostUrgent = 0f
 
-        if (lower.contains("bonjour") || lower.contains("salut") || lower.contains("hello") || lower.contains("salam") || lower.contains("coucou")) {
+        if (lower.contains("bonjour") || lower.contains("salut") || lower.contains("hello") || lower.contains("salam") || lower.contains("coucou") || lower.contains("ahlan") || lower.contains("marhba")) {
             boostGreeting += 0.25f
         }
-        if (lower.contains("ça va") || lower.contains("ca va") || lower.contains("comment vas") || lower.contains("labas") || lower.contains("how are you")) {
+        if (lower.contains("ça va") || lower.contains("ca va") || lower.contains("comment vas") || lower.contains("labas") || lower.contains("how are you") || lower.contains("wach rak") || lower.contains("kifech rak") || lower.contains("ghaya")) {
             boostHowAreYou += 0.35f
         }
-        if (lower.contains("où") || lower.contains("ou es") || lower.contains("t'es ou") || lower.contains("where") || lower.contains("fink") || lower.contains("fein")) {
+        if (lower.contains("où") || lower.contains("ou es") || lower.contains("t'es ou") || lower.contains("where") || lower.contains("win rak") || lower.contains("winek") || lower.contains("fink") || lower.contains("fein")) {
             boostLocation += 0.35f
         }
-        if (lower.contains("heure") || lower.contains("quand") || lower.contains("what time") || lower.contains("weqtach") || lower.contains("chhal f sa3a")) {
+        if (lower.contains("heure") || lower.contains("quand") || lower.contains("what time") || lower.contains("waqtah") || lower.contains("weqtach") || lower.contains("chhal f sa3a")) {
             boostTime += 0.35f
         }
-        if (lower.contains("merci") || lower.contains("thanks") || lower.contains("thank") || lower.contains("choukran") || lower.contains("chokran") || lower.contains("شكرا")) {
+        if (lower.contains("merci") || lower.contains("thanks") || lower.contains("thank") || lower.contains("choukran") || lower.contains("sahit") || lower.contains("yatik essaha") || lower.contains("شكرا")) {
             boostGratitude += 0.35f
         }
-        if (lower.contains("appelle") || lower.contains("rappelle") || lower.contains("call me") || lower.contains("3ayet") || lower.contains("tasel") || lower.contains("اتصل")) {
+        if (lower.contains("appelle") || lower.contains("rappelle") || lower.contains("call me") || lower.contains("3aytli") || lower.contains("3ayet") || lower.contains("tasel") || lower.contains("عيطلي") || lower.contains("اتصل")) {
             boostUrgent += 0.35f
         }
         if (isQuestion && boostLocation == 0f && boostTime == 0f && boostHowAreYou == 0f) {
@@ -131,7 +131,7 @@ object OrbisReplyEngine {
 
         // Fill remaining slots with pre-trained bank in the detected language
         val langMap = OrbisReplyWeights.SMART_REPLIES[bestIntent] ?: OrbisReplyWeights.SMART_REPLIES[MessageIntent.GENERIC]!!
-        val defaultReplies = langMap[detectedLang] ?: langMap["fr"] ?: emptyList()
+        val defaultReplies = langMap[detectedLang] ?: (if (detectedLang == "darija") langMap["dz"] else null) ?: langMap["fr"] ?: emptyList()
 
         for (reply in defaultReplies) {
             if (suggestions.size >= maxSuggestions) break

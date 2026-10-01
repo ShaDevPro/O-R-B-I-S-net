@@ -98,6 +98,8 @@ import com.sha.orbis.permissions.PermissionGate
 import com.sha.orbis.storage.ConversationRepository
 import com.sha.orbis.storage.FriendRequestRepository
 import com.sha.orbis.storage.PrivateConversationRepository
+import com.sha.orbis.storage.SocialRepository
+import com.sha.orbis.social.SocialStory
 import com.sha.orbis.ui.auth.AuthScreen
 import com.sha.orbis.ui.components.OrbisAvatar
 import com.sha.orbis.ui.components.OrbisTopHeader
@@ -107,10 +109,14 @@ import com.sha.orbis.ui.conversation.PrivateChatPasswordSetupDialog
 import com.sha.orbis.ui.conversation.PrivateConversationsScreen
 import com.sha.orbis.ui.groups.CreateGroupScreen
 import com.sha.orbis.ui.settings.SettingsScreen
+import com.sha.orbis.ui.social.SocialStoriesBar
 import com.sha.orbis.ui.social.TimelineScreen
+import com.sha.orbis.media.MediaAttachmentHelper
+import com.sha.orbis.media.VideoMediaHelper
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.collectAsState
@@ -130,6 +136,10 @@ fun OrbisApp(
     val sessionManager = remember { SessionManager(context) }
     var currentAccountId by remember { mutableStateOf(sessionManager.activeAccountId) }
     var convRepository by remember(currentAccountId) { mutableStateOf(ConversationRepository(context, currentAccountId)) }
+    val socialRepo = remember(currentAccountId) { SocialRepository(context, currentAccountId) }
+    var stories by remember(currentAccountId) { mutableStateOf(socialRepo.loadStories()) }
+
+    fun refreshChatStories() { stories = socialRepo.loadStories() }
 
     var targetSocialPostId by remember { mutableStateOf(initialPostId) }
     var targetSocialActionType by remember { mutableStateOf(initialActionType) }
@@ -179,6 +189,7 @@ fun OrbisApp(
     var activeUserWallState by remember { mutableStateOf<com.sha.orbis.ui.components.FriendProfilePreviewDialogState?>(null) }
     var isPinUnlocked by remember { mutableStateOf(!com.sha.orbis.security.DuressSecurityManager.isPinEnabled(context)) }
     val currentCallSession by com.sha.orbis.call.OrbisCallManager.callState.collectAsState()
+    val callFeedback by com.sha.orbis.call.OrbisCallManager.callFeedback.collectAsState()
     var pendingAcceptVideo by remember { mutableStateOf<Boolean?>(null) }
 
     val recordAudioPermissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
@@ -553,6 +564,21 @@ fun OrbisApp(
             },
             onAddNewAccount = { slotIndex ->
                 targetSlotForNewAccount = slotIndex
+            }
+        )
+    }
+
+    if (callFeedback != null && currentCallSession == null) {
+        com.sha.orbis.ui.call.OrbisCallFeedbackDialog(
+            feedback = callFeedback!!,
+            onDismiss = {
+                com.sha.orbis.call.OrbisCallManager.clearCallFeedback()
+            },
+            onOpenChat = { phone ->
+                com.sha.orbis.call.OrbisCallManager.clearCallFeedback()
+                val digits = phone.filter { it.isDigit() }
+                val convId = if (digits.isNotBlank()) "conv_$digits" else "conv_${phone.take(16)}"
+                navigateToEncryptedChat(convId, phone)
             }
         )
     }
@@ -1000,7 +1026,50 @@ fun OrbisApp(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             },
-                            onStartNewChat = { showNewChatSheet = true }
+                            onStartNewChat = { showNewChatSheet = true },
+                            stories = stories,
+                            userAvatarPath = sessionManager.userAvatarPath,
+                            userName = sessionManager.userName.ifBlank { "Moi" },
+                            currentPhone = sessionManager.userPhone,
+                            onAddStory = { content, mediaPath, mediaBase64, gradientIndex, mediaType, mediaUrl, targetCircleId, excludedCircleIds, excludedPhones ->
+                                val story = SocialStory(
+                                    id = "story_${UUID.randomUUID().toString().take(8)}",
+                                    authorPhone = sessionManager.userPhone,
+                                    authorName = sessionManager.userName.ifBlank { "Moi" },
+                                    authorAvatarPath = sessionManager.userAvatarPath,
+                                    content = content,
+                                    mediaType = mediaType,
+                                    mediaPath = mediaPath,
+                                    mediaBase64 = mediaBase64,
+                                    mediaUrl = mediaUrl,
+                                    backgroundGradientIndex = gradientIndex,
+                                    createdAt = System.currentTimeMillis(),
+                                    expiresAt = System.currentTimeMillis() + 86_400_000L,
+                                    targetCircleId = targetCircleId,
+                                    excludedCircleIds = excludedCircleIds,
+                                    excludedPhones = excludedPhones
+                                )
+                                socialRepo.addStory(story)
+                                try {
+                                    val nostrSync = com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context)
+                                    nostrSync.publishStory(story)
+                                } catch (_: Exception) { }
+                                refreshChatStories()
+                                Toast.makeText(context, context.getString(R.string.social_story_created), Toast.LENGTH_SHORT).show()
+                            },
+                            onDeleteStory = { storyId ->
+                                socialRepo.deleteStory(storyId)
+                                try {
+                                    val nostrSync = com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context)
+                                    nostrSync.publishDeleteStory(storyId)
+                                } catch (_: Exception) { }
+                                refreshChatStories()
+                                Toast.makeText(context, context.getString(R.string.social_toast_story_deleted), Toast.LENGTH_SHORT).show()
+                            },
+                            onStorySeen = { story ->
+                                socialRepo.markStorySeen(story.id, sessionManager.userPhone)
+                                refreshChatStories()
+                            }
                         )
                         2 -> com.sha.orbis.ui.calls.CallHistoryScreen(
                             currentAccountId = currentAccountId,
@@ -1043,7 +1112,14 @@ private fun WhatsAppConversationsList(
     onOpenChat: (Conversation) -> Unit,
     onDeleteConversation: (Conversation) -> Unit,
     onTogglePin: (Conversation) -> Unit,
-    onStartNewChat: () -> Unit
+    onStartNewChat: () -> Unit,
+    stories: List<SocialStory> = emptyList(),
+    userAvatarPath: String? = null,
+    userName: String = "",
+    currentPhone: String = "",
+    onAddStory: (content: String, mediaPath: String?, mediaBase64: String?, gradientIndex: Int, mediaType: String?, mediaUrl: String?, targetCircleId: String?, excludedCircleIds: List<String>, excludedPhones: List<String>) -> Unit = { _, _, _, _, _, _, _, _, _ -> },
+    onDeleteStory: ((String) -> Unit)? = null,
+    onStorySeen: ((SocialStory) -> Unit)? = null
 ) {
     var conversationToDelete by remember { mutableStateOf<Conversation?>(null) }
     var conversationActionTarget by remember { mutableStateOf<Conversation?>(null) }
@@ -1147,26 +1223,22 @@ private fun WhatsAppConversationsList(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            item(key = "header_trust_banner") {
-                // Discreet WhatsApp Security Trust Header (Placed above first conversation)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(12.dp)
+            item(key = "header_stories_strip") {
+                com.sha.orbis.ui.social.feed.FeedStoriesStrip {
+                    com.sha.orbis.ui.social.feed.FeedSectionTitle(
+                        title = stringResource(R.string.social_stories_title)
                     )
-                    Spacer(modifier = Modifier.size(6.dp))
-                    Text(
-                        text = stringResource(R.string.chat_trust_banner),
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    SocialStoriesBar(
+                        stories = stories,
+                        userAvatarPath = userAvatarPath,
+                        userName = userName.ifBlank { "Moi" },
+                        currentPhone = currentPhone,
+                        onAddStory = onAddStory,
+                        onDeleteStory = onDeleteStory,
+                        onStorySeen = onStorySeen
+                    )
+                    com.sha.orbis.ui.social.feed.FeedSectionDivider(
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
             }
@@ -1444,19 +1516,21 @@ private fun WhatsAppConversationRow(
                             modifier = Modifier.size(15.dp)
                         )
                     }
+                    val previewText = lastMsg?.text ?: conversation.lastMessage
                     Text(
 
                         text = when {
-                            conversation.lastMessage.startsWith("[IMAGE:") -> stringResource(R.string.chat_last_message_image)
-                            conversation.lastMessage.startsWith("[DOC:") -> stringResource(R.string.chat_last_message_doc)
-                            conversation.lastMessage.startsWith("[AUDIO:") -> stringResource(R.string.chat_last_message_audio)
-                            conversation.lastMessage.startsWith("[GPS:") -> stringResource(R.string.media_gps_label)
-                            conversation.lastMessage.startsWith("[QUOTE:") -> {
-                                val endIdx = conversation.lastMessage.indexOf("]\n")
-                                if (endIdx != -1) conversation.lastMessage.substring(endIdx + 2)
-                                else conversation.lastMessage
+                            previewText.startsWith("[IMAGE:") || MediaAttachmentHelper.isAlbumPayload(previewText) -> stringResource(R.string.chat_last_message_image)
+                            previewText.startsWith("[DOC:") -> stringResource(R.string.chat_last_message_doc)
+                            previewText.startsWith("[AUDIO:") -> stringResource(R.string.chat_last_message_audio)
+                            VideoMediaHelper.isVideoPayload(previewText) -> stringResource(R.string.chat_last_message_video)
+                            previewText.startsWith("[GPS:") -> stringResource(R.string.media_gps_label)
+                            previewText.startsWith("[QUOTE:") -> {
+                                val endIdx = previewText.indexOf("]\n")
+                                if (endIdx != -1) previewText.substring(endIdx + 2)
+                                else previewText
                             }
-                            else -> conversation.lastMessage
+                            else -> previewText
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "136641263931",
+    "project_id": "orbisnet-63371",
+    "storage_bucket": "orbisnet-63371.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136641263931:android:147878c93fa92ec36edf1e",
+        "android_client_info": {
+          "package_name": "com.sha.orbisnet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbNzSTji7vcHMyL5uUR6xHuRSGHpEhNj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

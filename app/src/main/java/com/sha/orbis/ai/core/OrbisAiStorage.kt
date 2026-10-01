@@ -175,4 +175,67 @@ class OrbisAiStorage(private val context: Context? = null) {
             storageFile.writeText(root.toString(2))
         } catch (_: Exception) {}
     }
+
+    /**
+     * Retrieves the persistent language affinity recorded for a specific contact or peer.
+     * Returns "dz", "fr", "ar", "en", or null if not yet learned.
+     */
+    @Synchronized
+    fun getContactLanguage(peerId: String): String? {
+        if (peerId.isBlank() || !storageFile.exists()) return null
+        return try {
+            val json = JSONObject(storageFile.readText())
+            val affObj = json.optJSONObject("contact_language_affinity") ?: return null
+            val cleanKey = peerId.trim().lowercase()
+            val item = affObj.optJSONObject(cleanKey) ?: return null
+            val lang = item.optString("lang")
+            if (lang.isNullOrBlank()) null else lang
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Updates the persistent language affinity for a contact or peer based on interactions.
+     */
+    @Synchronized
+    fun recordContactLanguage(peerId: String, langCode: String, forceManual: Boolean = false) {
+        if (peerId.isBlank() || langCode.isBlank()) return
+        try {
+            val root = if (storageFile.exists()) {
+                try { JSONObject(storageFile.readText()) } catch (_: Exception) { JSONObject() }
+            } else {
+                JSONObject()
+            }
+
+            val affObj = root.optJSONObject("contact_language_affinity") ?: JSONObject()
+            val cleanKey = peerId.trim().lowercase()
+            val existing = affObj.optJSONObject(cleanKey)
+
+            val currentLang = existing?.optString("lang") ?: langCode
+            val currentCount = existing?.optInt("count", 0) ?: 0
+
+            val (newLang, newCount) = if (forceManual) {
+                langCode to 20
+            } else if (currentLang == langCode) {
+                langCode to (currentCount + 1)
+            } else {
+                if (currentCount <= 1) {
+                    langCode to 1
+                } else {
+                    currentLang to (currentCount - 1)
+                }
+            }
+
+            val item = JSONObject().apply {
+                put("lang", newLang)
+                put("count", newCount)
+                put("timestamp", System.currentTimeMillis())
+            }
+
+            affObj.put(cleanKey, item)
+            root.put("contact_language_affinity", affObj)
+            storageFile.writeText(root.toString(2))
+        } catch (_: Exception) {}
+    }
 }

@@ -36,7 +36,9 @@ data class CallSession(
     val peerVideoPort: Int = OrbisVideoStreamer.VIDEO_PORT,
     val peerVideoLocalPort: Int = OrbisVideoStreamer.VIDEO_PORT,
     // WebRTC SDP offer received — stored until acceptCall() uses it
-    val peerSdpOffer: String? = null
+    val peerSdpOffer: String? = null,
+    // Real-time VoIP Call Guard analysis (Trust, Spam, Burst, Spoofing)
+    val guardAnalysis: com.sha.orbis.ai.guard.CallGuardAnalysisResult? = null
 )
 
 enum class CallFeedbackReason {

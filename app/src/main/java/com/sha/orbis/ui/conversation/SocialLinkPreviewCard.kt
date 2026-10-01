@@ -33,7 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,64 +56,84 @@ import com.sha.orbis.media.LinkContentType
 import com.sha.orbis.media.LinkPlatform
 import com.sha.orbis.media.LinkPreviewHelper
 import com.sha.orbis.media.LinkPreviewMetadata
-import com.sha.orbis.media.MediaAttachmentHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
+import com.sha.orbis.media.LinkPreviewUiState
 
 /**
  * Carte de prévisualisation riche d'un lien externe (TikTok, Instagram, Facebook, YouTube, Web)
  * affichant la miniature du post et permettant le clic direct pour ouvrir dans l'application émettrice.
+ * Conçue avec désabonnement immédiat onDispose pour immunité totale aux crashes LazyColumn/LazyLayout.
  */
 @Composable
 fun SocialLinkPreviewCard(
     url: String,
     modifier: Modifier = Modifier,
     isMsgMine: Boolean = false,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    bubbleBgOverride: Color? = null,
+    bubbleBorderOverride: Color? = null
 ) {
     val context = LocalContext.current
-    var preview by remember(url) { mutableStateOf<LinkPreviewMetadata?>(null) }
-    var isLoading by remember(url) { mutableStateOf(true) }
-    var thumbnailBitmap by remember(url) { mutableStateOf<Bitmap?>(null) }
+    val cleanUrl = remember(url) { LinkPreviewHelper.cleanUrl(url) }
+    val platform = remember(cleanUrl) { LinkPlatform.fromUrl(cleanUrl) }
 
-    val platform = remember(url) { LinkPlatform.fromUrl(url) }
+    // 1. État initial instantané (0ms, 0 sursaut) si déjà en cache mémoire
+    var uiState by remember(cleanUrl) {
+        mutableStateOf(
+            LinkPreviewHelper.getCachedUiState(cleanUrl) ?: LinkPreviewUiState(
+                url = cleanUrl,
+                platform = platform,
+                title = "${platform.displayName} Post",
+                description = null,
+                thumbnailBitmap = null,
+                isLoading = true
+            )
+        )
+    }
 
-    LaunchedEffect(url) {
-        isLoading = true
-        val meta = LinkPreviewHelper.getPreview(context, url)
-        preview = meta
-        isLoading = false
-
-        if (meta?.localThumbnailPath != null) {
-            val bmp = withContext(Dispatchers.IO) {
-                MediaAttachmentHelper.loadBitmap(meta.localThumbnailPath)
-            }
-            thumbnailBitmap = bmp
+    // 2. Abonnement sécurisé : dès que l'item quitte le viewport ou est recyclé,
+    // onDispose est appelé instantanément, annulant tout callback vers le LayoutNode !
+    DisposableEffect(cleanUrl) {
+        val unsubscribe = LinkPreviewHelper.subscribe(context, cleanUrl) { newState ->
+            uiState = newState
+        }
+        onDispose {
+            unsubscribe()
         }
     }
 
     val handleOpen = {
-        onClick?.invoke() ?: LinkPreviewHelper.openInSourceApp(context, url)
+        onClick?.invoke() ?: LinkPreviewHelper.openInSourceApp(context, cleanUrl)
     }
 
-    val cardBg = if (isMsgMine) {
+    val cardBg = bubbleBgOverride ?: if (isMsgMine) {
         MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
     } else {
         MaterialTheme.colorScheme.surface
     }
 
+    val cardBorderColor = bubbleBorderOverride ?: MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
     val brandColor = Color(platform.brandColorHex)
+
+    val hostText = remember(cleanUrl, platform) {
+        try {
+            java.net.URI(cleanUrl).host?.removePrefix("www.") ?: platform.displayName.lowercase()
+        } catch (_: Exception) {
+            platform.displayName.lowercase()
+        }
+    }
+
+    // Platforms with visual content should reserve a stable media height to avoid dynamic jumps
+    val hasVisualMedia = platform != LinkPlatform.GENERIC || uiState.thumbnailBitmap != null || uiState.isLoading
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(14.dp))
             .clickable { handleOpen() },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = cardBg),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = androidx.compose.foundation.BorderStroke(1.dp, cardBorderColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (bubbleBgOverride != null) 0.dp else 2.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -168,7 +188,7 @@ fun SocialLinkPreviewCard(
                     )
                 }
 
-                if (isLoading) {
+                if (uiState.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(14.dp),
                         strokeWidth = 1.5.dp,
@@ -177,23 +197,40 @@ fun SocialLinkPreviewCard(
                 }
             }
 
-            // 2. Miniature (Thumbnail) de la publication / vidéo
-            if (thumbnailBitmap != null) {
+            // 2. Miniature (Thumbnail) avec conteneur stable anti-sursaut et anti-crash LazyColumn
+            if (hasVisualMedia) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 140.dp, max = 200.dp)
-                        .background(Color.Black.copy(alpha = 0.08f)),
+                        .height(160.dp)
+                        .background(brandColor.copy(alpha = 0.08f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        bitmap = thumbnailBitmap!!.asImageBitmap(),
-                        contentDescription = preview?.title ?: "Miniature",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 140.dp, max = 200.dp)
-                    )
+                    if (uiState.thumbnailBitmap != null) {
+                        Image(
+                            bitmap = uiState.thumbnailBitmap!!.asImageBitmap(),
+                            contentDescription = uiState.title,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(160.dp)
+                        )
+                    } else {
+                        // Placeholder élégant avant le décodage de l'image
+                        val placeholderIcon = when (platform) {
+                            LinkPlatform.TIKTOK -> Icons.Default.MusicNote
+                            LinkPlatform.INSTAGRAM -> Icons.Default.PhotoCamera
+                            LinkPlatform.FACEBOOK -> Icons.Default.Public
+                            LinkPlatform.YOUTUBE -> Icons.Default.Videocam
+                            else -> Icons.Default.Public
+                        }
+                        Icon(
+                            imageVector = placeholderIcon,
+                            contentDescription = null,
+                            tint = brandColor.copy(alpha = 0.35f),
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
 
                     // Overlay de lecture vidéo si applicable
                     if (platform.contentType == LinkContentType.VIDEO || platform.contentType == LinkContentType.REEL_OR_POST) {
@@ -222,8 +259,8 @@ fun SocialLinkPreviewCard(
                     .padding(horizontal = 12.dp, vertical = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                val titleText = preview?.title?.ifBlank { null }
-                    ?: if (isLoading) stringResource(R.string.link_preview_loading) else "${platform.displayName} Post"
+                val titleText = uiState.title.ifBlank { null }
+                    ?: if (uiState.isLoading) stringResource(R.string.link_preview_loading) else "${platform.displayName} Post"
 
                 Text(
                     text = titleText,
@@ -235,9 +272,9 @@ fun SocialLinkPreviewCard(
                     lineHeight = 17.sp
                 )
 
-                if (!preview?.description.isNullOrBlank()) {
+                if (!uiState.description.isNullOrBlank()) {
                     Text(
-                        text = preview!!.description!!,
+                        text = uiState.description!!,
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
@@ -256,14 +293,8 @@ fun SocialLinkPreviewCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    val host = try {
-                        java.net.URI(url).host?.removePrefix("www.") ?: platform.displayName.lowercase()
-                    } catch (_: Exception) {
-                        platform.displayName.lowercase()
-                    }
-
                     Text(
-                        text = host,
+                        text = hostText,
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                         maxLines = 1,

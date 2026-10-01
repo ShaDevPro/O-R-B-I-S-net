@@ -231,6 +231,10 @@ object OrbisCallManager {
             )
         )
 
+        // Réinitialisation du rapport de diagnostic pour cette nouvelle session d'appel
+        com.sha.orbis.call.diagnostic.CallDiagnosticLogger.resetReportFile(context)
+        com.sha.orbis.call.diagnostic.FeedDebugTracker.resetForNewCall("SORTANT", peerPhone)
+
         com.sha.orbis.call.diagnostic.LastCallDebugTracker.onCallStarted(
             id = callId,
             direction = "SORTANT",
@@ -445,6 +449,17 @@ object OrbisCallManager {
             startTime = startTime,
             durationSeconds = 0
         )
+        try {
+            val tmCtx = ctx ?: appContext
+            if (tmCtx != null) {
+                val tm = com.sha.orbis.telemetry.TelemetryManager.getInstance(tmCtx)
+                if (current.isVideoCall) {
+                    tm.recordEvent(com.sha.orbis.telemetry.FeatureType.VIDEO_CALL_SUCCESS)
+                } else {
+                    tm.recordEvent(com.sha.orbis.telemetry.FeatureType.VOICE_CALL_SUCCESS)
+                }
+            }
+        } catch (_: Exception) {}
         // ── Notifier Android Telecom que l'appel est connecté ──
         com.sha.orbis.call.telecom.OrbisTelecomHelper.onCallConnected(current.callId)
 
@@ -519,6 +534,94 @@ object OrbisCallManager {
 
         val sessionManager = SessionManager(context)
 
+        // Evaluate incoming call security with VoIP Guard Engine
+        val callGuardAnalysis = com.sha.orbis.ai.guard.OrbisCallGuardEngine.analyzeIncomingCall(
+            context = context,
+            callerPhone = effectiveCallerPhone,
+            callerName = displayName,
+            peerNostrKey = resolvedPeerNostrKey,
+            isSavedContact = (contact != null)
+        )
+
+        // Module 4: Mode Conduite & Ne Pas Déranger Auto
+        val aiPrefs = com.sha.orbis.ai.core.OrbisAiPreferences(context)
+        val isDriving = aiPrefs.isDrivingAutoDeclineEnabled && isBluetoothAudioConnected(context)
+        val isDnd = aiPrefs.isDndAutoDeclineEnabled && isDoNotDisturbActive(context)
+
+        if (isDriving || isDnd) {
+            val targetIntent = if (isDriving) {
+                com.sha.orbis.ai.suggestions.CallDeclineIntent.DRIVING
+            } else {
+                com.sha.orbis.ai.suggestions.CallDeclineIntent.BUSY_GENERAL
+            }
+            val suggestions = com.sha.orbis.ai.suggestions.OrbisSuggestionLibrary.getDiverseDeclineSuggestions(
+                context = context,
+                peerId = effectiveCallerPhone
+            )
+            val replyText = suggestions.firstOrNull { it.declineIntent == targetIntent }?.text
+                ?: suggestions.firstOrNull()?.text
+                ?: if (isDriving) "Je suis au volant, écris-moi." else "Je ne peux pas parler pour le moment."
+
+            android.util.Log.i("OrbisCallManager", "Auto-declining incoming call (driving=$isDriving, dnd=$isDnd) with reply: $replyText")
+            com.sha.orbis.call.diagnostic.LastCallDebugTracker.logEvent("AUTO_DECLINE", "Appel refusé auto (driving=$isDriving, dnd=$isDnd)")
+
+            // Enregistrer l'appel en tant que manqué
+            logCallRecord(
+                com.sha.orbis.model.CallRecord(
+                    id = callId,
+                    peerPhone = if (contact?.phone?.isNotBlank() == true) contact.phone else effectiveCallerPhone,
+                    peerName = displayName,
+                    peerAvatar = contact?.avatarPath,
+                    timestamp = System.currentTimeMillis(),
+                    durationSeconds = 0,
+                    direction = com.sha.orbis.model.CallDirection.MISSED,
+                    isVideo = isVideo,
+                    threatLevel = callGuardAnalysis.threatLevel.name,
+                    threatType = callGuardAnalysis.threatType.name,
+                    trustScore = callGuardAnalysis.trustScore
+                )
+            )
+
+            // Rejeter l'appel via signal Nostr et transmettre le message de réponse
+            scope.launch(Dispatchers.IO) {
+                try {
+                    val destKey = resolvedPeerNostrKey?.takeIf { it.isNotBlank() } ?: effectiveCallerPhone
+                    com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context).sendCallSignal(
+                        recipientNpubOrHex = destKey,
+                        callId = callId,
+                        signalType = "DECLINE",
+                        payloadJson = JSONObject().apply {
+                            put("reason", if (isDriving) "DRIVING" else "DND")
+                        }
+                    )
+                    val digits = destKey.filter { it.isDigit() }
+                    val convId = if (digits.isNotBlank()) "conv_$digits" else "conv_${destKey.take(16)}"
+                    val msgId = "msg_${System.currentTimeMillis()}_${java.util.UUID.randomUUID().toString().take(6)}"
+                    com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context).sendDirectMessage(
+                        recipientNpubOrHex = destKey,
+                        conversationId = convId,
+                        text = replyText,
+                        messageId = msgId
+                    )
+                } catch (e: Throwable) {
+                    android.util.Log.e("OrbisCallManager", "Failed to dispatch auto-reply signal: ${e.message}")
+                }
+            }
+
+            scope.launch(Dispatchers.Main) {
+                val toastRes = if (isDriving) R.string.call_guard_auto_declined_driving else R.string.call_guard_auto_declined_dnd
+                Toast.makeText(context, context.getString(toastRes), Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        try {
+            com.sha.orbis.telemetry.TelemetryManager.getInstance(context).recordEvent(
+                if (isVideo) com.sha.orbis.telemetry.FeatureType.VIDEO_CALL
+                else com.sha.orbis.telemetry.FeatureType.VOICE_CALL
+            )
+        } catch (_: Exception) {}
+
         val session = CallSession(
             callId = callId,
             peerPhone = if (contact?.phone?.isNotBlank() == true) contact.phone else effectiveCallerPhone,
@@ -545,9 +648,14 @@ object OrbisCallManager {
             peerVideoPort = peerVideoPort,
             peerVideoLocalPort = peerVideoLocalPort,
             // WebRTC SDP offer — stored for acceptCall()
-            peerSdpOffer = peerSdpOffer?.ifBlank { null }
+            peerSdpOffer = peerSdpOffer?.ifBlank { null },
+            guardAnalysis = callGuardAnalysis
         )
         _callState.value = session
+
+        // Réinitialisation du rapport de diagnostic pour cette nouvelle session d'appel
+        com.sha.orbis.call.diagnostic.CallDiagnosticLogger.resetReportFile(context)
+        com.sha.orbis.call.diagnostic.FeedDebugTracker.resetForNewCall("ENTRANT", callerPhone)
 
         com.sha.orbis.call.diagnostic.LastCallDebugTracker.onCallStarted(
             id = callId,
@@ -585,8 +693,19 @@ object OrbisCallManager {
             android.util.Log.e("OrbisCallManager", "incomingCallWakeLock error: ${e.message}")
         }
 
-        // 2. Play incoming ringtone & vibrate
-        OrbisCallSoundManager.playIncomingRingtone(context)
+        // Module 6: Filtrage Silencieux des Spams et Bursts
+        val isMutedThreat = aiPrefs.isSilentBurstShieldEnabled && (
+            callGuardAnalysis.threatLevel == com.sha.orbis.ai.guard.ThreatLevel.CRITICAL ||
+            callGuardAnalysis.threatType == com.sha.orbis.ai.guard.CallThreatType.RAPID_BURST_FLOODING
+        )
+
+        // 2. Play incoming ringtone & vibrate (unmuted only if safe or non-critical)
+        if (!isMutedThreat) {
+            OrbisCallSoundManager.playIncomingRingtone(context)
+        } else {
+            android.util.Log.w("OrbisCallManager", "Guard suppressed ringtone for suspicious call burst/threat from $effectiveCallerPhone")
+            com.sha.orbis.call.diagnostic.LastCallDebugTracker.logEvent("GUARD_SILENT", "Sonnerie coupée silencieusement par Guard (threat=${callGuardAnalysis.threatType})")
+        }
 
         // ── Signalement Android Telecom (Core-Telecom Self-Managed VoIP) ──
         com.sha.orbis.call.telecom.OrbisTelecomHelper.reportIncomingCall(
@@ -805,7 +924,10 @@ object OrbisCallManager {
                 timestamp = startTime,
                 durationSeconds = 0,
                 direction = com.sha.orbis.model.CallDirection.INCOMING,
-                isVideo = isVideoSession
+                isVideo = isVideoSession,
+                threatLevel = current.guardAnalysis?.threatLevel?.name,
+                threatType = current.guardAnalysis?.threatType?.name,
+                trustScore = current.guardAnalysis?.trustScore ?: 100
             )
         )
     }
@@ -865,7 +987,10 @@ object OrbisCallManager {
                     timestamp = System.currentTimeMillis(),
                     durationSeconds = 0,
                     direction = com.sha.orbis.model.CallDirection.MISSED,
-                    isVideo = current.isVideoCall
+                    isVideo = current.isVideoCall,
+                    threatLevel = current.guardAnalysis?.threatLevel?.name,
+                    threatType = current.guardAnalysis?.threatType?.name,
+                    trustScore = current.guardAnalysis?.trustScore ?: 100
                 )
             )
         }
@@ -889,6 +1014,45 @@ object OrbisCallManager {
             delay(1000)
             _callState.value = null
         }
+    }
+
+    /**
+     * Declines the incoming VoIP call and dispatches an instant smart reply via E2EE Nostr Direct Message.
+     */
+    fun rejectCallWithQuickReply(context: Context, replyText: String) {
+        val current = _callState.value
+        val peerKey = current?.peerNostrKey?.takeIf { it.isNotBlank() } ?: current?.peerPhone
+        rejectCall()
+        if (!peerKey.isNullOrBlank() && replyText.isNotBlank()) {
+            scope.launch(Dispatchers.IO) {
+                try {
+                    val digits = peerKey.filter { it.isDigit() }
+                    val convId = if (digits.isNotBlank()) "conv_$digits" else "conv_${peerKey.take(16)}"
+                    val msgId = "msg_${System.currentTimeMillis()}_${java.util.UUID.randomUUID().toString().take(6)}"
+                    com.sha.orbis.nostr.service.NostrSyncManager.getInstance(context).sendDirectMessage(
+                        recipientNpubOrHex = peerKey,
+                        conversationId = convId,
+                        text = replyText,
+                        messageId = msgId
+                    )
+                } catch (e: Throwable) {
+                    android.util.Log.e("OrbisCallManager", "Could not send smart decline message: ${e.message}")
+                }
+            }
+        }
+    }
+
+    /**
+     * Ends the outgoing call prematurely and triggers the Walkie-Talkie post-call memo composer.
+     */
+    fun leaveVoiceMemoFallback() {
+        val current = _callState.value ?: return
+        _callFeedback.value = CallFeedbackInfo(
+            peerPhone = current.peerPhone,
+            peerName = current.peerName,
+            reason = CallFeedbackReason.NO_ANSWER
+        )
+        endCall(sendSignal = true)
     }
 
     // 5. CALL ANSWERED (Received on Caller Device from Nostr Signal)
@@ -1081,6 +1245,17 @@ object OrbisCallManager {
                          else "Appel interrompu avant connexion (Statut: ${current.status})"
             com.sha.orbis.call.diagnostic.LastCallDebugTracker.logEvent("CALL_END", "Appel terminé localement : $reason (callId=${current.callId})")
             com.sha.orbis.call.diagnostic.LastCallDebugTracker.onCallEnded(reason)
+
+            if (current.status != CallStatus.CONNECTED && current.status != CallStatus.ENDED && current.status != CallStatus.IDLE && appContext != null) {
+                try {
+                    val tm = com.sha.orbis.telemetry.TelemetryManager.getInstance(appContext!!)
+                    if (current.isVideoCall) {
+                        tm.recordEvent(com.sha.orbis.telemetry.FeatureType.VIDEO_CALL_FAIL)
+                    } else {
+                        tm.recordEvent(com.sha.orbis.telemetry.FeatureType.VOICE_CALL_FAIL)
+                    }
+                } catch (_: Exception) {}
+            }
         }
 
         // 1. DISPATCH NOSTR "END" SIGNAL FIRST — avant tout nettoyage local
@@ -1312,5 +1487,34 @@ object OrbisCallManager {
             result = (result shl 8) or (bytes[i].toInt() and 0xFF)
         }
         return result
+    }
+
+    fun isBluetoothAudioConnected(context: Context): Boolean {
+        return try {
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            if (audioManager != null) {
+                val devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+                devices.any { device ->
+                    device.type == android.media.AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
+                    device.type == android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
+                }
+            } else false
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun isDoNotDisturbActive(context: Context): Boolean {
+        return try {
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? android.app.NotificationManager
+            if (notificationManager != null) {
+                val filter = notificationManager.currentInterruptionFilter
+                filter == android.app.NotificationManager.INTERRUPTION_FILTER_NONE ||
+                filter == android.app.NotificationManager.INTERRUPTION_FILTER_ALARMS ||
+                filter == android.app.NotificationManager.INTERRUPTION_FILTER_PRIORITY
+            } else false
+        } catch (_: Exception) {
+            false
+        }
     }
 }

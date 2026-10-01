@@ -12,8 +12,11 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.RemoteInput
 import com.sha.orbis.MainActivity
 import com.sha.orbis.R
+import com.sha.orbis.ai.suggestions.OrbisSuggestionLibrary
+import com.sha.orbis.sms.DirectReplyReceiver
 import com.sha.orbis.data.OrbisBadgeHub
 import com.sha.orbis.data.SessionManager
 import com.sha.orbis.model.AppNotification
@@ -249,6 +252,36 @@ object OrbisMissedCallManager {
             } catch (_: Exception) { null }
         }
 
+        // Action 3 : Réponse rapide avec suggestions IA contextuelles
+        val smartSuggestions = OrbisSuggestionLibrary.getDiverseMissedCallSuggestions()
+        val smartChoices = smartSuggestions.map { it.text }.toTypedArray()
+
+        val replyIntent = Intent(context, DirectReplyReceiver::class.java).apply {
+            putExtra(DirectReplyReceiver.EXTRA_RECIPIENT_PHONE, peerPhone)
+            putExtra(DirectReplyReceiver.EXTRA_CONV_ID, "conv_${peerPhone.filter { it.isDigit() }}")
+            putExtra(DirectReplyReceiver.EXTRA_NOTIFICATION_ID, notifId)
+        }
+        val replyPendingIntent = PendingIntent.getBroadcast(
+            context,
+            notifId + 5,
+            replyIntent,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val remoteInput = RemoteInput.Builder(DirectReplyReceiver.KEY_TEXT_REPLY)
+            .setLabel("Répondre...")
+            .setChoices(smartChoices)
+            .build()
+
+        val smartReplyAction = NotificationCompat.Action.Builder(
+            android.R.drawable.ic_menu_send,
+            "Répondre",
+            replyPendingIntent
+        )
+            .addRemoteInput(remoteInput)
+            .setAllowGeneratedReplies(true)
+            .build()
+
         val builder = NotificationCompat.Builder(context, CHANNEL_MISSED_CALLS)
             .setSmallIcon(android.R.drawable.stat_notify_missed_call)
             .setContentTitle(peerName)
@@ -271,6 +304,7 @@ object OrbisMissedCallManager {
                 context.getString(R.string.missed_call_action_message),
                 messagePendingIntent
             )
+            .addAction(smartReplyAction)
 
         if (avatarBitmap != null) {
             builder.setLargeIcon(avatarBitmap)

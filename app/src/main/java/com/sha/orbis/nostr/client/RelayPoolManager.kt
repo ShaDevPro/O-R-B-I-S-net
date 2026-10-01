@@ -15,8 +15,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 /**
@@ -24,7 +28,7 @@ import java.util.concurrent.TimeUnit
  * Assure la redondance maximale (multi-relais), la déduplication intelligente des flux
  * et fournit l'état de santé du réseau en temps réel pour l'UI/UX.
  */
-class RelayPoolManager private constructor(context: Context) : RelayClient.RelayListener {
+class RelayPoolManager private constructor(private val context: Context) : RelayClient.RelayListener {
 
     companion object {
         private const val TAG = "RelayPoolManager"
@@ -65,6 +69,20 @@ class RelayPoolManager private constructor(context: Context) : RelayClient.Relay
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val okHttpClient = OkHttpClient.Builder()
+        .dispatcher(
+            Dispatcher(
+                ThreadPoolExecutor(
+                    0, 64, 60L, TimeUnit.SECONDS,
+                    SynchronousQueue(),
+                    ThreadFactory { runnable ->
+                        Thread(runnable).apply {
+                            name = "OkHttp-RelayPool"
+                            isDaemon = true // CRITIQUE: threads daemon pour ne JAMAIS bloquer DestroyJavaVM (WaitForOtherNonDaemonThreadsToExit) → ANR
+                        }
+                    }
+                )
+            )
+        )
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
@@ -108,6 +126,7 @@ class RelayPoolManager private constructor(context: Context) : RelayClient.Relay
     fun stop() {
         Log.d(TAG, "Arrêt du pool de relais")
         clients.values.forEach { it.disconnect() }
+        okHttpClient.connectionPool.evictAll()
     }
 
     /**
@@ -148,6 +167,11 @@ class RelayPoolManager private constructor(context: Context) : RelayClient.Relay
     }
 
     override fun onStateChanged(client: RelayClient, state: RelayClient.State) {
+        if (state == RelayClient.State.ERROR) {
+            try {
+                com.sha.orbis.telemetry.TelemetryManager.getInstance(context).recordError("nostr_relay")
+            } catch (_: Exception) {}
+        }
         updateHealthState()
     }
 

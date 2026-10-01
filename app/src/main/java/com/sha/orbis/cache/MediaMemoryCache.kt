@@ -9,7 +9,11 @@ import android.util.LruCache
  */
 object MediaMemoryCache {
 
-    private const val MAX_CACHE_SIZE_BYTES = 25 * 1024 * 1024
+    // Standard Android pattern: 1/8 of the app heap to avoid OOM
+    private val MAX_CACHE_SIZE_BYTES: Int = (Runtime.getRuntime().maxMemory() / 8).coerceIn(
+        16L * 1024 * 1024,  // minimum 16 MB
+        64L * 1024 * 1024   // maximum 64 MB
+    ).toInt()
 
     private val lruCache = object : LruCache<String, Bitmap>(MAX_CACHE_SIZE_BYTES) {
         override fun sizeOf(key: String, bitmap: Bitmap): Int {

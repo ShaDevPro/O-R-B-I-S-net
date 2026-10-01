@@ -5,7 +5,7 @@ import androidx.core.content.edit
 
 /**
  * Manages user activation preferences for ORBIS AI LLMs.
- * Both ORBIS Guard-LLM and ORBIS Reply-LLM are disabled by default upon first installation.
+ * Both ORBIS Guard-LLM and ORBIS Reply-LLM are enabled by default upon first installation.
  */
 class OrbisAiPreferences(context: Context) {
 
@@ -15,22 +15,58 @@ class OrbisAiPreferences(context: Context) {
         private const val PREFS_NAME = "orbis_ai_preferences"
         private const val KEY_GUARD_ENABLED = "guard_llm_enabled"
         private const val KEY_REPLY_ENABLED = "reply_llm_enabled"
+        private const val KEY_DRIVING_AUTO_DECLINE = "driving_auto_decline_enabled"
+        private const val KEY_DND_AUTO_DECLINE = "dnd_auto_decline_enabled"
+        private const val KEY_SMART_RECALL = "smart_recall_enabled"
+        private const val KEY_SILENT_BURST_SHIELD = "silent_burst_shield_enabled"
     }
 
     /**
-     * Is ORBIS Guard-LLM enabled for SMS spam & cyber threat protection.
-     * Default: false (disabled by default on fresh install).
+     * Is Auto-decline when Driving Mode active enabled.
+     * Default: false (user opt-in).
+     */
+    var isDrivingAutoDeclineEnabled: Boolean
+        get() = prefs.getBoolean(KEY_DRIVING_AUTO_DECLINE, false)
+        set(value) = prefs.edit { putBoolean(KEY_DRIVING_AUTO_DECLINE, value) }
+
+    /**
+     * Is Auto-decline when system Do Not Disturb active enabled.
+     * Default: false (user opt-in).
+     */
+    var isDndAutoDeclineEnabled: Boolean
+        get() = prefs.getBoolean(KEY_DND_AUTO_DECLINE, false)
+        set(value) = prefs.edit { putBoolean(KEY_DND_AUTO_DECLINE, value) }
+
+    /**
+     * Is Smart Recall protection for off-hours (22h-08h) enabled.
+     * Default: true.
+     */
+    var isSmartRecallEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SMART_RECALL, true)
+        set(value) = prefs.edit { putBoolean(KEY_SMART_RECALL, value) }
+
+    /**
+     * Is Silent Burst & Spam shielding enabled (instantly muting suspicious call storms).
+     * Default: true.
+     */
+    var isSilentBurstShieldEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SILENT_BURST_SHIELD, true)
+        set(value) = prefs.edit { putBoolean(KEY_SILENT_BURST_SHIELD, value) }
+
+    /**
+     * Is ORBIS Guard-LLM enabled for spam & cyber threat protection.
+     * Default: true (enabled by default on fresh install).
      */
     var isGuardEnabled: Boolean
-        get() = prefs.getBoolean(KEY_GUARD_ENABLED, false)
+        get() = prefs.getBoolean(KEY_GUARD_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_GUARD_ENABLED, value) }
 
     /**
      * Is ORBIS Reply-LLM enabled for smart contextual reply suggestions.
-     * Default: false (disabled by default on fresh install).
+     * Default: true (enabled by default on fresh install).
      */
     var isReplyEnabled: Boolean
-        get() = prefs.getBoolean(KEY_REPLY_ENABLED, false)
+        get() = prefs.getBoolean(KEY_REPLY_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_REPLY_ENABLED, value) }
 
     /**

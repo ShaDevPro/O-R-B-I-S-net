@@ -17,7 +17,10 @@ data class CallRecord(
     val durationSeconds: Int = 0,
     val direction: CallDirection = CallDirection.OUTGOING,
     val isVideo: Boolean = false,
-    val isRead: Boolean = (direction != CallDirection.MISSED)
+    val isRead: Boolean = (direction != CallDirection.MISSED),
+    val threatLevel: String? = null,
+    val threatType: String? = null,
+    val trustScore: Int = 100
 ) {
     val isMissed: Boolean
         get() = direction == CallDirection.MISSED
@@ -32,6 +35,9 @@ data class CallRecord(
         put("direction", direction.name)
         put("isVideo", isVideo)
         put("isRead", isRead)
+        threatLevel?.let { put("threatLevel", it) }
+        threatType?.let { put("threatType", it) }
+        put("trustScore", trustScore)
     }
 
     companion object {
@@ -50,7 +56,10 @@ data class CallRecord(
                 durationSeconds = json.optInt("durationSeconds", 0),
                 direction = dir,
                 isVideo = json.optBoolean("isVideo", false),
-                isRead = json.optBoolean("isRead", dir != CallDirection.MISSED)
+                isRead = json.optBoolean("isRead", dir != CallDirection.MISSED),
+                threatLevel = json.optString("threatLevel").ifBlank { null },
+                threatType = json.optString("threatType").ifBlank { null },
+                trustScore = json.optInt("trustScore", 100)
             )
         }
     }

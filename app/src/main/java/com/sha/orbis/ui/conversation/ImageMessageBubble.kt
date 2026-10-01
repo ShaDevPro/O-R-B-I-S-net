@@ -60,9 +60,9 @@ fun ImageMessageBubble(
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
 
     val bubbleShape = if (isMsgMine) {
-        RoundedCornerShape(topStart = 12.dp, topEnd = 3.dp, bottomStart = 12.dp, bottomEnd = 12.dp)
+        RoundedCornerShape(topStart = 22.dp, topEnd = 6.dp, bottomStart = 22.dp, bottomEnd = 22.dp)
     } else {
-        RoundedCornerShape(topStart = 3.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 12.dp)
+        RoundedCornerShape(topStart = 6.dp, topEnd = 22.dp, bottomStart = 22.dp, bottomEnd = 22.dp)
     }
 
     val bubbleBg = when {

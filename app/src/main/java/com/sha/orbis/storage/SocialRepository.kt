@@ -27,6 +27,11 @@ class SocialRepository(
         private val accountCachedPosts = java.util.concurrent.ConcurrentHashMap<String, List<SocialPost>>()
         private val accountCachedStories = java.util.concurrent.ConcurrentHashMap<String, List<SocialStory>>()
 
+        /** Single-thread executor for async disk writes — prevents ANR when sync floods addPost. */
+        private val diskWriteExecutor = java.util.concurrent.Executors.newSingleThreadExecutor { r ->
+            Thread(r, "SocialRepo-DiskWriter").apply { isDaemon = true }
+        }
+
         fun invalidateCache() {
             accountCachedPosts.clear()
             accountCachedStories.clear()
@@ -49,6 +54,7 @@ class SocialRepository(
     /** Comments/reactions received before the parent post exists locally (Nostr ordering). */
     private val pendingComments = mutableListOf<SocialComment>()
     private val pendingReactions = mutableListOf<Triple<String, String, String>>()
+    private val pendingCommentReactions = mutableListOf<Triple<String, String, Pair<String, String>>>()
 
     private fun ensureDeletedPostsLoaded() {
         if (deletedPostsLoaded) return
@@ -236,7 +242,28 @@ class SocialRepository(
     ): List<SocialComment> {
         if (incoming.isEmpty()) return existing
         val byId = existing.associateBy { it.id }.toMutableMap()
-        incoming.forEach { byId[it.id] = it }
+        for (incomingComment in incoming) {
+            val stored = byId[incomingComment.id]
+            if (stored == null) {
+                byId[incomingComment.id] = incomingComment
+            } else {
+                val mergedReactions = mergeReactions(stored.reactions, incomingComment.reactions)
+                val bestReplyToId = stored.replyToCommentId?.takeIf { it.isNotBlank() } ?: incomingComment.replyToCommentId
+                val bestReplyToName = stored.replyToAuthorName?.takeIf { it.isNotBlank() } ?: incomingComment.replyToAuthorName
+                val locallyEdited = stored.isEdited
+                val locallyEditedAt = stored.editedAt
+                val incomingEdited = incomingComment.isEdited && (incomingComment.editedAt ?: 0L) > 0L
+                val keepLocalEdit = locallyEdited && (!incomingEdited || (locallyEditedAt ?: 0L) >= (incomingComment.editedAt ?: 0L))
+                byId[incomingComment.id] = stored.copy(
+                    text = if (keepLocalEdit) stored.text else incomingComment.text.ifBlank { stored.text },
+                    isEdited = locallyEdited || incomingEdited,
+                    editedAt = maxOf(locallyEditedAt ?: 0L, incomingComment.editedAt ?: 0L).takeIf { it > 0L },
+                    replyToCommentId = bestReplyToId,
+                    replyToAuthorName = bestReplyToName,
+                    reactions = mergedReactions
+                )
+            }
+        }
         return byId.values.sortedBy { it.timestamp }
     }
 
@@ -262,8 +289,22 @@ class SocialRepository(
     }
 
     @Synchronized
+    fun enqueuePendingCommentReaction(postId: String, commentId: String, userPhone: String, emoji: String): Boolean {
+        if (pendingCommentReactions.any {
+                it.first == postId && it.second == commentId &&
+                    FriendRequestRepository.isSamePhone(it.third.first, userPhone) &&
+                    it.third.second == emoji
+            }
+        ) {
+            return true
+        }
+        pendingCommentReactions.add(Triple(postId, commentId, userPhone to emoji))
+        return true
+    }
+
+    @Synchronized
     private fun flushPendingEngagements(resolvedPostId: String) {
-        if (pendingComments.isEmpty() && pendingReactions.isEmpty()) return
+        if (pendingComments.isEmpty() && pendingReactions.isEmpty() && pendingCommentReactions.isEmpty()) return
         val commentBatch = pendingComments.filter {
             matchesPostId(it.postId, resolvedPostId) ||
                 com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.postId).let { hex ->
@@ -277,6 +318,12 @@ class SocialRepository(
         pendingReactions.removeAll(reactionBatch.toSet())
         reactionBatch.forEach { (pid, phone, emoji) ->
             applyIncomingReaction(pid, phone, emoji)
+        }
+
+        val commentReactionBatch = pendingCommentReactions.filter { matchesPostId(it.first, resolvedPostId) }
+        pendingCommentReactions.removeAll(commentReactionBatch.toSet())
+        commentReactionBatch.forEach { (pid, cid, userEmoji) ->
+            applyIncomingCommentReaction(pid, cid, userEmoji.first, userEmoji.second)
         }
     }
 
@@ -317,13 +364,40 @@ class SocialRepository(
         return true
     }
 
+    private fun sanitizePost(rawPost: SocialPost): SocialPost {
+        val path = rawPost.mediaPath
+        val isDirectoryOrCorrupt = if (path.isNullOrBlank()) false else {
+            try {
+                val f = java.io.File(path)
+                f.isDirectory || !f.exists() || !f.isFile || f.length() == 0L
+            } catch (_: Exception) { true }
+        }
+
+        val hasAnyMedia = !rawPost.mediaData.isNullOrBlank() || !rawPost.mediaUrl.isNullOrBlank()
+        val shouldClearMediaType = (rawPost.mediaType == "image" || rawPost.mediaType == "video") &&
+                isDirectoryOrCorrupt && !hasAnyMedia
+
+        return if (isDirectoryOrCorrupt) {
+            rawPost.copy(
+                mediaPath = null,
+                mediaType = if (shouldClearMediaType) null else rawPost.mediaType
+            )
+        } else rawPost
+    }
+
     @Synchronized
     fun loadPosts(): List<SocialPost> {
         ensureDeletedPostsLoaded()
         accountCachedPosts[currentAccountId]?.let { cached ->
-            val cleanCached = cached.filterNot { isPostDeleted(it.id) }
-            if (cleanCached.size != cached.size) {
+            var cacheModified = false
+            val cleanCached = cached.filterNot { isPostDeleted(it.id) }.distinctBy { it.id }.map { post ->
+                val sanitized = sanitizePost(post)
+                if (sanitized != post) cacheModified = true
+                sanitized
+            }
+            if (cleanCached.size != cached.size || cacheModified) {
                 accountCachedPosts[currentAccountId] = cleanCached
+                savePosts(cleanCached)
             }
             return cleanCached
         }
@@ -339,24 +413,39 @@ class SocialRepository(
             }
             val array = JSONArray(postsFile.readText())
             val list = mutableListOf<SocialPost>()
+            var needsResave = false
             for (i in 0 until array.length()) {
-                val post = SocialPost.fromJson(array.getJSONObject(i))
-                // Filter out all official Orbis announcements and deleted posts
-                if (!post.isOfficialAnnouncement && !isPostDeleted(post.id)) {
-                    list.add(post)
+                val rawPost = SocialPost.fromJson(array.getJSONObject(i))
+                val isSyncPacket = rawPost.content.startsWith("[ORBIS_PEER_SYNC_V1]") ||
+                    rawPost.content.contains("\"action\":\"EXCHANGE_") ||
+                    (rawPost.content.startsWith("{") && rawPost.content.contains("\"bundle\":{"))
+
+                // Filter out all official Orbis announcements, deleted posts, and leaked sync packets
+                if (!rawPost.isOfficialAnnouncement && !isPostDeleted(rawPost.id) && !isSyncPacket) {
+                    val sanitizedPost = sanitizePost(rawPost)
+                    if (sanitizedPost != rawPost) {
+                        needsResave = true
+                    }
+                    list.add(sanitizedPost)
                 }
             }
 
-            // If we just purged official posts or deleted posts from disk, persist the cleaned list
-            val rawSize = array.length()
-            if (rawSize > list.size) {
-                savePosts(list)
+            // Deduplicate by ID
+            val distinctList = list.distinctBy { it.id }
+            if (distinctList.size != list.size) {
+                needsResave = true
             }
 
-            if (list.isEmpty()) {
+            // If we just purged official posts, deleted posts, duplicate IDs, or sanitized corrupt media paths, persist the cleaned list
+            val rawSize = array.length()
+            if (rawSize > distinctList.size || needsResave) {
+                savePosts(distinctList)
+            }
+
+            if (distinctList.isEmpty()) {
                 emptyList()
             } else {
-                list.sortedWith(
+                distinctList.sortedWith(
                     compareByDescending<SocialPost> { it.isPinned }
                         .thenByDescending { it.timestamp }
                 )
@@ -374,37 +463,45 @@ class SocialRepository(
 
     @Synchronized
     fun savePosts(posts: List<SocialPost>) {
-        val sorted = posts.sortedWith(
+        val sorted = posts.distinctBy { it.id }.sortedWith(
             compareByDescending<SocialPost> { it.isPinned }
                 .thenByDescending { if (!it.isPinned && it.isOfficialAnnouncement) 0L else it.timestamp }
                 .thenByDescending { it.timestamp }
         )
         // Strip mediaData from posts that already have a valid local file — mediaData (base64) is
         // only needed for Nostr transport, not for local disk. Keeping it would bloat the JSON file.
-        val toSave = sorted.map { post ->
-            if (!post.mediaPath.isNullOrBlank() &&
-                java.io.File(post.mediaPath).exists() &&
-                !post.mediaData.isNullOrBlank()
-            ) {
+        val toSave = sorted.map { rawPost ->
+            val post = sanitizePost(rawPost)
+            val isLocalValid = !post.mediaPath.isNullOrBlank() && try {
+                val f = java.io.File(post.mediaPath)
+                f.exists() && f.isFile && f.length() > 0L
+            } catch (_: Exception) { false }
+
+            if (isLocalValid && !post.mediaData.isNullOrBlank()) {
                 post.copy(mediaData = null)
             } else post
         }
+        // Update in-memory cache immediately (fast, no I/O)
         accountCachedPosts[currentAccountId] = toSave
-        try {
-            // Write stream-by-stream directly to disk to never allocate a giant contiguous string
-            postsFile.bufferedWriter().use { writer ->
-                writer.write("[\n")
-                toSave.forEachIndexed { index, post ->
-                    if (index > 0) writer.write(",\n")
-                    writer.write(post.toJson().toString())
+        // Async disk write — releases the lock so UI thread won't ANR
+        val file = postsFile
+        val snapshot = ArrayList(toSave)
+        diskWriteExecutor.execute {
+            try {
+                file.bufferedWriter().use { writer ->
+                    writer.write("[\n")
+                    snapshot.forEachIndexed { index, post ->
+                        if (index > 0) writer.write(",\n")
+                        writer.write(post.toJson().toString())
+                    }
+                    writer.write("\n]")
                 }
-                writer.write("\n]")
+            } catch (e: OutOfMemoryError) {
+                System.gc()
+                android.util.Log.e("SocialRepository", "OOM avoided in savePosts: ${e.message}")
+            } catch (e: Exception) {
+                android.util.Log.e("SocialRepository", "Error in savePosts: ${e.message}")
             }
-        } catch (e: OutOfMemoryError) {
-            System.gc()
-            android.util.Log.e("SocialRepository", "OOM avoided in savePosts: ${e.message}")
-        } catch (e: Exception) {
-            android.util.Log.e("SocialRepository", "Error in savePosts: ${e.message}")
         }
     }
 
@@ -413,6 +510,13 @@ class SocialRepository(
         ensureDeletedPostsLoaded()
         if (isPostDeleted(post.id)) {
             android.util.Log.d("SocialRepository", "addPost rejeté : post marqué comme supprimé (${post.id})")
+            return
+        }
+        if (post.content.startsWith("[ORBIS_PEER_SYNC_V1]") ||
+            post.content.contains("\"action\":\"EXCHANGE_") ||
+            (post.content.startsWith("{") && post.content.contains("\"bundle\":{"))
+        ) {
+            android.util.Log.w("SocialRepository", "addPost rejeté : paquet de synchronisation détecté dans le post")
             return
         }
         val current = loadPosts().toMutableList()
@@ -424,24 +528,79 @@ class SocialRepository(
             // silently erase them. Only update content fields.
             // Also preserve the existing mediaPath if it already points to a valid local file —
             // avoids overwriting the author's own valid image path when their post bounces back via relay.
-            val bestMediaPath = if (!existing.mediaPath.isNullOrBlank() &&
-                    java.io.File(existing.mediaPath!!).exists() &&
-                    java.io.File(existing.mediaPath!!).length() > 0L) {
+            val isExistingValidFile = !existing.mediaPath.isNullOrBlank() && try {
+                val f = java.io.File(existing.mediaPath!!)
+                f.exists() && f.isFile && f.length() > 0L
+            } catch (_: Exception) { false }
+
+            val isIncomingValidFile = !post.mediaPath.isNullOrBlank() && try {
+                val f = java.io.File(post.mediaPath!!)
+                f.exists() && f.isFile && f.length() > 0L
+            } catch (_: Exception) { false }
+
+            val bestMediaPath = if (isExistingValidFile) {
                 existing.mediaPath
+            } else if (isIncomingValidFile) {
+                post.mediaPath
             } else {
-                post.mediaPath ?: existing.mediaPath
+                null
             }
-            current[existingIdx] = post.copy(
+            current[existingIdx] = existing.copy(
+                // Contenu : garder l'existant si l'entrant est vide (relay renvoie content vide)
+                content = post.content.ifBlank { existing.content },
+                // Auteur : garder l'existant si l'entrant est un npub brut ou un placeholder
+                authorName = if (post.authorName.isBlank() ||
+                    post.authorName.startsWith("npub1", ignoreCase = true) ||
+                    post.authorName == "Utilisateur OrbisNet" || post.authorName == "OrbisNet") {
+                    existing.authorName.ifBlank { post.authorName }
+                } else post.authorName,
+                authorAvatarPath = post.authorAvatarPath ?: existing.authorAvatarPath,
+                authorPhone = post.authorPhone.ifBlank { existing.authorPhone },
+                authorPubkey = post.authorPubkey ?: existing.authorPubkey,
+                // Engagement : fusionner, jamais écraser
                 reactions = mergeReactions(existing.reactions, post.reactions),
                 comments = mergeComments(existing.comments, post.comments),
+                // Poll : garder l'existant si absent côté relay
                 poll = post.poll ?: existing.poll,
+                // Média : bestMediaPath calculé plus haut, URL/type : garder le meilleur
                 mediaPath = bestMediaPath,
+                mediaUrl = post.mediaUrl ?: existing.mediaUrl,
+                mediaType = post.mediaType ?: existing.mediaType,
+                mediaData = null, // strip Base64 en mémoire
+                // Champs locaux JAMAIS transmis via Nostr — toujours préserver
+                hashtags = if (post.hashtags.isNotEmpty()) post.hashtags else existing.hashtags,
+                isPinned = existing.isPinned,
+                isEdited = existing.isEdited,
+                editedAt = existing.editedAt,
+                repostsCount = maxOf(existing.repostsCount, post.repostsCount),
+                repostAuthorName = existing.repostAuthorName ?: post.repostAuthorName,
+                repostAuthorPhone = existing.repostAuthorPhone ?: post.repostAuthorPhone,
+                repostOriginalPostId = existing.repostOriginalPostId ?: post.repostOriginalPostId,
+                rsaSignature = existing.rsaSignature.ifBlank { post.rsaSignature },
+                authorRole = if (post.authorRole != com.sha.orbis.social.UserSocialRole.STANDARD) post.authorRole else existing.authorRole,
+                // Cercles/exclusions : garder les données les plus complètes
+                targetCircleId = post.targetCircleId ?: existing.targetCircleId,
+                excludedCircleIds = if (post.excludedCircleIds.isNotEmpty()) post.excludedCircleIds else existing.excludedCircleIds,
+                excludedPhones = if (post.excludedPhones.isNotEmpty()) post.excludedPhones else existing.excludedPhones,
+                // Timestamps
+                timestamp = if (post.timestamp > 0L) post.timestamp else existing.timestamp,
                 receivedAt = existing.receivedAt.takeIf { it > 0L } ?: post.receivedAt
             )
             flushPendingEngagements(current[existingIdx].id)
         } else {
-            current.add(0, post)
-            flushPendingEngagements(post.id)
+            val safePost = sanitizePost(post)
+            current.add(0, safePost)
+            flushPendingEngagements(safePost.id)
+
+            // Télémétrie autonome du feed (Orbis vs Extra-Orbis, cercles privés)
+            try {
+                val isExtra = !safePost.id.startsWith("post_") && safePost.authorPhone.isBlank()
+                val hasMedia = !safePost.mediaPath.isNullOrBlank() || !safePost.mediaUrl.isNullOrBlank()
+                com.sha.orbis.telemetry.FeedTelemetryTracker.trackPostCreated(context, isExtraOrbis = isExtra, hasMedia = hasMedia)
+                if (!safePost.targetCircleId.isNullOrBlank()) {
+                    com.sha.orbis.telemetry.FeedTelemetryTracker.trackCircleAction(context)
+                }
+            } catch (_: Exception) {}
         }
         savePosts(current)
     }
@@ -498,6 +657,11 @@ class SocialRepository(
             }
             current[index] = post.copy(reactions = newReactions)
             savePosts(current)
+            if (isNewlyAdded) {
+                try {
+                    com.sha.orbis.telemetry.FeedTelemetryTracker.trackReaction(context)
+                } catch (_: Exception) {}
+            }
             return isNewlyAdded
         }
         return false
@@ -550,7 +714,50 @@ class SocialRepository(
             )
             current[index] = post.copy(poll = updatedPoll)
             savePosts(current)
+            if (isLocalUser) {
+                try {
+                    com.sha.orbis.telemetry.FeedTelemetryTracker.trackPollVote(context)
+                } catch (_: Exception) {}
+            }
         }
+    }
+
+    /**
+     * Idempotent comment-reaction apply for Nostr sync (no toggle-off when the same emoji is replayed).
+     */
+    @Synchronized
+    fun applyIncomingCommentReaction(postId: String, commentId: String, userPhone: String, emoji: String): Boolean {
+        ensureDeletedPostsLoaded()
+        if (isPostDeleted(postId)) return false
+        val current = loadPosts().toMutableList()
+        val pIndex = current.indexOfFirst {
+            it.id == postId || (postId.length == 64 && com.sha.orbis.nostr.protocol.NostrProtocolEngine.toNostrHex(it.id).equals(postId, ignoreCase = true))
+        }
+        if (pIndex < 0) return false
+        val post = current[pIndex]
+        if (isPostDeleted(post.id)) return false
+        val comments = post.comments.toMutableList()
+        val cIndex = comments.indexOfFirst { it.id == commentId }
+        if (cIndex < 0) return false
+        val comment = comments[cIndex]
+        val existingIdx = comment.reactions.indexOfFirst {
+            FriendRequestRepository.isSamePhone(it.userPhone, userPhone)
+        }
+        val newReactions = comment.reactions.toMutableList()
+        if (existingIdx >= 0) {
+            if (newReactions[existingIdx].emoji == emoji) {
+                return true
+            }
+            newReactions[existingIdx] = SocialReaction(
+                UUID.randomUUID().toString(), commentId, userPhone, emoji
+            )
+        } else {
+            newReactions.add(SocialReaction(UUID.randomUUID().toString(), commentId, userPhone, emoji))
+        }
+        comments[cIndex] = comment.copy(reactions = newReactions)
+        current[pIndex] = post.copy(comments = comments)
+        savePosts(current)
+        return true
     }
 
     @Synchronized
@@ -578,6 +785,9 @@ class SocialRepository(
                 comments.add(resolvedComment)
                 current[index] = post.copy(comments = comments)
                 savePosts(current)
+                try {
+                    com.sha.orbis.telemetry.FeedTelemetryTracker.trackComment(context)
+                } catch (_: Exception) {}
                 return true
             }
         }

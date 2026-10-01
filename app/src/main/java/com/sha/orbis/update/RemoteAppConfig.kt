@@ -23,26 +23,26 @@ data class RemoteAppConfig(
 
     companion object {
         val DEFAULT = RemoteAppConfig(
-            minRequiredVersionCode = 130,
-            minRequiredVersionName = "1.3.0",
-            latestVersionCode = 130,
-            latestVersionName = "1.3.0",
-            forceUpdate = true,
-            downloadUrl = "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk",
-            releaseNotesFr = "Version 1.3.0 : Discussions privées, masquage de publications dans le fil d'actualité, stabilité des appels 4G/4G et correction de bugs.",
-            releaseNotesEn = "Version 1.3.0: Private discussions, post hiding in feed, 4G/4G call stability and bug fixes.",
-            releaseNotesAr = "الإصدار 1.3.0: محادثات خاصة، إخفاء المنشورات في الخلاصة، استقرار المكالمات 4G واصلاح الأخطاء."
+            minRequiredVersionCode = 100,
+            minRequiredVersionName = "1.0.0",
+            latestVersionCode = 140,
+            latestVersionName = "1.4.0",
+            forceUpdate = false,
+            downloadUrl = "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk",
+            releaseNotesFr = "Version 1.4.0 : Optimisations majeures du fil d'actualité, aperçus fluides des liens externes sans blocage, navigation épurée dans le journal d'appels et stabilité renforcée.",
+            releaseNotesEn = "Version 1.4.0: Major feed performance optimizations, smooth external link previews without freezing, refined call history navigation, and enhanced stability.",
+            releaseNotesAr = "الإصدار 1.4.0: تحسينات كبرى في أداء الخلاصة ومعاينات الروابط الخارجية بسلاسة، واجهة تنقل محسنة في سجل المكالمات واستقرار عام."
         )
 
         fun fromJson(json: JSONObject): RemoteAppConfig {
             val notesObj = json.optJSONObject("releaseNotes")
             return RemoteAppConfig(
-                minRequiredVersionCode = json.optInt("minRequiredVersionCode", 130),
-                minRequiredVersionName = json.optString("minRequiredVersionName", "1.3.0"),
-                latestVersionCode = json.optInt("latestVersionCode", 130),
-                latestVersionName = json.optString("latestVersionName", "1.3.0"),
-                forceUpdate = json.optBoolean("forceUpdate", true),
-                downloadUrl = json.optString("downloadUrl", "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk"),
+                minRequiredVersionCode = json.optInt("minRequiredVersionCode", 100),
+                minRequiredVersionName = json.optString("minRequiredVersionName", "1.0.0"),
+                latestVersionCode = json.optInt("latestVersionCode", 140),
+                latestVersionName = json.optString("latestVersionName", "1.4.0"),
+                forceUpdate = json.optBoolean("forceUpdate", false),
+                downloadUrl = json.optString("downloadUrl", "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk"),
                 releaseNotesFr = notesObj?.optString("fr", "") ?: "",
                 releaseNotesEn = notesObj?.optString("en", "") ?: "",
                 releaseNotesAr = notesObj?.optString("ar", "") ?: ""

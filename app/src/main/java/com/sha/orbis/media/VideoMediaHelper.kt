@@ -162,24 +162,24 @@ object VideoMediaHelper {
 
         // 1. Chemin direct absolu
         val directFile = File(videoIdOrPath)
-        if (directFile.isAbsolute && directFile.exists() && directFile.length() > 0) {
+        if (directFile.isAbsolute && directFile.exists() && directFile.isFile && directFile.length() > 0) {
             return directFile
         }
 
         // 2. Recherche dans le répertoire dédié
         val cleanId = extractCleanVideoId(videoIdOrPath)
         val candidate = File(getVideoDirectory(context), "$cleanId.mp4")
-        if (candidate.exists() && candidate.length() > 0) {
+        if (candidate.exists() && candidate.isFile && candidate.length() > 0) {
             return candidate
         }
 
         // 3. Fallback sans suffixe forcé
         val candidateAlt = File(getVideoDirectory(context), videoIdOrPath)
-        if (candidateAlt.exists() && candidateAlt.length() > 0) {
+        if (candidateAlt.exists() && candidateAlt.isFile && candidateAlt.length() > 0) {
             return candidateAlt
         }
 
-        return if (directFile.exists()) directFile else null
+        return if (directFile.exists() && directFile.isFile) directFile else null
     }
 
     /**
@@ -189,7 +189,7 @@ object VideoMediaHelper {
         if (videoIdOrPath.isBlank()) return null
         val cleanId = extractCleanVideoId(videoIdOrPath)
         val thumb = File(getThumbnailDirectory(context), "${cleanId}_thumb.jpg")
-        return if (thumb.exists() && thumb.length() > 0) thumb else null
+        return if (thumb.exists() && thumb.isFile && thumb.length() > 0) thumb else null
     }
 
     /**

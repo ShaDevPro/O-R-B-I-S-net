@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -66,7 +67,6 @@ import com.sha.orbis.ui.components.LinkifiedText
 import com.sha.orbis.media.MediaAttachmentHelper
 import com.sha.orbis.ui.components.FullScreenImageViewerDialog
 import com.sha.orbis.ui.components.OrbisVideoPlayer
-import com.sha.orbis.ui.conversation.SocialLinkPreviewCard
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -86,25 +86,22 @@ import com.sha.orbis.social.SocialPoll
 import com.sha.orbis.social.SocialPost
 import com.sha.orbis.social.UserSocialRole
 import com.sha.orbis.ui.components.OrbisAvatar
-import com.sha.orbis.ui.social.feed.FeedActionBarIg
-import com.sha.orbis.ui.social.feed.FeedCaptionBlock
-import com.sha.orbis.ui.social.feed.FeedCommentPreview
-import com.sha.orbis.ui.social.feed.FeedDoubleTapHeartOverlay
-import com.sha.orbis.ui.social.feed.FeedEngagementSummary
-import com.sha.orbis.ui.social.feed.FeedPostContextRibbons
-import com.sha.orbis.ui.social.feed.FeedPostDivider
+import com.sha.orbis.ui.social.feed.FeedDesignTokens
 import com.sha.orbis.ui.social.feed.FeedPostHeaderActions
-import com.sha.orbis.ui.social.feed.FeedPostHeaderIg
+import com.sha.orbis.ui.social.feed.post.FeedPostCardIg
 import com.sha.orbis.ui.social.feed.popups.FeedBlockUserConfirmDialog
 import com.sha.orbis.ui.social.feed.popups.FeedEditPostDialog
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
 import com.sha.orbis.ui.theme.OrbisColorPalette
+import com.sha.orbis.ui.conversation.SocialLinkPreviewCard
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+private val POST_URL_REGEX = Regex("""https?://[^\s]+""")
 
 @Composable
 fun SocialPostCard(
@@ -114,6 +111,7 @@ fun SocialPostCard(
     onVotePoll: (optionId: String) -> Unit,
     onOpenComments: () -> Unit,
     onDeletePost: (() -> Unit)? = null,
+    onHidePost: (() -> Unit)? = null,
     onEditPost: ((postId: String, newContent: String, newHashtags: List<String>) -> Unit)? = null,
     onTogglePin: (() -> Unit)? = null,
     onRepost: (() -> Unit)? = null,
@@ -140,14 +138,6 @@ fun SocialPostCard(
         }.joinToString(" • ")
     }
 
-    var showEmojiPalette by remember { mutableStateOf(false) }
-    var showHeartBurst by remember { mutableStateOf(false) }
-    LaunchedEffect(showHeartBurst) {
-        if (showHeartBurst) {
-            delay(650)
-            showHeartBurst = false
-        }
-    }
     var showEditDialog by remember { mutableStateOf(false) }
     var showPostOptionsMenu by remember { mutableStateOf(false) }
     var showBlockConfirmDialog by remember { mutableStateOf(false) }
@@ -161,70 +151,97 @@ fun SocialPostCard(
         post.id.startsWith("sos_") || post.content.contains("ALERTE SOS") || gpsCoords != null
     }
 
-    val cardBorderColor = when {
-        isEmergencySos -> Color(0xFFEF4444) // Emergency Red
-        post.isOfficialAnnouncement -> Color(0xFF38BDF8) // Light Blue
-        post.isPinned -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.outline
+    val detectedUrl = remember(post.content) {
+        val safeContent = if (post.content.length > 2048) post.content.take(2048) else post.content
+        try { POST_URL_REGEX.find(safeContent)?.value } catch (_: Throwable) { null }
     }
 
-    val cardBgColor = when {
-        isEmergencySos -> Color(0xFFEF4444).copy(alpha = 0.05f)
-        post.isOfficialAnnouncement -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f)
-        else -> MaterialTheme.colorScheme.surfaceVariant
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(cardBgColor)
-    ) {
-            FeedPostContextRibbons(
-                post = post,
-                isEmergencySos = isEmergencySos,
-                recommendationReason = recommendationReason,
-                matchingTags = matchingTags
-            )
-
-            FeedPostHeaderIg(
-                post = post,
-                metaLine = metaLine,
-                onAuthorClick = onAuthorClick,
-                trailingActions = {
-                    FeedPostHeaderActions(
-                        post = post,
-                        currentPhone = currentPhone,
-                        showPostOptionsMenu = showPostOptionsMenu,
-                        onShowPostOptionsMenuChange = { showPostOptionsMenu = it },
-                        onRequestBlockConfirm = { showBlockConfirmDialog = true },
-                        onEditClick = if (onEditPost != null) {
-                            {
-                                editContentText = post.content
-                                editHashtagsText = post.hashtags.joinToString(" ") { if (it.startsWith("#")) it else "#$it" }
-                                showEditDialog = true
-                            }
-                        } else null,
-                        onTogglePin = onTogglePin,
-                        onDeletePost = onDeletePost
-                    )
-                }
-            )
-
-            val cleanContent = remember(post.content, gpsCoords) {
-                if (gpsCoords != null) {
-                    val prefix = com.sha.orbis.media.LocationGpsHelper.GPS_PREFIX
-                    val suffix = com.sha.orbis.media.LocationGpsHelper.GPS_SUFFIX
-                    val start = post.content.indexOf(prefix)
-                    val end = post.content.indexOf(suffix, start)
-                    if (start != -1 && end != -1) {
-                        (post.content.substring(0, start) + post.content.substring(end + suffix.length)).trim()
-                    } else post.content
-                } else post.content
+    val cleanContent = remember(post.content, gpsCoords, detectedUrl) {
+        var result = if (post.content.length > 4000) post.content.take(4000) else post.content
+        // Strip GPS payload
+        if (gpsCoords != null) {
+            val prefix = com.sha.orbis.media.LocationGpsHelper.GPS_PREFIX
+            val suffix = com.sha.orbis.media.LocationGpsHelper.GPS_SUFFIX
+            val start = result.indexOf(prefix)
+            val end = result.indexOf(suffix, start)
+            if (start != -1 && end != -1) {
+                result = (result.substring(0, start) + result.substring(end + suffix.length)).trim()
             }
+        }
+        // Strip URL when preview card will be displayed
+        if (!detectedUrl.isNullOrBlank()) {
+            result = result.replace(detectedUrl, "").trim()
+        }
+        result
+    }
 
-            // Interactive Family SOS Live GPS Card
+    val postImageSource = remember(post.mediaPath, post.mediaData) {
+        val validLocalPath = post.mediaPath?.takeIf { path ->
+            if (path.isBlank()) return@takeIf false
+            try {
+                val f = java.io.File(path)
+                f.exists() && f.isFile && f.length() > 0L
+            } catch (_: Exception) { false }
+        }
+        validLocalPath ?: post.mediaData?.takeIf { it.isNotBlank() }
+    }
+    val isVideoPost = remember(post.mediaType, post.mediaPath, post.mediaData, post.mediaUrl) {
+        val validVideoFile = post.mediaPath?.takeIf { path ->
+            try {
+                val f = java.io.File(path)
+                f.exists() && f.isFile && f.length() > 0L
+            } catch (_: Exception) { false }
+        }
+        val hasVideoData = !post.mediaData.isNullOrBlank() || !post.mediaUrl.isNullOrBlank()
+        (post.mediaType == "video" && (validVideoFile != null || hasVideoData)) ||
+            (validVideoFile != null && post.mediaPath?.endsWith(".mp4", ignoreCase = true) == true)
+    }
+    val hasMedia = remember(isVideoPost, postImageSource) {
+        isVideoPost || !postImageSource.isNullOrBlank()
+    }
+
+    FeedPostCardIg(
+        post = post,
+        currentPhone = currentPhone,
+        metaLine = metaLine,
+        cleanContent = cleanContent,
+        isEmergencySos = isEmergencySos,
+        hasMedia = hasMedia,
+        onReact = onReact,
+        onOpenComments = onOpenComments,
+        onRepost = onRepost,
+        onShareToChat = onShareToChat,
+        onShowReactions = onShowReactions,
+        onAuthorClick = onAuthorClick,
+        recommendationReason = recommendationReason,
+        matchingTags = matchingTags,
+        headerActions = {
+            FeedPostHeaderActions(
+                post = post,
+                currentPhone = currentPhone,
+                showPostOptionsMenu = showPostOptionsMenu,
+                onShowPostOptionsMenuChange = { showPostOptionsMenu = it },
+                onRequestBlockConfirm = { showBlockConfirmDialog = true },
+                onHidePost = onHidePost,
+                onEditClick = if (onEditPost != null) {
+                    {
+                        editContentText = post.content
+                        editHashtagsText = post.hashtags.joinToString(" ") { if (it.startsWith("#")) it else "#$it" }
+                        showEditDialog = true
+                    }
+                } else null,
+                onTogglePin = onTogglePin,
+                onDeletePost = onDeletePost
+            )
+        },
+        aboveMedia = {
             if (isEmergencySos) {
-                Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
+                Column(
+                    modifier = Modifier.padding(
+                        horizontal = FeedDesignTokens.ContentPaddingHorizontal,
+                        vertical = 4.dp
+                    )
+                ) {
                     FamilySosLocationCard(
                         coords = gpsCoords,
                         authorPhone = post.authorPhone,
@@ -233,194 +250,14 @@ fun SocialPostCard(
                     )
                 }
             }
-
-            // Attached Post Image
-            val postImageSource = remember(post.mediaPath, post.mediaData) {
-                // Check that the local file actually exists (deleted after reinstall)
-                val pathValid = !post.mediaPath.isNullOrBlank() && java.io.File(post.mediaPath).exists()
-                if (pathValid) post.mediaPath else post.mediaData?.takeIf { it.isNotBlank() }
-            }
-
-            var showFullScreenImage by remember { mutableStateOf(false) }
-
-            if (showFullScreenImage && !postImageSource.isNullOrBlank()) {
-                FullScreenImageViewerDialog(
-                    imagePathOrBase64 = postImageSource,
-                    title = post.content.take(40).ifBlank { post.authorName },
-                    onDismiss = { showFullScreenImage = false }
-                )
-            }
-
-            val isVideoPost = remember(post.mediaType, post.mediaPath) {
-                post.mediaType == "video" || post.mediaPath?.endsWith(".mp4", ignoreCase = true) == true
-            }
-
-            var localVideoPath by remember(post.id, post.mediaPath) {
-                mutableStateOf(post.mediaPath?.takeIf { java.io.File(it).exists() }
-                    ?: com.sha.orbis.media.VideoMediaHelper.getVideoFile(context, post.id)?.absolutePath)
-            }
-            var isDownloadingVideo by remember(post.id) { mutableStateOf(false) }
-            var videoDownloadProgress by remember(post.id) { mutableIntStateOf(0) }
-
-            // Restauration automatique en arrière-plan si absent sur l'appareil du destinataire mais disponible en Base64
-            androidx.compose.runtime.LaunchedEffect(post.id, post.mediaData) {
-                if (isVideoPost && localVideoPath == null && !post.mediaData.isNullOrBlank()) {
-                    isDownloadingVideo = true
-                    val file = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                        val cleanPostId = post.id.filter { it.isLetterOrDigit() || it == '_' }.take(32).ifBlank { "post_${System.currentTimeMillis()}" }
-                        val cleanBase64 = if (post.mediaData!!.contains(",")) post.mediaData!!.substringAfter(",") else post.mediaData!!
-                        com.sha.orbis.media.VideoMediaHelper.base64ToVideoFile(context, cleanBase64.trim(), cleanPostId) { pct ->
-                            videoDownloadProgress = pct
-                        }
-                    }
-                    if (file != null && file.exists()) {
-                        localVideoPath = file.absolutePath
-                    }
-                    isDownloadingVideo = false
-                }
-            }
-
-            if (isVideoPost) {
-                if (!localVideoPath.isNullOrBlank() && java.io.File(localVideoPath!!).exists()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(240.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
-                    ) {
-                        OrbisVideoPlayer(
-                            videoPathOrId = localVideoPath!!,
-                            modifier = Modifier.fillMaxSize(),
-                            autoPlay = false,
-                            showFullScreenButton = true
-                        )
-                    }
-                } else if (isDownloadingVideo) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.Black.copy(alpha = 0.85f))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(16.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            CircularProgressIndicator(
-                                progress = { (videoDownloadProgress / 100f).coerceIn(0f, 1f) },
-                                modifier = Modifier.size(42.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                strokeWidth = 4.dp
-                            )
-                            Text(
-                                text = stringResource(R.string.video_downloading_progress, videoDownloadProgress),
-                                color = Color.White,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(16.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Icon(Icons.Default.Videocam, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(
-                                text = stringResource(R.string.video_file_not_found),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            } else if (!postImageSource.isNullOrBlank()) {
-                // Load bitmap asynchronously — base64 decode/decompress is CPU-intensive
-                var postBitmap by remember(postImageSource) { mutableStateOf<android.graphics.Bitmap?>(null) }
-                androidx.compose.runtime.LaunchedEffect(postImageSource) {
-                    postBitmap = null
-                    val loaded = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                        MediaAttachmentHelper.loadBitmap(postImageSource)
-                    }
-                    postBitmap = loaded
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 180.dp, max = 380.dp)
-                        .background(Color.Black.copy(alpha = 0.04f))
-                        .pointerInput(post.id) {
-                            detectTapGestures(
-                                onTap = { showFullScreenImage = true },
-                                onDoubleTap = {
-                                    showHeartBurst = true
-                                    onReact("❤️")
-                                }
-                            )
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    val bmp = postBitmap
-                    if (bmp != null) {
-                        Image(
-                            bitmap = bmp.asImageBitmap(),
-                            contentDescription = post.content.take(30),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 180.dp, max = 280.dp)
-                        )
-                        IconButton(
-                            onClick = {
-                                MediaDownloadManager.saveImageAsync(context, postImageSource, post.content.take(30))
-                            },
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(10.dp)
-                                .size(34.dp)
-                                .background(Color.Black.copy(alpha = 0.55f), CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FileDownload,
-                                contentDescription = stringResource(R.string.media_download_image),
-                                tint = Color.White,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(28.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    FeedDoubleTapHeartOverlay(
-                        visible = showHeartBurst,
-                        modifier = Modifier.matchParentSize()
-                    )
-                }
-            }
-
+        },
+        belowMedia = {
             // Interactive Website / Social Post Preview Card (TikTok, Instagram, Facebook, etc.)
-            val detectedUrl = remember(post.content) {
-                val regex = Regex("""https?://[^\s]+""")
-                regex.find(post.content)?.value
-            }
             if (!detectedUrl.isNullOrBlank()) {
-                Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
+                Box(modifier = Modifier.padding(
+                    horizontal = FeedDesignTokens.ContentPaddingHorizontal,
+                    vertical = 4.dp
+                )) {
                     SocialLinkPreviewCard(
                         url = detectedUrl,
                         isMsgMine = false
@@ -429,7 +266,12 @@ fun SocialPostCard(
             }
 
             if (post.poll != null) {
-                Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
+                Box(
+                    modifier = Modifier.padding(
+                        horizontal = FeedDesignTokens.ContentPaddingHorizontal,
+                        vertical = 4.dp
+                    )
+                ) {
                     SocialPollView(
                         poll = post.poll,
                         currentPhone = currentPhone,
@@ -437,40 +279,8 @@ fun SocialPostCard(
                     )
                 }
             }
-
-            FeedActionBarIg(
-                post = post,
-                currentPhone = currentPhone,
-                onQuickLike = { onReact("❤️") },
-                onOpenReactionPalette = { showEmojiPalette = !showEmojiPalette },
-                onCommentClick = onOpenComments,
-                onRepost = onRepost,
-                onShareToChat = onShareToChat,
-                showEmojiPalette = showEmojiPalette,
-                onEmojiSelected = { emoji -> onReact(emoji) },
-                onDismissPalette = { showEmojiPalette = false }
-            )
-
-            FeedEngagementSummary(
-                post = post,
-                onOpenReactions = onShowReactions ?: { showEmojiPalette = true },
-                modifier = Modifier.padding(top = 2.dp, bottom = 4.dp)
-            )
-
-            FeedCaptionBlock(
-                authorName = post.authorName,
-                content = cleanContent,
-                hashtags = post.hashtags
-            )
-
-            FeedCommentPreview(
-                comments = post.comments,
-                onViewAllComments = onOpenComments,
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
-
-            FeedPostDivider()
-    }
+        }
+    )
 
     if (showBlockConfirmDialog) {
         FeedBlockUserConfirmDialog(

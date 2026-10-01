@@ -57,7 +57,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.sha.orbis.R
 import com.sha.orbis.ui.theme.OrbisColorPalette
 
-private const val ORBIS_APK_DOWNLOAD_URL = "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.3.0/O.R.B.I.S.apk"
+private const val ORBIS_APK_DOWNLOAD_URL = "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk"
 private const val ORBIS_OFFICIAL_WEBSITE_URL = "https://shadevpro.github.io/O-R-B-I-S-net/"
 
 /**

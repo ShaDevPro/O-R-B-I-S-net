@@ -41,24 +41,28 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sha.orbis.R
 import com.sha.orbis.social.SocialComment
 import com.sha.orbis.social.SocialPost
+import com.sha.orbis.ui.social.feed.engagement.isRepostOrSharedOnFeed
 import com.sha.orbis.storage.FriendRequestRepository
 import com.sha.orbis.ui.components.LinkifiedText
 import com.sha.orbis.ui.components.OrbisAvatar
 import com.sha.orbis.ui.social.SocialRoleBadge
 
-private val FeedHeartRed = Color(0xFFED4956)
+private val FeedHeartRed get() = FeedDesignTokens.HeartRed
 
 @Composable
 fun FeedPostDivider() {
     HorizontalDivider(
         modifier = Modifier.fillMaxWidth(),
-        thickness = 0.5.dp,
-        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+        thickness = FeedDesignTokens.DividerThickness,
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = FeedDesignTokens.DividerAlpha)
     )
 }
 
@@ -72,7 +76,10 @@ fun FeedPostHeaderIg(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(
+                horizontal = FeedDesignTokens.ContentPaddingHorizontal,
+                vertical = FeedDesignTokens.HeaderVerticalPadding
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -84,7 +91,7 @@ fun FeedPostHeaderIg(
             OrbisAvatar(
                 avatarPath = post.authorAvatarPath,
                 name = post.authorName,
-                size = 32.dp,
+                size = FeedDesignTokens.HeaderAvatarSize,
                 onClick = onAuthorClick
             )
             Column(modifier = Modifier.weight(1f)) {
@@ -101,7 +108,7 @@ fun FeedPostHeaderIg(
                     Text(
                         text = post.authorName,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
+                        fontSize = FeedDesignTokens.AuthorNameSize,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -113,7 +120,7 @@ fun FeedPostHeaderIg(
                 }
                 Text(
                     text = metaLine,
-                    fontSize = 11.sp,
+                    fontSize = FeedDesignTokens.MetaSize,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -134,6 +141,7 @@ fun FeedActionBarIg(
     onCommentClick: () -> Unit,
     onRepost: (() -> Unit)?,
     onShareToChat: (() -> Unit)?,
+    onOpenReactions: (() -> Unit)?,
     showEmojiPalette: Boolean,
     onEmojiSelected: (String) -> Unit,
     onDismissPalette: () -> Unit
@@ -143,6 +151,14 @@ fun FeedActionBarIg(
     }
     val liked = userReaction != null
 
+    // Precompute reaction/comment counters
+    val hasReactions = post.reactions.isNotEmpty()
+    val distinctEmojis = remember(post.reactions) {
+        post.reactions.map { it.emoji }.distinct().take(3)
+    }
+    val reactionCount = post.reactions.size
+    val commentCount = post.comments.size
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -150,14 +166,18 @@ fun FeedActionBarIg(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 2.dp),
+                .padding(
+                    horizontal = FeedDesignTokens.ContentPaddingHorizontal - 10.dp,
+                    vertical = 2.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // ── LEFT: action icons ──────────────────────────────────────
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(FeedDesignTokens.ActionTouchTarget)
                         .combinedClickable(
                             onClick = {
                                 if (liked) onOpenReactionPalette() else onQuickLike()
@@ -170,10 +190,10 @@ fun FeedActionBarIg(
                         imageVector = if (liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = stringResource(R.string.feed_action_like),
                         tint = if (liked) FeedHeartRed else MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(FeedDesignTokens.ActionIconSize)
                     )
                 }
-                IconButton(onClick = onCommentClick, modifier = Modifier.size(44.dp)) {
+                IconButton(onClick = onCommentClick, modifier = Modifier.size(FeedDesignTokens.ActionTouchTarget)) {
                     Icon(
                         imageVector = Icons.Default.ChatBubbleOutline,
                         contentDescription = stringResource(R.string.social_comments_title),
@@ -202,12 +222,68 @@ fun FeedActionBarIg(
                     }
                 }
             }
-            if (post.repostsCount > 0 && onRepost == null) {
-                Text(
-                    text = "${post.repostsCount}",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+
+            // ── RIGHT: reaction/comment counters (inline) ───────────────
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (post.repostsCount > 0 && onRepost == null) {
+                    Text(
+                        text = "${post.repostsCount}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (hasReactions) {
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .combinedClickable(
+                                onClick = { onOpenReactions?.invoke() },
+                                onLongClick = {}
+                            )
+                            .padding(horizontal = 4.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        distinctEmojis.forEach { emoji ->
+                            Text(text = emoji, fontSize = 14.sp)
+                        }
+                        Text(
+                            text = "$reactionCount",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+                if (commentCount > 0) {
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .combinedClickable(
+                                onClick = { onCommentClick() },
+                                onLongClick = {}
+                            )
+                            .padding(horizontal = 4.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChatBubbleOutline,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Text(
+                            text = "$commentCount",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
             }
         }
 
@@ -251,6 +327,7 @@ fun FeedEmojiPaletteRow(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FeedEngagementSummary(
     post: SocialPost,
@@ -261,37 +338,52 @@ fun FeedEngagementSummary(
 
     val distinctEmojis = post.reactions.map { it.emoji }.distinct().take(3).joinToString("")
     val countLabel = stringResource(R.string.feed_reactions_count, post.reactions.size)
+    val canOpenDetail = onOpenReactions != null
 
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp)
+            .padding(horizontal = FeedDesignTokens.ContentPaddingHorizontal)
             .then(
-                if (onOpenReactions != null) {
-                    Modifier.clip(RoundedCornerShape(4.dp)).combinedClickable(
-                        onClick = { onOpenReactions() },
-                        onLongClick = {}
-                    )
-                } else Modifier
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                if (canOpenDetail) {
+                    Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .combinedClickable(
+                            onClick = { onOpenReactions?.invoke() },
+                            onLongClick = {}
+                        )
+                        .padding(vertical = 4.dp)
+                } else {
+                    Modifier.padding(vertical = 2.dp)
+                }
+            )
     ) {
-        if (distinctEmojis.isNotBlank()) {
-            Text(text = distinctEmojis, fontSize = 13.sp)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (distinctEmojis.isNotBlank()) {
+                Text(text = distinctEmojis, fontSize = 13.sp)
+            }
+            Text(
+                text = countLabel,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
-        Text(
-            text = countLabel,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        if (canOpenDetail) {
+            Text(
+                text = stringResource(R.string.feed_see_who_reacted),
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
 @Composable
 fun FeedCaptionBlock(
-    authorName: String,
     content: String,
     hashtags: List<String>,
     modifier: Modifier = Modifier
@@ -301,28 +393,22 @@ fun FeedCaptionBlock(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 2.dp),
+            .padding(
+                horizontal = FeedDesignTokens.ContentPaddingHorizontal,
+                vertical = 2.dp
+            ),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         if (content.isNotBlank()) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = authorName,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
+            LinkifiedText(
+                text = content,
+                style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(end = 6.dp)
-                )
-                LinkifiedText(
-                    text = content,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = 20.sp,
-                        fontSize = 14.sp
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-            }
+                    lineHeight = 20.sp,
+                    fontSize = 14.sp
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
         }
         if (hashtags.isNotEmpty()) {
             Text(
@@ -335,58 +421,155 @@ fun FeedCaptionBlock(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FeedCommentPreview(
+    post: SocialPost,
     comments: List<SocialComment>,
     onViewAllComments: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (comments.isEmpty()) return
 
-    val topLevel = comments.filter { it.replyToCommentId.isNullOrBlank() }
-        .ifEmpty { comments }
-        .sortedByDescending { it.timestamp }
-        .take(2)
+    val isRepost = post.isRepostOrSharedOnFeed()
+    val topLevelFirst = remember(comments) {
+        comments
+            .filter { it.replyToCommentId.isNullOrBlank() }
+            .minByOrNull { it.timestamp }
+            ?: comments.minByOrNull { it.timestamp }
+    }
+
+    val ctaText = if (comments.size == 1) {
+        stringResource(R.string.feed_view_one_comment)
+    } else {
+        stringResource(R.string.feed_view_all_comments, comments.size)
+    }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        if (comments.size > 2) {
-            Text(
-                text = stringResource(R.string.feed_view_all_comments, comments.size),
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .combinedClickable(onClick = onViewAllComments, onLongClick = {})
-                    .padding(vertical = 2.dp)
+            .padding(
+                horizontal = FeedDesignTokens.ContentPaddingHorizontal,
+                vertical = 4.dp
             )
-        }
-        topLevel.forEach { comment ->
+    ) {
+        if (!isRepost && topLevelFirst != null) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp))
                     .combinedClickable(onClick = onViewAllComments, onLongClick = {})
-                    .padding(vertical = 1.dp),
+                    .padding(vertical = 2.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = comment.authorName,
+                    text = topLevelFirst.authorName,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp,
+                    fontSize = FeedDesignTokens.SecondarySize,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = comment.text,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
+                    text = topLevelFirst.text,
+                    fontSize = FeedDesignTokens.SecondarySize,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false)
+                )
+            }
+        }
+
+        Text(
+            text = ctaText,
+            fontSize = FeedDesignTokens.SecondarySize,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .combinedClickable(onClick = onViewAllComments, onLongClick = {})
+                .padding(vertical = 2.dp)
+        )
+    }
+}
+
+/**
+ * Compact horizontal row showing reaction emojis + count and comment icon + count.
+ * Placed below the action bar, right-aligned.
+ * Tap reactions → reactions detail; tap comments → comments page.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun FeedReactionsSidePanel(
+    post: SocialPost,
+    onOpenReactions: (() -> Unit)?,
+    onOpenComments: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val hasReactions = post.reactions.isNotEmpty()
+    val distinctEmojis = remember(post.reactions) {
+        post.reactions.map { it.emoji }.distinct().take(3)
+    }
+    val reactionCount = post.reactions.size
+    val commentCount = post.comments.size
+
+    if (!hasReactions && commentCount == 0) return
+
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // ── Reactions section ──────────────────────────────────────────────
+        if (hasReactions) {
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .combinedClickable(
+                        onClick = { onOpenReactions?.invoke() },
+                        onLongClick = {}
+                    )
+                    .padding(horizontal = 4.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
+            ) {
+                distinctEmojis.forEach { emoji ->
+                    Text(text = emoji, fontSize = 16.sp)
+                }
+                Text(
+                    text = "$reactionCount",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+
+        // ── Comments section ───────────────────────────────────────────────
+        if (commentCount > 0) {
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .combinedClickable(
+                        onClick = { onOpenComments() },
+                        onLongClick = {}
+                    )
+                    .padding(horizontal = 4.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ChatBubbleOutline,
+                    contentDescription = stringResource(R.string.social_comments_title),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(
+                    text = "$commentCount",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

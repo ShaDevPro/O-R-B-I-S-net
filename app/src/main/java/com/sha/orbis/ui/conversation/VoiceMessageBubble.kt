@@ -22,8 +22,12 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +51,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sha.orbis.R
 import com.sha.orbis.media.AudioVoiceHelper
+import com.sha.orbis.model.MessageDeliveryStatus
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.sin
 
@@ -59,6 +67,8 @@ fun VoiceMessageBubble(
     isMsgMine: Boolean,
     isPlaying: Boolean,
     onTogglePlay: () -> Unit,
+    timestamp: Long = System.currentTimeMillis(),
+    deliveryStatus: MessageDeliveryStatus = MessageDeliveryStatus.SENT,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -67,7 +77,6 @@ fun VoiceMessageBubble(
     var currentSec by remember { mutableIntStateOf(0) }
     var currentSpeed by remember { mutableFloatStateOf(AudioVoiceHelper.getPlaybackSpeed()) }
 
-    // Generate unique, natural waveform heights based on message ID hash
     val waveformBars = remember(messageId) {
         val seed = abs(messageId.hashCode())
         val count = 18
@@ -78,7 +87,6 @@ fun VoiceMessageBubble(
         }
     }
 
-    // Active playback tracking loop
     LaunchedEffect(isPlaying) {
         if (isPlaying) {
             while (isPlaying) {
@@ -94,121 +102,220 @@ fun VoiceMessageBubble(
 
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
 
-    val playButtonBg = if (isMsgMine) Color.White else Color(0xFF5E6BB2)
-    val playIconTint = if (isMsgMine) Color(0xFF5E6BB2) else Color.White
-    val activeBarColor = if (isMsgMine) Color.White else Color(0xFF5E6BB2)
-    val inactiveBarColor = if (isMsgMine) Color.White.copy(alpha = 0.40f) else Color(0xFFCBD5E1)
-    val textColor = if (isMsgMine) Color.White else if (isDark) Color(0xFFE2E8F0) else Color(0xFF334155)
-    val speedBg = if (isMsgMine) Color.White.copy(alpha = 0.22f) else Color(0xFF5E6BB2).copy(alpha = 0.12f)
-    val speedTextColor = if (isMsgMine) Color.White else Color(0xFF5E6BB2)
+    val bubbleShape = if (isMsgMine) {
+        RoundedCornerShape(topStart = 22.dp, topEnd = 6.dp, bottomStart = 22.dp, bottomEnd = 22.dp)
+    } else {
+        RoundedCornerShape(topStart = 6.dp, topEnd = 22.dp, bottomStart = 22.dp, bottomEnd = 22.dp)
+    }
 
-    Row(
-        modifier = modifier
-            .widthIn(min = 170.dp, max = 220.dp)
-            .padding(vertical = 1.dp, horizontal = 1.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    val bubbleBg = when {
+        isMsgMine && isDark -> Color(0xFF1E3A5F)
+        isMsgMine -> Color(0xFFDCF0FA)
+        isDark -> Color(0xFF1E293B)
+        else -> Color(0xFFFFFFFF)
+    }
+    val bubbleBorder = when {
+        isMsgMine && isDark -> Color(0xFF2B4C7E)
+        isMsgMine -> Color(0xFFBAE6FD)
+        isDark -> Color(0xFF334155)
+        else -> Color(0xFFE2E8F0)
+    }
+
+    val playButtonBg = when {
+        isMsgMine && isDark -> Color.White
+        isMsgMine -> MaterialTheme.colorScheme.primary
+        isDark -> Color(0xFF38BDF8)
+        else -> MaterialTheme.colorScheme.primary
+    }
+    val playIconTint = when {
+        isMsgMine && isDark -> Color(0xFF1E3A5F)
+        isMsgMine -> Color.White
+        isDark -> Color.White
+        else -> Color.White
+    }
+    val activeBarColor = when {
+        isMsgMine && isDark -> Color.White
+        isMsgMine -> MaterialTheme.colorScheme.primary
+        isDark -> Color(0xFF38BDF8)
+        else -> MaterialTheme.colorScheme.primary
+    }
+    val inactiveBarColor = when {
+        isMsgMine && isDark -> Color.White.copy(alpha = 0.40f)
+        isMsgMine -> MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+        isDark -> Color(0xFF94A3B8)
+        else -> Color(0xFFCBD5E1)
+    }
+    val textColor = when {
+        isMsgMine && isDark -> Color(0xFFFFFFFF)
+        isMsgMine -> Color(0xFF0F172A)
+        isDark -> Color(0xFFF1F5F9)
+        else -> Color(0xFF2D3748)
+    }
+    val speedBg = when {
+        isMsgMine && isDark -> Color.White.copy(alpha = 0.18f)
+        isMsgMine -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+        isDark -> Color(0xFF38BDF8).copy(alpha = 0.15f)
+        else -> MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+    }
+    val speedTextColor = when {
+        isMsgMine && isDark -> Color.White
+        isMsgMine -> MaterialTheme.colorScheme.primary
+        isDark -> Color(0xFF38BDF8)
+        else -> MaterialTheme.colorScheme.primary
+    }
+    val subTextColor = when {
+        isDark -> Color(0xFF94A3B8)
+        else -> Color(0xFF64748B)
+    }
+
+    val timeFormatted = remember(timestamp) {
+        SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestamp))
+    }
+
+    Card(
+        shape = bubbleShape,
+        colors = CardDefaults.cardColors(containerColor = bubbleBg),
+        border = androidx.compose.foundation.BorderStroke(1.dp, bubbleBorder),
+        modifier = modifier.widthIn(min = 200.dp, max = 250.dp)
     ) {
-        // 1. Compact Play / Pause Button with dynamic halo when active
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            if (isPlaying) {
-                PlayingHaloBox(color = playButtonBg.copy(alpha = 0.25f))
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(playButtonBg)
-                    .clickable(onClick = onTogglePlay),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = if (isPlaying) "Pause" else "Play",
-                    tint = playIconTint,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
-
-        // 2. Audio Equalizer Waveform & Info
         Column(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            // Waveform equalizer bars with interactive scrubbing
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(18.dp),
+                    .padding(vertical = 1.dp, horizontal = 1.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                waveformBars.forEachIndexed { index, heightRatio ->
-                    val barFraction = index.toFloat() / waveformBars.size.toFloat()
-                    val isBarActive = isPlaying && barFraction <= playbackProgress
-                    val barColor = if (isBarActive) activeBarColor else inactiveBarColor
-                    val barHeight = (heightRatio * 16.dp.value).coerceIn(3f, 18f).dp
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isPlaying) {
+                        PlayingHaloBox(color = playButtonBg.copy(alpha = 0.25f))
+                    }
 
                     Box(
                         modifier = Modifier
-                            .width(2.dp)
-                            .height(barHeight)
-                            .clip(RoundedCornerShape(1.dp))
-                            .background(barColor)
-                            .clickable {
-                                if (isPlaying) {
-                                    AudioVoiceHelper.seekToFraction(barFraction)
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(playButtonBg)
+                            .clickable(onClick = onTogglePlay),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            tint = playIconTint,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(18.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        waveformBars.forEachIndexed { index, heightRatio ->
+                            val barFraction = index.toFloat() / waveformBars.size.toFloat()
+                            val isBarActive = isPlaying && barFraction <= playbackProgress
+                            val barColor = if (isBarActive) activeBarColor else inactiveBarColor
+                            val barHeight = (heightRatio * 16.dp.value).coerceIn(3f, 18f).dp
+
+                            Box(
+                                modifier = Modifier
+                                    .width(2.dp)
+                                    .height(barHeight)
+                                    .clip(RoundedCornerShape(1.dp))
+                                    .background(barColor)
+                                    .clickable {
+                                        if (isPlaying) {
+                                            AudioVoiceHelper.seekToFraction(barFraction)
+                                        }
+                                    }
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val displayTime = if (isPlaying) {
+                            "%02d:%02d".format(currentSec / 60, currentSec % 60)
+                        } else {
+                            "%02d:%02d".format(durSec / 60, durSec % 60)
+                        }
+
+                        Text(
+                            text = displayTime,
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(speedBg)
+                                .clickable {
+                                    val nextSpeed = when (currentSpeed) {
+                                        1.0f -> 1.5f
+                                        1.5f -> 2.0f
+                                        else -> 1.0f
+                                    }
+                                    currentSpeed = nextSpeed
+                                    AudioVoiceHelper.setPlaybackSpeed(nextSpeed)
                                 }
-                            }
-                    )
+                                .padding(horizontal = 4.dp, vertical = 1.dp)
+                        ) {
+                            Text(
+                                text = "${currentSpeed}x",
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = speedTextColor
+                            )
+                        }
+                    }
                 }
             }
 
-            // Sub-row: Live duration & Speed Toggle Pill
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                val displayTime = if (isPlaying) {
-                    "%02d:%02d".format(currentSec / 60, currentSec % 60)
-                } else {
-                    "%02d:%02d".format(durSec / 60, durSec % 60)
-                }
-
                 Text(
-                    text = displayTime,
-                    fontSize = 10.5.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = textColor
+                    text = timeFormatted,
+                    fontSize = 10.sp,
+                    color = subTextColor
                 )
-
-                // Playback Speed Switcher (1.0x -> 1.5x -> 2.0x)
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(speedBg)
-                        .clickable {
-                            val nextSpeed = when (currentSpeed) {
-                                1.0f -> 1.5f
-                                1.5f -> 2.0f
-                                else -> 1.0f
-                            }
-                            currentSpeed = nextSpeed
-                            AudioVoiceHelper.setPlaybackSpeed(nextSpeed)
-                        }
-                        .padding(horizontal = 4.dp, vertical = 1.dp)
-                ) {
-                    Text(
-                        text = "${currentSpeed}x",
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = speedTextColor
-                    )
+                if (isMsgMine) {
+                    val statusIcon = when (deliveryStatus) {
+                        MessageDeliveryStatus.READ, MessageDeliveryStatus.DELIVERED -> Icons.Default.DoneAll
+                        MessageDeliveryStatus.SENT -> Icons.Default.Done
+                        else -> null
+                    }
+                    if (statusIcon != null) {
+                        Icon(
+                            imageVector = statusIcon,
+                            contentDescription = null,
+                            tint = if (deliveryStatus == MessageDeliveryStatus.READ) Color(0xFF38BDF8)
+                            else subTextColor,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .size(13.dp)
+                        )
+                    }
                 }
             }
         }
