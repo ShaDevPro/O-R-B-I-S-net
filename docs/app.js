@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "L'Internet Libre & Décentralisé.",
       "hero.title_part2": "Zéro Serveur Central. Zéro Censure.",
       "hero.subtitle": "La plateforme souveraine de communication propulsée par le réseau décentralisé Nostr (WebSockets) et les appels WebRTC chiffrés de bout en bout. Signatures Schnorr BIP-340, chiffrement NIP-44 et IA 100% locale.",
-      "hero.download_btn": "Télécharger OrbisNet v1.4.0",
+      "hero.download_btn": "Télécharger OrbisNet",
       "hero.guide_btn": "Explorer le Guide & FAQ",
       "hero.telegram_btn": "Communauté Telegram",
       "dl.btn_telegram": "Communauté Telegram",
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "The Free & Decentralized Internet.",
       "hero.title_part2": "Zero Central Server. Zero Censorship.",
       "hero.subtitle": "The sovereign communication platform powered by the decentralized Nostr network (WebSockets) and end-to-end encrypted WebRTC calls. BIP-340 Schnorr signatures, NIP-44 encryption, and 100% on-device AI.",
-      "hero.download_btn": "Download OrbisNet v1.4.0",
+      "hero.download_btn": "Download OrbisNet",
       "hero.guide_btn": "Explore Guide & FAQ",
       "hero.telegram_btn": "Telegram Community",
       "dl.btn_telegram": "Telegram Community",
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "hero.title_part1": "الإنترنت الحر واللامركزي.",
       "hero.title_part2": "بلا خادم مركزي. بلا رقابة.",
       "hero.subtitle": "المنصة السيادية للتواصل المدعومة بشبكة Nostr اللامركزية (WebSockets) ومكالمات WebRTC المشفرة طرفاً لطرف. تواقيع Schnorr BIP-340 وتشفير NIP-44 وذكاء اصطناعي محلي 100%.",
-      "hero.download_btn": "تحميل OrbisNet v1.4.0",
+      "hero.download_btn": "تحميل OrbisNet",
       "hero.guide_btn": "دليل الاستخدام والأسئلة الشائعة",
       "hero.telegram_btn": "مجتمع تيليجرام الرسمي",
       "dl.btn_telegram": "مجتمع تيليجرام",
@@ -797,11 +797,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Direct Download & QR Code Dynamic Configuration
   // =========================================================================
   const ORBISNET_CONFIG = {
-    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk",
+    apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/latest/download/O.R.B.I.S.apk",
     githubRepoUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net",
     version: "1.4.0",
     build: 140,
-    size: "53 Mo"
+    size: "53 Mo",
+    sha256: "4c366bac0e926ecfdd11c5fb7878faa3a08fada1582b96902554abd5384ba5d2"
   };
 
   function updateDownloadUrls(url) {
@@ -818,8 +819,80 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function applyReleaseMetadata(cfg) {
+    if (cfg.apkDownloadUrl) {
+      ORBISNET_CONFIG.apkDownloadUrl = cfg.apkDownloadUrl;
+      updateDownloadUrls(cfg.apkDownloadUrl);
+    }
+    if (cfg.version) {
+      ORBISNET_CONFIG.version = cfg.version;
+      const specVer = document.getElementById('specVersionVal');
+      if (specVer) specVer.textContent = `v${cfg.version} (Stable)`;
+      
+      const meta = document.getElementById('btnDownloadMeta');
+      const sizeStr = cfg.size || ORBISNET_CONFIG.size || '53 Mo';
+      if (meta) meta.textContent = `OrbisNet v${cfg.version} • ${sizeStr} • Android 8.0+`;
+      
+      // Update Hero Download Button text dynamically with new version
+      document.querySelectorAll('[data-i18n="hero.download_btn"]').forEach(span => {
+        const lang = document.documentElement.getAttribute('lang') || 'fr';
+        const base = translations[lang]?.['hero.download_btn'] || 'Télécharger OrbisNet';
+        span.textContent = `${base} v${cfg.version}`;
+      });
+    }
+    if (cfg.size) {
+      ORBISNET_CONFIG.size = cfg.size;
+      const specSize = document.getElementById('specSizeVal');
+      if (specSize) specSize.textContent = cfg.size;
+    }
+    if (cfg.sha256) {
+      ORBISNET_CONFIG.sha256 = cfg.sha256;
+      const chk = document.getElementById('checksumValue');
+      if (chk) chk.textContent = cfg.sha256;
+    }
+  }
+
   // Initialize with official release URL
   updateDownloadUrls(ORBISNET_CONFIG.apkDownloadUrl);
+
+  // Dynamic Auto-Fetch from Backend Edge API or GitHub Releases API (Zero manual docs edit needed)
+  async function syncLatestRelease() {
+    // 1. Try Backend Vercel Edge API first
+    try {
+      const res = await fetch('https://orbis-net.vercel.app/api/config', { cache: 'no-cache' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.latestVersionName) {
+          applyReleaseMetadata({
+            version: data.latestVersionName,
+            build: data.latestVersionCode,
+            apkDownloadUrl: data.downloadUrl || ORBISNET_CONFIG.apkDownloadUrl,
+            sha256: data.sha256,
+            size: data.apkSize
+          });
+          return;
+        }
+      }
+    } catch (_) {}
+
+    // 2. Fallback to GitHub Releases API
+    try {
+      const ghRes = await fetch('https://api.github.com/repos/ShaDevPro/O-R-B-I-S-net/releases/latest');
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        const v = (ghData.tag_name || '').replace(/^OrbisNet-v|^v/, '');
+        const asset = (ghData.assets || []).find(a => a.name && a.name.endsWith('.apk'));
+        const sizeMb = asset ? Math.round(asset.size / (1024 * 1024)) + ' Mo' : null;
+        applyReleaseMetadata({
+          version: v || ORBISNET_CONFIG.version,
+          apkDownloadUrl: asset?.browser_download_url || ORBISNET_CONFIG.apkDownloadUrl,
+          size: sizeMb || ORBISNET_CONFIG.size
+        });
+      }
+    } catch (_) {}
+  }
+
+  syncLatestRelease();
 
   const directDownloadBtn = document.getElementById('directDownloadBtn');
   directDownloadBtn?.addEventListener('click', () => {
