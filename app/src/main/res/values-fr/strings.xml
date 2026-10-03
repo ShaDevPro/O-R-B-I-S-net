@@ -1,0 +1,2173 @@
+<resources>
+    <string name="app_name">OrbisNet</string>
+    <string name="tagline">Messagerie E2EE Décentralisée via Nostr</string>
+    <string name="title_dashboard">OrbisNet</string>
+    <string name="secure_mode">Réseau Nostr Chiffré</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_home">Discussions</string>
+    <string name="tab_timeline">Fil d\'actualité</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_chats">Discussions</string>
+    <string name="tab_security">Sécurité</string>
+    <string name="tab_settings">Réglages</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_tagline">NOSTR • CHIFFRÉ • DÉCENTRALISÉ</string>
+
+    <!-- Rich Onboarding for Beginners -->
+    <string name="onboarding_btn_skip">Passer</string>
+    <string name="onboarding_btn_next">Suivant</string>
+    <string name="onboarding_btn_grant_and_start">Autoriser &amp; Commencer</string>
+
+    <string name="onboarding_slide1_badge">DÉCENTRALISÉ</string>
+    <string name="onboarding_slide1_title">Messagerie Décentralisée via Nostr</string>
+    <string name="onboarding_slide1_desc">OrbisNet transmet vos messages directement d\'un téléphone à l\'autre via les relais Nostr décentralisés. Zéro serveur central, zéro cloud.</string>
+    <string name="onboarding_slide1_pill1">Zéro Serveur Central</string>
+    <string name="onboarding_slide1_pill2">Relais Nostr Ouverts</string>
+
+    <string name="onboarding_slide2_badge">CONFIDENTIALITÉ TOTALE</string>
+    <string name="onboarding_slide2_title">Chiffrement Militaire E2EE</string>
+    <string name="onboarding_slide2_desc">Vos messages sont verrouillés mathématiquement sur votre appareil avec des clés BIP-340 Schnorr et AES-256. Même votre opérateur mobile ne peut rien lire.</string>
+    <string name="onboarding_slide2_pill1">Clés Schnorr Locales</string>
+    <string name="onboarding_slide2_pill2">Chiffrement AES-256</string>
+
+    <string name="onboarding_slide3_badge">DOUBLE SIM MATÉRIEL</string>
+    <string name="onboarding_slide3_title">Double SIM &amp; Profils Étanches</string>
+    <string name="onboarding_slide3_desc">Gérez vos lignes personnelle et pro séparément. Chaque carte SIM dispose de son propre coffre-fort de messages et de sa propre identité cryptographique.</string>
+    <string name="onboarding_slide3_pill1">Détection SIM 1 &amp; SIM 2</string>
+    <string name="onboarding_slide3_pill2">Bascule Instantanée</string>
+
+    <string name="onboarding_slide4_badge">SÉCURITÉ &amp; AUTONOMIE</string>
+    <string name="onboarding_slide4_title">Autorisations Système &amp; Alertes</string>
+    <string name="onboarding_slide4_desc">Pour transmettre et chiffrer vos messages décentralisé, Orbis a besoin de l\'accès aux relais Nostrs et aux alertes sécurisées. Aucune donnée ne quitte votre appareil.</string>
+    <string name="perm_default_sms">Application SMS par défaut</string>
+    <string name="onboarding_btn_set_default">Définir comme app SMS</string>
+    <string name="onboarding_btn_grant_permissions">Autoriser les accès système</string>
+    <string name="onboarding_btn_enter_orbis">Démarrer avec Orbis</string>
+    <string name="onboarding_opt_default_sms_title">Appli SMS par défaut</string>
+    <string name="onboarding_opt_default_sms_desc">Masque automatiquement les messages chiffrés de l\'application SMS native d\'Android.</string>
+    <string name="onboarding_opt_default_sms_badge">Recommandé</string>
+    <string name="onboarding_opt_default_sms_btn">Activer</string>
+    <string name="onboarding_opt_default_sms_active">Actif</string>
+    <string name="default_sms_dialog_info">OrbisNet intercepte et déchiffre vos messages souverains via les relais Nostr décentralisés.</string>
+
+    <!-- Guide Paramètres Restreints Android 13/14/15 -->
+    <string name="restricted_settings_sheet_title">Débloquer la protection Android</string>
+    <string name="restricted_settings_sheet_subtitle">Android protège les applications installées hors Play Store. Suivez ces 3 étapes simples pour autoriser l\'accès complet :</string>
+    <string name="restricted_settings_badge_os">Sécurité Android 13+</string>
+    <string name="restricted_settings_app_info_title">Infos sur l\'application</string>
+    <string name="restricted_settings_mockup_callout">⋮ &gt; « Autoriser les paramètres restreints »</string>
+    <string name="restricted_settings_step1_title">Ouvrir les réglages</string>
+    <string name="restricted_settings_step1_desc">Touchez le bouton « Ouvrir les paramètres » ci-dessous.</string>
+    <string name="restricted_settings_step2_title">Menu 3 points ⋮</string>
+    <string name="restricted_settings_step2_desc">En haut à droite de l\'écran, appuyez sur les 3 petits points ⋮.</string>
+    <string name="restricted_settings_step3_title">Autoriser les paramètres</string>
+    <string name="restricted_settings_step3_desc">Sélectionnez « Autoriser les paramètres restreints » et confirmez avec votre empreinte ou code.</string>
+    <string name="restricted_settings_btn_open">Ouvrir les paramètres</string>
+    <string name="restricted_settings_btn_skip">Continuer sans cette option</string>
+    <string name="restricted_settings_unlocked_toast">Protection Android levée avec succès !</string>
+
+    <string name="onboarding_title_1">Autorisez l\'accès aux SMS</string>
+    <string name="onboarding_desc_1">OrbisNet transmet des données chiffrées exclusivement via les relais Nostr, sans jamais dépendre d\'Internet.</string>
+    <string name="onboarding_title_2">Activez les notifications</string>
+    <string name="onboarding_desc_2">Recevez des alertes instantanées et sécurisées dès l\'arrivée d\'un message chiffré.</string>
+    <string name="onboarding_title_3">Coffre-fort local chiffré</string>
+    <string name="onboarding_desc_3">Gardez vos clés privées et l\'historique de vos discussions protégés directement sur votre appareil.</string>
+    <string name="onboarding_step_ready">Prêt sur votre appareil</string>
+    <string name="perm_sms_incoming">SMS entrants &amp; sortants</string>
+    <string name="perm_sms_read">Lecture des SMS</string>
+    <string name="perm_sms_send">Envoi de SMS</string>
+    <string name="perm_notifications">Notifications</string>
+    <string name="perm_storage">Stockage du coffre-fort</string>
+    <string name="perm_telephony">Identification de la ligne SIM</string>
+    <string name="perm_microphone">Appels vocaux chiffrés &amp; Audio</string>
+    <string name="status_granted">Autorisé</string>
+    <string name="status_pending">Action requise</string>
+    <string name="btn_continue">Continuer</string>
+    <string name="btn_finish">Commencer</string>
+    <string name="btn_open_settings">Permissions système</string>
+    <string name="permission_toast_required">Veuillez autoriser les permissions demandées pour garantir la sécurité.</string>
+    <string name="btn_grant_now">Autoriser les accès maintenant</string>
+
+    <!-- Universal Permissions Module Strings (FR) -->
+    <string name="perm_dialog_title">Autorisation requise</string>
+    <string name="perm_dialog_settings_title">Autorisation bloquée</string>
+    <string name="perm_dialog_btn_grant">Autoriser</string>
+    <string name="perm_dialog_btn_settings">Ouvrir les Paramètres</string>
+    <string name="perm_dialog_btn_later">Plus tard</string>
+
+    <string name="perm_mic_title">Accès au Microphone</string>
+    <string name="perm_mic_desc">OrbisNet a besoin de l\'accès au microphone pour enregistrer vos messages vocaux et transmettre votre voix en appel sécurisé. Vos flux sont chiffrés de bout en bout et ne quittent jamais votre appareil en clair.</string>
+    <string name="perm_mic_denied_desc">L\'accès au microphone est actuellement bloqué. Pour envoyer des vocaux ou passer des appels, veuillez activer l\'autorisation Microphone dans les paramètres de l\'application.</string>
+
+    <string name="perm_camera_title">Accès à la Caméra</string>
+    <string name="perm_camera_desc">OrbisNet utilise la caméra pour vos appels vidéo E2EE, la capture de photos/stories chiffrées et le scan de QR codes de contact.</string>
+    <string name="perm_camera_denied_desc">L\'accès à la caméra est bloqué. Pour lancer un appel vidéo ou scanner un QR code, veuillez activer l\'autorisation Caméra dans les paramètres de l\'application.</string>
+
+    <string name="perm_call_voice_title">Appels Vocaux Chiffrés</string>
+    <string name="perm_call_voice_desc">Pour établir des communications sécurisées et router l\'audio vers vos écouteurs Bluetooth, OrbisNet requiert le microphone et les appareils à proximité.</string>
+    <string name="perm_call_voice_denied_desc">Les autorisations pour les appels vocaux sont bloquées. Veuillez autoriser le Microphone et les Appareils à proximité dans les paramètres.</string>
+
+    <string name="perm_call_video_title">Appels Vidéo Chiffrés</string>
+    <string name="perm_call_video_desc">Pour démarrer un appel vidéo sécurisé de bout en bout, OrbisNet a besoin d\'accéder à votre caméra, à votre microphone et aux écouteurs Bluetooth.</string>
+    <string name="perm_call_video_denied_desc">Les autorisations requises pour les appels vidéo sont bloquées. Veuillez activer la Caméra et le Microphone dans les paramètres.</string>
+
+    <string name="perm_notif_title">Notifications d\'Appels &amp; Messages</string>
+    <string name="perm_notif_desc">Autorisez les notifications pour que votre téléphone sonne lors d\'un appel chiffré entrant et vous alerte des nouveaux messages, même lorsque l\'application est fermée.</string>
+    <string name="perm_notif_denied_desc">Les notifications sont désactivées. Vous risquez de manquer des appels et messages entrants. Veuillez les activer dans les paramètres.</string>
+
+    <string name="perm_contacts_title">Synchronisation des Contacts</string>
+    <string name="perm_contacts_desc">Autorisez l\'accès aux contacts pour retrouver facilement vos amis sur OrbisNet et afficher leurs noms. Vos contacts sont analysés localement et ne sont jamais téléversés sur un serveur central.</string>
+    <string name="perm_contacts_denied_desc">L\'accès aux contacts est bloqué. Pour voir votre carnet d\'adresses et retrouver vos correspondants, veuillez activer les Contacts dans les paramètres.</string>
+
+    <string name="perm_media_title">Photos &amp; Médias</string>
+    <string name="perm_media_desc">Autorisez l\'accès au stockage pour envoyer des images chiffrées, partager des documents et personnaliser votre photo de profil.</string>
+    <string name="perm_media_denied_desc">L\'accès au stockage est bloqué. Veuillez autoriser les Photos et Médias dans les paramètres pour envoyer des fichiers.</string>
+
+    <string name="perm_sim_title">Vérification de la Ligne SIM</string>
+    <string name="perm_sim_desc">OrbisNet utilise le matériel de votre carte SIM pour ancrer cryptographiquement votre identité souveraine et empêcher toute usurpation.</string>
+    <string name="perm_sim_denied_desc">L\'accès à la téléphonie SIM est bloqué. Veuillez autoriser l\'accès Téléphone dans les paramètres pour valider votre ligne.</string>
+
+    <string name="perm_battery_title">Protection d\'appel en veille (Batterie)</string>
+    <string name="perm_battery_desc">Exemptez OrbisNet des restrictions de batterie pour que le téléphone sonne lors d\'un appel chiffré même en veille prolongée.</string>
+
+    <string name="contacts_perm_banner_title">Retrouvez vos contacts sur Orbis</string>
+    <string name="contacts_perm_banner_desc">Autorisez l\'accès aux contacts pour découvrir vos proches utilisant déjà OrbisNet en toute confidentialité.</string>
+    <string name="contacts_perm_banner_btn">Activer les contacts</string>
+    <string name="settings_permissions_title">Autorisations de l\'application</string>
+    <string name="settings_permissions_subtitle">Microphone, Caméra, Contacts et Stockage</string>
+
+    <!-- Auth & SIM Verification & Avatar -->
+    <string name="auth_title">Vérification de Ligne</string>
+    <string name="auth_add_line_title">Ajouter une 2ème Ligne SIM</string>
+    <string name="auth_subtitle">Association cryptographique de la SIM</string>
+    <string name="auth_name_label">Votre nom ou pseudo</string>
+    <string name="auth_phone_label">Numéro mobile</string>
+    <string name="auth_photo_label">Photo de profil (optionnelle)</string>
+    <string name="auth_photo_change">Changer la photo</string>
+    <string name="auth_photo_add">Ajouter une photo</string>
+    <string name="contact_photo_assigned">Photo de contact mise à jour</string>
+    <string name="auth_btn_connect">Vérifier la Puce &amp; Continuer</string>
+    <string name="auth_verifying">Vérification SIM en cours...</string>
+    <string name="auth_error_name">Veuillez saisir votre nom ou pseudo.</string>
+    <string name="auth_error_phone">Veuillez saisir un numéro de téléphone valide (au moins 7 chiffres).</string>
+    <string name="auth_error_permission">Permissions de téléphonie requises pour vérifier la puce matérielle.</string>
+    <string name="auth_error_mismatch">Le numéro saisi ne correspond pas au numéro de la puce SIM active.</string>
+    <string name="auth_error_no_sim">Aucune carte SIM active détectée. Une puce physique introduite est obligatoire.</string>
+    <string name="auth_error_sim_not_ready">La carte SIM n\'est pas prête (code PIN/PUK requis ou hors réseau cellulaire).</string>
+    <string name="auth_error_operator_mismatch">Le numéro saisi ne correspond pas à l\'opérateur de la carte SIM active (%1$s).</string>
+    <string name="auth_error_country_mismatch">L\'indicatif pays ne correspond pas à celui de la carte SIM active (%1$s).</string>
+    <string name="auth_error_invalid_libphone">Numéro de téléphone invalide selon les normes internationales.</string>
+    <string name="auth_error_not_mobile">Seuls les numéros mobiles personnels sont autorisés (lignes fixes ou VoIP interdites).</string>
+    <string name="auth_error_fake_pattern">Numéro factice ou non valide détecté (suites répétitives ou séquentielles rejetées).</string>
+    <string name="auth_error_sim_already_bound">Cette carte SIM physique est déjà enregistrée pour un autre compte sur cet appareil.</string>
+    <string name="auth_sim_detected_active">Puce active : %1$s (%2$s)</string>
+    <string name="auth_sim_detected_none">Aucune puce SIM détectée</string>
+    <string name="auth_sim_hardware_ok">Contrôle matériel validé</string>
+    <string name="auth_sim_hardware_req">Une carte SIM physique est requise</string>
+    <string name="auth_sim_section_title">Ligne SIM d\'inscription</string>
+    <string name="auth_sim_slot_1">SIM 1</string>
+    <string name="auth_sim_slot_2">SIM 2</string>
+    <string name="auth_sim_slot_secondary">Ligne secondaire</string>
+    <string name="auth_sim_tap_to_switch">Cliquez sur une puce pour basculer</string>
+    <string name="auth_demo_bypass">Mode Bac à Sable (Test sans SIM)</string>
+    <string name="auth_intl_format">Format international : %1$s</string>
+    <string name="auth_dual_sim_detected">Deux cartes SIM détectées</string>
+
+    <!-- Multi-Account & Dual SIM Switcher -->
+    <string name="account_switcher_title">Comptes &amp; Lignes SIM</string>
+    <string name="account_switcher_sub">Basculer ou ajouter une ligne</string>
+    <string name="account_add_detected_sim">Configurer la SIM %1$s (%2$s)</string>
+    <string name="account_add_detected_sim_sub">Créer un profil étanche avec de nouvelles clés Schnorr</string>
+    <string name="account_add_another">Ajouter un autre compte</string>
+    <string name="account_created_success">Nouvelle ligne configurée avec succès !</string>
+    <string name="account_switched_to">Ligne active : %1$s (%2$s)</string>
+    <string name="settings_dual_sim_row_title">Comptes &amp; Lignes SIM</string>
+    <string name="settings_dual_sim_row_sub">%1$s compte(s) configuré(s) • Basculer ou ajouter</string>
+
+    <!-- Country Picker -->
+    <string name="country_picker_title">Choisir l\'indicatif pays</string>
+    <string name="country_search_placeholder">Rechercher par pays ou indicatif (ex: 213, Algérie)...</string>
+
+    <!-- Landing Screen -->
+    <string name="landing_hero_title">Décentralisé par nature.\nChiffré par défaut.</string>
+    <string name="landing_hero_subtitle">Messagerie et réseau social pair-à-pair opérant exclusivement sur le réseau Nostr, sans aucun serveur intermédiaire.</string>
+    <string name="landing_recent_chats">Sessions chiffrées récentes</string>
+    <string name="landing_feat_sms_title">100% Cellulaire (Zéro Cloud)</string>
+    <string name="landing_feat_sms_desc">Les messages transitent directement d\'un téléphone à l\'autre sans jamais passer par Internet.</string>
+    <string name="landing_feat_e2ee_title">Chiffrement Hybride E2EE</string>
+    <string name="landing_feat_e2ee_desc">Chiffrement symétrique AES-256 et signatures numériques Schnorr BIP-340 locales.</string>
+    <string name="landing_feat_offline_title">Coffre-fort Local</string>
+    <string name="landing_feat_offline_desc">Vos discussions et clés restent stockées et chiffrées uniquement sur votre appareil.</string>
+    <string name="landing_btn_start">Ouvrir l\'application</string>
+
+    <!-- Chats & WhatsApp UX -->
+    <string name="label_chats">Discussions</string>
+    <string name="new_chat">Nouvelle discussion</string>
+    <string name="new_chat_contacts_count">%1$s contacts</string>
+    <string name="new_chat_phonebook_header">CONTACTS DU TÉLÉPHONE</string>
+    <string name="new_chat_perm_title">Retrouvez vos proches sur Orbis</string>
+    <string name="new_chat_perm_desc">Autorisez l\'accès à vos contacts pour démarrer rapidement des discussions chiffrées décentralisé.</string>
+    <string name="new_chat_perm_btn">Autoriser l\'accès aux contacts</string>
+    <string name="new_chat_direct_dialog_title">Nouveau contact / Numéro</string>
+    <string name="new_chat_direct_dialog_desc">Saisissez un npub ou numéro pour démarrer directement une discussion chiffrée de bout en bout.</string>
+    <string name="new_chat_contact_name_label">Nom ou pseudo du contact (optionnel)</string>
+    <string name="new_chat_contact_name_hint">Ex : Karim Travail, Sarah...</string>
+    <string name="new_chat_phone_label">Numéro de téléphone (obligatoire)</string>
+    <string name="new_chat_btn_start_chat">Démarrer la discussion</string>
+    <string name="new_chat_empty_search">Aucun contact trouvé pour « %1$s »</string>
+    <string name="new_chat_action_new_group">Nouveau groupe</string>
+    <string name="new_chat_action_new_contact">Nouveau contact</string>
+    <string name="contacts_action_search">Rechercher</string>
+    <string name="new_chat_action_qr_scan">Scanner QR Code</string>
+    <string name="new_chat_action_new_group_sub">Groupe chiffré avec clé AES-256</string>
+    <string name="new_chat_action_new_contact_sub">Ajouter par adresse npub ou téléphone</string>
+    <string name="new_chat_action_qr_scan_sub">Certifier l\'identité cryptographique</string>
+    <string name="new_chat_invite_contact">Inviter un nouveau contact</string>
+    <string name="new_chat_action_contacts">Choisir depuis le carnet du téléphone</string>
+    <string name="new_chat_action_contacts_sub">Importer directement un contact existant</string>
+    <string name="new_chat_action_invite">Saisir un numéro &amp; Inviter via Nostr</string>
+    <string name="new_chat_action_invite_sub">Envoyer une invitation Nostr chiffrée</string>
+    <string name="new_chat_action_qr">Échange de clés par QR Code</string>
+    <string name="new_chat_action_qr_sub">Afficher mon QR ou scanner en face-à-face</string>
+    <string name="new_chat_action_group">Nouveau groupe chiffré</string>
+    <string name="new_chat_action_group_sub">Créer un groupe sécurisé avec clé AES-256</string>
+    <string name="new_chat_form_desc">Saisissez le nom et le numéro de votre proche pour lui envoyer un SMS d\'invitation avec vos clés de chiffrement.</string>
+    <string name="new_chat_btn_phonebook">Choisir depuis mon carnet d\'adresses</string>
+    <string name="new_chat_btn_send_invite">Envoyer l\'invitation &amp; Ouvrir le chat</string>
+    <string name="new_chat_sending_invite">Envoi de l\'invitation SMS...</string>
+    <string name="new_chat_invite_success">Invitation OrbisNet envoyée via Nostr !</string>
+    <string name="chat_input_placeholder">Écrire un message chiffré...</string>
+    <string name="chat_status_online">Ligne chiffrée</string>
+    <string name="chat_status_encrypted">Sécurisé E2EE</string>
+    <string name="chat_e2ee_notice">🔒 Messages chiffrés de bout en bout avec AES-256 et signatures RSA. Aucun tiers ne peut les lire.</string>
+    <string name="chat_trust_banner">🔒 Vos messages personnels sont chiffrés de bout en bout</string>
+    <string name="chat_action_copy">Copier le message</string>
+    <string name="chat_action_delete">Supprimer le message</string>
+    <string name="chat_action_verify">Vérifier la signature Schnorr</string>
+    <string name="chat_copied_toast">Message copié dans le presse-papier</string>
+    <string name="chat_signature_valid">Signature vérifiée (Schnorr BIP-340 Valide)</string>
+    <string name="empty_conversations_title">Aucune discussion pour l\'instant</string>
+    <string name="empty_conversations_desc">Démarrez un premier échange chiffré ou invitez un proche via le réseau Nostr.</string>
+    <string name="empty_conversations_btn">Démarrer une discussion</string>
+    <string name="search_conversations">Rechercher une discussion...</string>
+
+    <!-- Contacts & QR Code -->
+    <string name="label_contacts">Contacts</string>
+    <string name="contacts_friends">Contacts &amp; Annuaire</string>
+    <string name="search_contact">Rechercher un contact ou numéro...</string>
+    <string name="invite_contact">Inviter</string>
+    <string name="contacts_count_sub">%1$s contact(s) sécurisé(s)</string>
+    <string name="contacts_write">Écrire</string>
+    <string name="contacts_empty_title">Aucun contact pour l\'instant</string>
+    <string name="contacts_empty_desc">Ajoutez un contact en lui envoyant une invitation Nostr chiffrée.</string>
+    <string name="contacts_btn_invite">Inviter un contact via Nostr</string>
+    <string name="qr_dialog_title">Échange Sécurisé QR Code</string>
+    <string name="qr_tab_my_qr">Mon QR Code</string>
+    <string name="qr_tab_validate">Valider un QR Code</string>
+    <string name="qr_my_desc">Faites scanner ce code en personne pour certifier votre clé publique sans passer par Internet.</string>
+    <string name="qr_btn_copy_payload">Copier mon identité cryptographique</string>
+    <string name="qr_validate_desc">Collez ou scannez le payload d\'identité d\'un correspondant pour certifier son identité.</string>
+    <string name="qr_input_placeholder">Coller le payload QR code ici...</string>
+    <string name="qr_btn_certify">Certifier et Enregistrer le Contact</string>
+    <string name="qr_toast_copied">Payload de sécurité copié !</string>
+    <string name="qr_toast_success">Contact certifié avec succès !</string>
+    <string name="qr_toast_invalid">Payload QR Code invalide</string>
+    <string name="contact_verified_badge">Contact Vérifié 🛡️</string>
+
+    <!-- Biometrics & Security -->
+    <string name="biometric_lock_title">Orbis est verrouillé</string>
+    <string name="biometric_lock_desc">Confirmez votre identité par empreinte digitale pour accéder à vos discussions chiffrées.</string>
+    <string name="biometric_btn_unlock">Déverrouiller avec l\'empreinte</string>
+    <string name="biometric_prompt_title">Déverrouiller Orbis</string>
+    <string name="biometric_prompt_sub">Confirmez votre identité par empreinte ou code</string>
+    <string name="biometric_setting_title">Verrouillage par Empreinte</string>
+    <string name="biometric_setting_desc">Exiger l\'empreinte digitale pour ouvrir l\'application</string>
+    <string name="biometric_not_available">Biométrie non configurée sur cet appareil</string>
+
+    <!-- Timeline P2P -->
+    <string name="timeline_title">Fil d\'actualité chiffré</string>
+    <string name="timeline_header_title">Fil d\'actualité</string>
+    <string name="timeline_header_sub">Fil d\'actualité décentralisé Nostr</string>
+    <string name="timeline_welcome_content">Bienvenue sur le fil d\'actualité. Les publications et sondages de vos amis sont diffusés en toute confidentialité sur le réseau Nostr.</string>
+    <string name="timeline_new_post_title">Publier sur mon mur</string>
+    <string name="timeline_new_post_placeholder">À quoi pensez-vous ? Exprimez-vous sur votre mur...</string>
+    <string name="timeline_btn_publish">Publier sur mon mur</string>
+    <string name="timeline_likes_count">%1$s j\'aime</string>
+    <string name="encrypted_badge">E2EE</string>
+    <string name="reactions_count">%1$s réactions</string>
+
+    <!-- Settings & Profile -->
+    <string name="settings_title">Réglages &amp; Sécurité</string>
+    <string name="settings_sub">Gestion du profil et de la cryptographie</string>
+    <string name="settings_section_profile">Profil &amp; Ligne SIM</string>
+    <string name="settings_section_security">Sécurité &amp; Cryptographie</string>
+    <string name="settings_section_appearance">Apparence &amp; Langue</string>
+    <string name="settings_section_about">Diagnostic &amp; À propos</string>
+    <string name="settings_lang_title">Langue</string>
+    <string name="settings_theme_title">Thème d\'affichage</string>
+    <string name="settings_theme_system">Système par défaut</string>
+    <string name="settings_theme_dark">Mode Sombre</string>
+    <string name="settings_theme_light">Mode Clair</string>
+    <string name="settings_storage_used">Stockage local utilisé</string>
+    <string name="settings_qr_title">Mon QR Code de Sécurité</string>
+    <string name="settings_qr_sub">Afficher mon identité ou certifier un contact</string>
+    <string name="settings_vault_row_title">Mon Coffre &amp; Clés Schnorr</string>
+    <string name="settings_vault_row_sub">Gérer les empreintes et sauvegardes AES-256</string>
+    <string name="settings_auto_encrypt">Chiffrement Nostr Automatique</string>
+    <string name="settings_auto_encrypt_sub">Chiffrer et signer tous les SMS par défaut</string>
+    <string name="settings_back_to_settings">← Retour aux réglages</string>
+    <string name="settings_verified_badge">Vérifié</string>
+    <string name="settings_section_storage">Stockage &amp; Diagnostics</string>
+    <string name="settings_clear_cache">Purger les caches de messages</string>
+    <string name="settings_clear_cache_sub">Libérer l\'espace temporaire sans toucher aux clés</string>
+    <string name="settings_clear_cache_done">Caches nettoyés avec succès.</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_diagnostics">Auto-diagnostic du système</string>
+    <string name="settings_diagnostics_sub">Tester les routines AES, Schnorr et le protocole Nostr</string>
+    <string name="settings_diagnostics_ok">Tous les systèmes sont 100% opérationnels.</string>
+    <string name="settings_version_footer">Orbis v1.4.0 • Architecture Décentralisée Nostr</string>
+    <string name="app_copyright_footer">S.H.A dev. All rights reserved. 2026.</string>
+
+    <!-- Groups & Sovereign Circles -->
+    <string name="group_create">Créer un Groupe Sécurisé</string>
+    <string name="group_name">Nom du groupe</string>
+    <string name="group_description">Description / Objectif</string>
+    <string name="group_key">Clé de groupe (AES-256)</string>
+    <string name="regenerate">Régénérer la clé</string>
+    <string name="create">Créer le groupe</string>
+    <string name="group_created_toast">Groupe créé avec succès</string>
+    <string name="group_circle_section_title">Associer à un Cercle Souverain</string>
+    <string name="group_name_hint">Ex : Famille Benali, Amis d\'enfance...</string>
+    <string name="group_selected_members_count">Membres sélectionnés (%1$d)</string>
+    <string name="group_add_contacts_title">Ajouter des Contacts</string>
+    <string name="group_grant_contacts_perm">Autoriser Répertoire</string>
+    <string name="group_search_contact_hint">Rechercher un contact...</string>
+    <string name="group_no_contacts_available">Aucun contact disponible.</string>
+    <string name="group_no_contacts_match">Aucun contact correspondant.</string>
+    <string name="group_creating_progress">Création du groupe...</string>
+    <string name="group_btn_create_with_count">Créer le Groupe (%1$d membres)</string>
+    <string name="group_error_name_empty">Veuillez saisir un nom pour le groupe.</string>
+    <string name="group_error_members_empty">Veuillez sélectionner au moins un membre.</string>
+    <string name="group_created_toast_format">Groupe \'%1$s\' créé avec %2$d membres !</string>
+    <string name="group_members_subtitle">%1$d membre(s) sélectionné(s)</string>
+    <string name="group_aes_default_subtitle">Groupe chiffré AES-256</string>
+    <string name="group_aes_key_title">Clé de Chiffrement de Groupe (AES-256)</string>
+    <string name="group_regenerate_key">Régénérer</string>
+    <string name="group_remove_member">Retirer</string>
+    <string name="group_circle_custom">Sécurité Nostr</string>
+    <string name="group_circle_family">Famille</string>
+    <string name="group_circle_friends">Amis</string>
+    <string name="group_circle_work">Travail</string>
+    <string name="group_circle_community">Communauté</string>
+    <string name="group_initial_system_message">🔒 Groupe \'%1$s\' créé avec succès. Chiffrement de groupe AES-256 actif (%2$d membres).</string>
+    <string name="group_invite_sms_text">🔒 Vous avez été ajouté au groupe Orbis \'%1$s\'. Clé de groupe synchronisée.</string>
+    <string name="group_members_dialog_title">Membres du groupe (%1$d)</string>
+    <string name="group_members_dialog_header">Groupe : %1$s • Chiffrement AES-256</string>
+    <string name="group_add_member_btn">Ajouter un membre</string>
+    <string name="group_add_member_dialog_title">Ajouter un membre au groupe</string>
+    <string name="group_add_member_empty">Aucun nouveau contact disponible à ajouter.</string>
+    <string name="group_member_added_toast">%1$s a été ajouté au groupe.</string>
+    <string name="group_role_admin">Admin 🛡️</string>
+    <string name="group_role_me_admin">Moi (Admin)</string>
+    <string name="group_no_recipients">Aucun destinataire dans ce groupe.</string>
+    <string name="group_header_subtitle">%1$d membres • Chiffré AES-256</string>
+    <string name="group_encrypted_created_status">Groupe chiffré créé 🛡️</string>
+    <string name="contact_local_directory">Répertoire local</string>
+
+    <!-- Geolocation & GPS Sharing -->
+    <string name="media_gps_permission_required">Permission GPS requise pour partager vos coordonnées satellitaires.</string>
+    <string name="media_gps_enable_settings_toast">Veuillez activer le GPS ou la localisation dans vos paramètres Android.</string>
+    <string name="media_gps_searching_signal">Recherche du signal GPS satellite...</string>
+    <string name="media_gps_unavailable">Service de géolocalisation indisponible sur cet appareil.</string>
+    <string name="media_gps_permission_denied">Permission localisation requise.</string>
+    <string name="security_title">Sécurité &amp; Coffre-fort</string>
+    <string name="security_identity_card">Mon Identité Cryptographique</string>
+    <string name="security_fingerprint">Empreinte Schnorr</string>
+    <string name="security_pubkey">Clé Publique (Base64)</string>
+    <string name="security_copy_key">Copier la Clé Publique</string>
+    <string name="security_key_copied">Clé publique copiée dans le presse-papier</string>
+    <string name="security_vault_title">Coffre-fort de Sauvegarde Chiffré</string>
+    <string name="security_vault_desc">Enregistrez l\'historique et vos contacts chiffrés avec AES-256.</string>
+    <string name="security_passphrase">Phrase de passe du coffre</string>
+    <string name="security_create_backup">Créer une Sauvegarde Chiffrée</string>
+    <string name="security_restore_backup">Restaurer depuis le Coffre</string>
+    <string name="security_backup_success">Sauvegarde créée dans Documents/Orbis/Backups</string>
+    <string name="security_restore_success">Sauvegarde restaurée avec succès</string>
+    <string name="security_sandbox_title">Bac à sable Cryptographique</string>
+    <string name="security_test_verify">Tester l\'Intégrité &amp; Signature</string>
+    <string name="security_test_valid">Tous les algorithmes (AES-256, Schnorr BIP-340) sont OPÉRATIONNELS.</string>
+    <string name="label_backup">Coffre Sauvegarde</string>
+    <string name="backup_description">Stockage sûr des contacts, conversations et clés chiffrées.</string>
+    <string name="backup_path">Emplacement de sauvegarde</string>
+    <string name="storage_status">Chiffré localement</string>
+    <string name="auto_backup">Sauvegarde auto toutes les 24h</string>
+    <string name="save_now">Sauvegarder</string>
+    <string name="restore">Restaurer</string>
+    <string name="actions">Actions</string>
+    <string name="status_online">En ligne</string>
+    <string name="status_private">Privé</string>
+    <string name="empty_state">Aucune conversation</string>
+
+    <!-- SMS Flow Tool -->
+    <string name="sms_flow_title">Protocole SMS &amp; Tests</string>
+    <string name="my_phone_label">Numéro émetteur</string>
+    <string name="target_phone_label">Numéro destinataire</string>
+    <string name="group_key_input">Clé de groupe AES</string>
+    <string name="plain_message_label">Message en clair</string>
+    <string name="send_invitation">Envoyer l\'invitation signée</string>
+    <string name="send_sms">Envoyer le SMS chiffré</string>
+    <string name="invitation_card">Payload d\'invitation</string>
+    <string name="encrypted_payload">Payload SMS Brut (Base64)</string>
+
+    <!-- Social Hub & Friend Graph -->
+    <string name="friends_requests_title">Demandes d\'amis</string>
+    <string name="friends_tab_received">Reçues</string>
+    <string name="friends_tab_sent">Envoyées</string>
+    <string name="friends_tab_suggestions">Suggestions</string>
+    <string name="friends_tab_blocked">Bloqués</string>
+    <string name="friends_btn_accept">Accepter</string>
+    <string name="friends_btn_reject">Refuser</string>
+    <string name="friends_btn_block">Bloquer</string>
+    <string name="friends_btn_unblock">Débloquer</string>
+    <string name="friends_btn_invite_sms">Inviter via Nostr</string>
+    <string name="friends_empty_received">Aucune demande d\'ami reçue</string>
+    <string name="friends_empty_sent">Aucune demande en attente de validation</string>
+    <string name="friends_empty_suggestions">Aucune suggestion pour le moment</string>
+    <string name="friends_empty_blocked">Aucun contact bloqué</string>
+    <string name="friends_badge_mutual">%1$s contact(s) en commun</string>
+    <string name="friends_badge_phonebook">Du carnet d\'adresses</string>
+    <string name="friends_request_accepted_toast">Demande acceptée ! Handshake sécurisé envoyé.</string>
+    <string name="friends_contact_blocked_toast">Contact bloqué avec succès.</string>
+    <string name="friends_contact_unblocked_toast">Contact débloqué.</string>
+    <string name="social_stories_title">Statuts &amp; Stories (24h)</string>
+    <string name="social_add_story">Mon Statut</string>
+    <string name="social_story_created">Statut publié pour 24h</string>
+    <string name="social_story_add_photo">Ajouter une photo</string>
+    <string name="social_story_change_photo">Changer de photo</string>
+    <string name="social_story_remove_photo">Supprimer la photo</string>
+    <string name="social_story_text_placeholder">Partagez ce qui vous passe par la tête (24h)...</string>
+    <string name="social_story_caption_placeholder">Ajouter une légende (optionnel)...</string>
+    <string name="social_story_publish_btn">Partager en Story (24h) ⏱️</string>
+    <string name="social_story_duration_badge">⏱️ Statut 24h</string>
+    <string name="social_story_seen_count">Vue par %1$d ami(s)</string>
+    <string name="social_story_delete_title">Supprimer la story</string>
+    <string name="social_story_delete_confirm">Voulez-vous supprimer cette story ?</string>
+    <string name="social_story_mode_text">Texte</string>
+    <string name="social_story_mode_photo">Photo</string>
+    <string name="social_story_my_story">Ma Story</string>
+    <string name="social_story_gradient_style">Style d\'arrière-plan</string>
+    <string name="social_audience_all_friends">Tous mes amis</string>
+    <string name="social_audience_family">Cercle Famille</string>
+    <string name="social_audience_close">Cercle Proches</string>
+    <string name="social_audience_work">Cercle Pro</string>
+    <string name="social_story_upload_failed">Échec de l\'envoi de la vidéo vers le serveur média</string>
+    <string name="social_story_e2ee_notice">Partage internet chiffré entre amis • Disparition 24h</string>
+    <string name="social_story_image_loading">Image en cours de chargement...</string>
+    <string name="social_story_react_hint">Réagir</string>
+    <string name="social_story_reactions_count">❤️ %1$d</string>
+    <string name="social_filter_all">Toutes les publications</string>
+    <string name="social_filter_circle">Cercle</string>
+    <string name="social_poll_vote">Voter</string>
+    <string name="social_poll_votes_count">%1$s votes</string>
+    <string name="social_comments_title">Commentaires &amp; Réponses</string>
+    <string name="social_comment_placeholder">Écrire une réponse chiffrée...</string>
+    <string name="social_btn_comment">Commenter</string>
+    <string name="social_post_audience_public">Tous mes amis</string>
+    <string name="social_post_audience_circle">Cercle restreint</string>
+    <string name="social_post_verified_rsa">Auteur certifié Schnorr BIP-340</string>
+    <string name="social_poll_option_hint">Option %1$s</string>
+    <string name="social_add_poll_option">+ Ajouter une option</string>
+    <string name="social_composer_add_poll">Ajouter un sondage</string>
+    <string name="social_composer_poll_question">Question du sondage...</string>
+    <string name="social_trust_l1">Non vérifié</string>
+    <string name="social_trust_l2">Vérifié via Nostr</string>
+    <string name="social_trust_l3">Certifié en direct</string>
+    <string name="social_circle_family">Famille</string>
+    <string name="social_circle_close">Amis Proches</string>
+    <string name="social_circle_work">Travail</string>
+    <string name="social_circle_community">Communauté</string>
+
+    <!-- Notification Center -->
+    <string name="notif_center_title">Notifications</string>
+    <string name="notif_center_mark_all_read">Tout marquer comme lu</string>
+    <string name="notif_center_clear_all">Tout effacer</string>
+    <string name="notif_center_empty">Aucune notification</string>
+    <string name="notif_center_empty_sub">Vous êtes parfaitement à jour !</string>
+    <string name="notif_unread_count">non lue(s)</string>
+    <string name="notif_all_read">Toutes lues</string>
+    <string name="notif_filter_all">Toutes</string>
+    <string name="notif_filter_unread">Non lues</string>
+    <string name="notif_filter_messages">Messages</string>
+    <string name="notif_filter_sms">SMS</string>
+    <string name="notif_filter_friends">Amis</string>
+    <string name="notif_filter_social">Social</string>
+    <string name="notif_filter_system">Système</string>
+    <string name="notif_type_message">Message Chiffré</string>
+    <string name="notif_type_plain_sms">Message Standard</string>
+    <string name="notif_type_friend_request">Demande d\'amitié</string>
+    <string name="notif_type_security">Sécurité &amp; Clés</string>
+    <string name="notif_type_sim">Réseau SIM</string>
+    <string name="notif_type_social">Activité Sociale</string>
+    <string name="notif_welcome_security_title">Réseau Nostr &amp; Sécurité E2EE</string>
+    <string name="notif_welcome_security_desc">Toutes vos communications sont chiffrées de bout en bout par clés souveraines Secp256k1.</string>
+    <string name="notif_welcome_sim_title">Double SIM Détectée</string>
+    <string name="notif_welcome_sim_desc">Les deux slots SIM matériels sont vérifiés et prêts pour la téléphonie.</string>
+    <string name="notif_time_just_now">À l\'instant</string>
+    <string name="notif_time_minutes_ago">Il y a %d min</string>
+    <string name="notif_time_hours_ago">Il y a %d h</string>
+    <string name="notif_time_yesterday">Hier</string>
+    <string name="notif_social_liked_post">a aimé votre publication.</string>
+    <string name="notif_social_commented_my_post">a commenté votre publication : « %s »</string>
+    <string name="notif_social_commented_post">a commenté une publication : « %s »</string>
+    <string name="notif_social_new_post">a partagé une nouvelle publication.</string>
+    <string name="notif_social_family_memory">a partagé un nouveau moment.</string>
+    <string name="notif_social_story_reaction">a réagi %1$s à votre story</string>
+    <string name="notif_friend_request_received">vous a envoyé une demande d\'ami.</string>
+    <string name="notif_friend_request_accepted">a accepté votre demande d\'ami. Vous pouvez discuter !</string>
+    <string name="notif_friend_key_rotated_title">%s</string>
+    <string name="notif_friend_key_rotated_desc">a reconnecté son appareil en toute sécurité 🛡️</string>
+    <string name="friends_reconnected_msg">Appareil reconnecté en toute sécurité 🛡️</string>
+    <string name="notif_message_received">vous a envoyé un message : « %s »</string>
+    <string name="notif_action_accept">Accepter</string>
+    <string name="notif_action_reject">Refuser</string>
+    <string name="notif_action_accepted">Ami ajouté</string>
+    <string name="notif_action_rejected">Refusée</string>
+    <string name="notif_sender_orbis_member">Un membre OrbisNet</string>
+    <string name="notif_section_today">Aujourd\'hui</string>
+    <string name="notif_section_yesterday">Hier</string>
+    <string name="notif_section_this_week">Cette semaine</string>
+    <string name="notif_section_older">Plus ancien</string>
+    <string name="notif_action_reply">Répondre</string>
+    <string name="notif_action_view_post">Voir le post</string>
+    <string name="notif_clear_all_confirm_title">Effacer toutes les notifications ?</string>
+    <string name="notif_clear_all_confirm_desc">Cette action supprimera l\'intégralité de votre historique de notifications.</string>
+    <string name="notif_clear_confirm_btn">Effacer tout</string>
+    <string name="notif_cancel_btn">Annuler</string>
+    <string name="notif_filter_empty_unread">Aucune notification non lue</string>
+    <string name="notif_filter_empty_social">Aucune activité sociale récente</string>
+    <string name="notif_filter_empty_messages">Aucun nouveau message</string>
+    <string name="notif_filter_empty_friends">Aucune demande d\'ami en attente</string>
+
+    <!-- SIM Security Lock -->
+    <string name="sim_lock_no_sim_title">Aucune carte SIM détectée</string>
+    <string name="sim_lock_swapped_title">Carte SIM modifiée</string>
+    <string name="sim_lock_no_sim_desc">Votre carte SIM enregistrée a été retirée. Veuillez la réinsérer pour continuer à utiliser OrbisNet.</string>
+    <string name="sim_lock_swapped_desc">La carte SIM de cet appareil ne correspond pas à celle enregistrée sur votre compte. Par mesure de sécurité, l\'application est verrouillée.</string>
+    <string name="sim_lock_registered_number_label">Numéro enregistré</string>
+    <string name="sim_lock_btn_retry">Vérifier à nouveau</string>
+    <string name="sim_lock_btn_signout">Changer de compte / Se déconnecter</string>
+
+    <!-- Offline Media: Voice & GPS -->
+    <string name="media_voice_recording">Enregistrement vocal...</string>
+    <string name="media_voice_note">Note Vocale</string>
+    <string name="media_voice_seconds">%1$ss</string>
+    <string name="media_voice_cancel">Supprimer l\'enregistrement</string>
+    <string name="media_voice_send">Envoyer la note vocale</string>
+    <string name="media_voice_cancelled">Enregistrement vocal annulé 🗑️</string>
+    <string name="media_voice_permission_denied">Permission microphone requise pour enregistrer des notes vocales.</string>
+    <string name="media_voice_banner_title">Note Vocale Chiffrée • Haute Fidélité</string>
+    <string name="media_voice_banner_desc">Chiffrée E2EE &amp; transmise via Nostr</string>
+    <string name="media_voice_info_title">Fonctionnement des Notes Vocales Chiffrées</string>
+    <string name="media_voice_info_desc">OrbisNet compresse votre voix en AMR-NB ultra-léger et la chiffre de bout en bout avec AES-256 pour l\'envoyer directement via le réseau Nostr souverain sans limite de temps restrictive.</string>
+    <string name="media_voice_auto_send_toast">Limite maximale atteinte (15 min) — Envoi en cours 🎙️</string>
+    <string name="media_gps_share">Partager position GPS</string>
+    <string name="media_gps_label">Coordonnées GPS Décentralisé</string>
+    <string name="media_gps_open_maps">Ouvrir sur la carte</string>
+    <string name="media_gps_copied">Coordonnées copiées dans le presse-papier</string>
+
+    <!-- Ephemeral Messages -->
+    <string name="ephemeral_title">Messages éphémères</string>
+    <string name="ephemeral_off">Désactivé</string>
+    <string name="ephemeral_30s">30 secondes</string>
+    <string name="ephemeral_5m">5 minutes</string>
+    <string name="ephemeral_1h">1 heure</string>
+    <string name="ephemeral_24h">24 heures</string>
+    <string name="ephemeral_info">Les messages s\'auto-détruiront après le délai choisi.</string>
+
+    <!-- Duress Security & PIN -->
+    <string name="security_pin_title">Code PIN &amp; Mode Détresse</string>
+    <string name="security_pin_main">Code PIN Principal</string>
+    <string name="security_pin_duress">Code PIN de Détresse (Profil Leurre)</string>
+    <string name="security_pin_duress_desc">Saisir ce code déverrouille un profil leurre vierge sans aucune donnée sensible.</string>
+    <string name="security_pin_saved">Codes PIN de sécurité enregistrés</string>
+    <string name="security_pin_enter">Entrez votre code PIN</string>
+    <string name="security_pin_error">Code PIN incorrect</string>
+
+    <!-- SMS Quota Tracker -->
+    <string name="quota_title">Forfait SMS &amp; Consommation</string>
+    <string name="quota_sent">%1$s SMS envoyés</string>
+    <string name="quota_received">%1$s SMS reçus</string>
+    <string name="quota_limit">Limite mensuelle</string>
+    <string name="quota_reset">Réinitialiser</string>
+
+    <!-- Vault Archive (.orbis) -->
+    <string name="vault_export_title">Exporter le Coffre (.orbis)</string>
+    <string name="vault_import_title">Restaurer depuis (.orbis)</string>
+    <string name="vault_file_saved">Coffre exporté dans Documents/Orbis/Vault.orbis</string>
+    <string name="vault_restore_success">Coffre-fort restauré avec succès !</string>
+    <string name="vault_restore_onboarding_btn">Restaurer une sauvegarde (.orbis)</string>
+    <string name="vault_passphrase_hint">Entrez le mot de passe du coffre</string>
+    <string name="vault_restore_title">Restauration du Coffre</string>
+    <string name="vault_select_file">Sélectionner le fichier .orbis</string>
+    <string name="vault_export_share">Partager / Transférer le coffre</string>
+
+    <string name="cancel">Annuler</string>
+    <string name="save">Enregistrer</string>
+    <string name="copy">Copier</string>
+    <string name="close">Fermer</string>
+    <string name="back">Retour</string>
+
+    <!-- Admin Console & User Feedback Flow -->
+    <string name="admin_console_title">Console Développeur &amp; Télémétrie</string>
+    <string name="admin_console_subtitle">Gestion des métriques et retours utilisateurs</string>
+    <string name="admin_badge">ADMIN DEV</string>
+    <string name="feedback_row_title">Signaler un bug / Feedback</string>
+    <string name="feedback_row_subtitle">Rejoindre la communauté Telegram</string>
+    <string name="feedback_dialog_title">Feedback &amp; Communauté</string>
+    <string name="feedback_dialog_subtitle">Décentralisé • Souverain</string>
+    <string name="feedback_telegram_desc">ORBIS fonctionne à décentralisé sans accès Internet ni serveurs cloud. Pour partager vos retours, suggestions de fonctionnalités ou signaler un bug, copiez le lien ci-dessous et rejoignez manuellement notre groupe Telegram.</string>
+    <string name="feedback_telegram_link">https://t.me/orbis_community</string>
+    <string name="feedback_copy_btn">Copier le lien Telegram</string>
+    <string name="feedback_copied_toast">Lien Telegram copié dans le presse-papier !</string>
+
+    <!-- Profile Management Screen -->
+    <string name="profile_title">Mon Profil</string>
+    <string name="profile_subtitle">Identité &amp; Paramètres de Compte</string>
+    <string name="profile_name_label">Pseudo / Nom d\'affichage</string>
+    <string name="profile_name_save">Enregistrer les modifications</string>
+    <string name="profile_name_updated">Pseudo mis à jour avec succès !</string>
+    <string name="profile_photo_change">Changer la photo</string>
+    <string name="profile_logout">Se déconnecter</string>
+    <string name="profile_logout_confirm_title">Déconnexion</string>
+    <string name="profile_logout_confirm_msg">Voulez-vous vraiment vous déconnecter de votre session ?</string>
+    <string name="profile_delete_account">Supprimer le compte complétement</string>
+    <string name="profile_delete_confirm_title">Suppression Définitive du Compte</string>
+    <string name="profile_delete_confirm_msg">Attention : cette action supprimera définitivement vos clés Schnorr, vos contacts et toutes vos discussions sur cet appareil. Continuer ?</string>
+    <string name="profile_delete_confirm_btn">Supprimer définitivement</string>
+
+    <!-- Presence, Disappearing Messages & Battery Optimization -->
+    <string name="presence_online">En ligne</string>
+    <string name="presence_offline">Hors ligne</string>
+    <string name="presence_hide_title">Mode Hors-ligne (Apparaître hors-ligne)</string>
+    <string name="presence_hide_desc">Masquer votre présence active et apparaître hors ligne pour tous vos contacts</string>
+    <string name="presence_toast_offline_active">Mode Hors-ligne activé : vous apparaissez hors ligne pour tous vos contacts</string>
+    <string name="presence_toast_online_active">Statut En ligne activé : vos contacts peuvent voir quand vous êtes actif</string>
+    <string name="settings_blocked_contacts_title">Contacts bloqués</string>
+    <string name="settings_blocked_contacts_count">%1$d contact(s) bloqué(s)</string>
+    <string name="settings_blocked_contacts_empty_sub">Aucun contact bloqué</string>
+    <string name="settings_blocked_dialog_title">Contacts bloqués</string>
+    <string name="settings_blocked_dialog_empty">Vous n\'avez bloqué aucun utilisateur pour le moment.</string>
+    <string name="settings_blocked_unblock_btn">Débloquer</string>
+    <string name="settings_blocked_toast_unblocked">%1$s a été débloqué</string>
+    <string name="social_action_block_user">Bloquer cet utilisateur</string>
+    <string name="social_action_block_confirm_title">Bloquer %1$s ?</string>
+    <string name="social_action_block_confirm_desc">Cet utilisateur ne pourra plus vous envoyer de messages, vous appeler, ni voir vos publications sur le fil d\'actualité.</string>
+    <string name="social_toast_user_blocked">%1$s a été bloqué</string>
+    <string name="disappearing_messages_title">Messages éphémères</string>
+    <string name="disappearing_messages_desc">Autodestruction automatique des messages</string>
+    <string name="disappearing_off">Désactivé</string>
+    <string name="disappearing_1h">1 heure</string>
+    <string name="disappearing_24h">24 heures</string>
+    <string name="disappearing_7d">7 jours</string>
+    <string name="disappearing_set_toast">Messages éphémères définis sur : %1$s</string>
+    <string name="battery_opt_title">Optimisation Batterie</string>
+    <string name="battery_opt_desc">Réception instantanée en veille</string>
+    <string name="battery_opt_active">Actif ⚡</string>
+    <string name="battery_opt_inactive">À configurer</string>
+    <string name="default_sms_row_title">Application SMS par défaut</string>
+    <string name="default_sms_row_sub_active">Orbis gère les SMS en toute confidentialité</string>
+    <string name="default_sms_row_sub_inactive">Définir Orbis pour bloquer l\'app SMS native</string>
+    <string name="default_sms_badge_active">Actif 🛡️</string>
+    <string name="default_sms_badge_inactive">À configurer</string>
+
+    <!-- Friend Verification & Installation Warning -->
+    <string name="not_friend_dialog_title">Envoyer une invitation via Nostr ?</string>
+    <string name="not_friend_dialog_msg">Cette action envoie une invitation Nostr vers %1$s pour échanger les clés de chiffrement. </string>
+    <string name="e2ee_pending_banner_title">Chiffrement de bout en bout E2EE</string>
+    <string name="e2ee_pending_banner_desc">Vous pouvez discuter directement. Pour valider les clés, invitez via Nostr ou partagez un lien.</string>
+    <string name="share_invite_btn">Partager sans SMS</string>
+    <string name="invite_by_sms_btn">Inviter via Nostr</string>
+    <string name="share_invite_title">Inviter sur Orbis</string>
+    <string name="msg_failed_hint">Échec d\'envoi (Solde SMS ou réseau)</string>
+    <string name="msg_retry_btn">Réessayer l\'envoi</string>
+    <string name="not_friend_banner_title">Chiffrement de bout en bout E2EE</string>
+    <string name="not_friend_banner_desc">Envoyez une invitation pour valider les clés de sécurité avec ce contact.</string>
+    <string name="not_friend_send_invite">Inviter via Nostr</string>
+    <string name="not_friend_send_standard_sms">Inviter via Nostr d\'installation</string>
+    <string name="invite_sent_success">SMS d\'invitation OrbisNet envoyé !</string>
+    <string name="standard_invite_sent">SMS d\'invitation standard envoyé !</string>
+    <string name="standard_invite_text">Bonjour ! Je t\'invite à communiquer en toute confidentialité sur OrbisNet (messagerie chiffrée décentralisée). Installe l\'application ici : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
+    <string name="install_warning_tooltip">Si le destinataire n\'a pas OrbisNet installé, les messages chiffrés ne seront pas visibles sur son téléphone.</string>
+
+    <!-- Social P2P Suite & Dev Mode -->
+    <string name="badge_founder_dev">⚡ Dev Core 👑</string>
+    <string name="badge_verified_e2ee">✓ Vérifié</string>
+    <string name="badge_pioneer">🚀 Pionnier Orbis</string>
+    <string name="badge_circle_admin">⭐ Admin Cercle</string>
+    <string name="social_post_pinned">📌 Annonce Épinglée</string>
+    <string name="social_post_official_banner">📢 Flash Info / Annonce Officielle Orbis</string>
+    <string name="social_action_pin">Épingler en haut</string>
+    <string name="social_reposted_by">🔄 %1$s a republié sur son mur (Auteur : @%2$s)</string>
+    <string name="social_action_repost">Republier sur mon mur</string>
+    <string name="social_repost_success">Publication republiée avec succès sur votre mur 👤 🔄</string>
+    <string name="social_search_hint">Rechercher statuts, #tags, amis...</string>
+    <string name="social_find_friends">Ajouter amis</string>
+    <string name="social_dialog_admin_official_toggle">Annonce Officielle</string>
+    <string name="social_dialog_pin_toggle">Épingler en haut</string>
+    <string name="social_comment_reply_btn">Répondre</string>
+    <string name="social_comment_replying_to">En réponse à @%1$s</string>
+    <string name="social_comment_reply_placeholder">Répondre à @%1$s...</string>
+    <string name="social_comment_reply_banner">Réponse à %1$s : \"%2$s\"</string>
+    <string name="social_comment_react_btn">Réagir</string>
+    <string name="social_toast_post_broadcast">Publication ajoutée à votre mur et partagée avec vos amis 🌐</string>
+    <string name="social_toast_reaction_sent">Réaction envoyée sur le réseau Nostr</string>
+    <string name="social_toast_comment_broadcast">Commentaire diffusé sur le réseau Nostr 💬</string>
+    <string name="social_toast_vote_broadcast">Vote pris en compte sur le réseau Nostr 📊</string>
+    <string name="social_notif_new_post_title">Publication de %1$s</string>
+    <string name="social_notif_new_comment_title">Commentaire de %1$s</string>
+    <string name="delete_dialog_title">Supprimer le message ?</string>
+    <string name="delete_for_everyone">Supprimer pour tout le monde</string>
+    <string name="delete_for_me">Supprimer pour moi</string>
+    <string name="chat_msg_deleted_by_you">🚫 Vous avez supprimé ce message</string>
+    <string name="chat_msg_deleted_by_sender">🚫 Ce message a été supprimé</string>
+    <string name="chat_menu_clear">Vider la discussion</string>
+    <string name="chat_menu_clear_confirm_title">Vider la discussion ?</string>
+    <string name="chat_menu_clear_confirm_desc">Tous les messages de cette discussion seront définitivement effacés de cet appareil.</string>
+    <string name="chat_menu_delete_conversation">Supprimer la discussion</string>
+    <string name="chat_menu_delete_conversation_confirm_title">Supprimer la discussion ?</string>
+    <string name="chat_menu_delete_conversation_confirm_desc">Cette discussion et tous ses messages seront définitivement supprimés.</string>
+    <string name="social_delete_post_title">Supprimer la publication ?</string>
+    <string name="social_delete_post_desc">Cette publication sera également retirée du fil d\'actualité de vos amis.</string>
+    <string name="social_toast_post_deleted">Publication supprimée du réseau 🗑️</string>
+    <string name="social_delete_comment_title">Supprimer ce commentaire ?</string>
+    <string name="social_toast_comment_deleted">Commentaire supprimé 🗑️</string>
+
+    <!-- Friend Profile Preview Dialog -->
+    <string name="friend_profile_title">Profil Contact</string>
+    <string name="friend_native_contact_saved">📱 Enregistré dans vos contacts</string>
+    <string name="friend_not_in_phonebook">Numéro de téléphone</string>
+    <string name="friend_action_call">Appeler</string>
+    <string name="friend_phone_missing">Numéro non renseigné</string>
+    <string name="friend_protocol_orbis_voip">Protocole Orbis VoIP E2EE • Internet uniquement</string>
+    <string name="friend_action_chat">Discuter</string>
+    <string name="friend_copied">Numéro copié !</string>
+
+    <!-- Standard SMS Tab (Non-Orbis Plain SMS) -->
+    <string name="tab_plain_sms">SMS</string>
+    <string name="plain_sms_compose_title">Nouveau SMS Standard</string>
+    <string name="plain_sms_compose_desc">Ce message sera envoyé directement non-chiffré vers le destinataire de votre choix.</string>
+    <string name="plain_sms_recipient_label">Numéro de téléphone</string>
+    <string name="plain_sms_message_label">Message</string>
+    <string name="plain_sms_message_hint">Écrire un message standard...</string>
+    <string name="plain_sms_error_empty_recipient">Veuillez saisir un numéro de téléphone valide.</string>
+    <string name="plain_sms_error_empty_body">Veuillez écrire votre message.</string>
+    <string name="plain_sms_sent_success">message standard envoyé avec succès !</string>
+    <string name="plain_sms_send_failed">Échec de l\'envoi du SMS. Vérifiez votre réseau Nostr.</string>
+    <string name="plain_sms_standard_label">Message Standard</string>
+    <string name="plain_sms_no_messages">Aucun message dans cette conversation</string>
+    <string name="plain_sms_otp_copied">Code OTP %1$s copié dans le presse-papier !</string>
+    <string name="plain_sms_input_placeholder">Écrire un message...</string>
+    <string name="plain_sms_cat_all">Tous</string>
+    <string name="plain_sms_cat_otp">Banque &amp; OTP 🔑</string>
+    <string name="plain_sms_cat_operators">Opérateurs 📶</string>
+    <string name="plain_sms_cat_personal">Personnel 👤</string>
+    <string name="plain_sms_banner_title">Boîte SMS Classique (Hors Orbis)</string>
+    <string name="plain_sms_banner_desc">Retrouvez ici tous vos message ordinaires (codes bancaires, forfaits opérateurs, contacts sans Orbis).</string>
+    <string name="plain_sms_empty_title">Aucun message standard</string>
+    <string name="plain_sms_empty_desc">Vos message ordinaires (non-chiffrés) apparaîtront automatiquement ici.</string>
+
+    <!-- Invitation Decision Card & Actions -->
+    <string name="invitation_received_title">Demande de Liaison Sécurisée</string>
+    <string name="invitation_received_desc">%1$s vous invite à établir un canal chiffré E2EE de bout en bout. Vos messages seront protégés par des clés Schnorr BIP-340.</string>
+    <string name="invitation_accept_btn">Accepter &amp; Activer le Chiffrement</string>
+    <string name="invitation_reject_btn">Refuser</string>
+    <string name="invitation_block_btn">Bloquer</string>
+    <string name="invitation_accepted_toast">Invitation acceptée ! Canal chiffré établi avec %1$s.</string>
+    <string name="invitation_rejected_toast">Invitation refusée.</string>
+    <string name="invitation_pending_sent_title">Invitation en attente de validation</string>
+    <string name="invitation_pending_sent_desc">Votre invitation Nostr a été transmise. Dès que %1$s valide la demande, vos échanges seront chiffrés.</string>
+    <string name="invitation_security_badge">Clé Schnorr BIP-340 reçue &amp; vérifiée ✓</string>
+    <string name="invitation_force_unlock_btn">Activer le Chiffrement Direct 🔓</string>
+    <string name="invitation_share_key_btn">Partager la clé de validation</string>
+    <string name="invitation_free_reception_note">✅ Invitation acceptée ! Clés synchronisées (Réception gratuite active).</string>
+    <string name="invitation_direct_unlocked_toast">Canal chiffré E2EE activé avec %1$s 🛡️</string>
+    <string name="share_invite_text">Bonjour ! %1$s vous invite à rejoindre OrbisNet pour communiquer en toute confidentialité via le réseau décentralisé Nostr et les appels WebRTC chiffrés E2EE. Téléchargement : https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
+    <string name="share_invite_chooser_title">Partager l\'invitation OrbisNet</string>
+
+    <!-- User Profile Wall & Enriched Profile -->
+    <string name="tab_wall_posts">Publications</string>
+    <string name="tab_wall_about">À Propos</string>
+    <string name="tab_wall_polls">Sondages</string>
+    <string name="wall_empty_posts">Aucune publication</string>
+    <string name="wall_empty_posts_desc">Cet utilisateur n\'a pas encore partagé de publication sur son mur.</string>
+    <string name="wall_empty_polls">Aucun sondage</string>
+    <string name="wall_empty_polls_desc">Aucun sondage interactif actif pour le moment.</string>
+    <string name="wall_stat_posts">Publications</string>
+    <string name="wall_stat_reactions">Réactions</string>
+    <string name="wall_stat_circles">Cercles</string>
+    <string name="wall_action_message">Message E2EE</string>
+    <string name="wall_action_sms">SMS Classique</string>
+    <string name="wall_action_edit">Modifier le profil</string>
+    <string name="wall_action_new_post">Publier sur le mur</string>
+    <string name="wall_section_bio">Bio &amp; Présentation</string>
+    <string name="wall_section_details">Informations Générales</string>
+    <string name="wall_section_interests">Centres d\'intérêt</string>
+    <string name="wall_section_security">Sécurité &amp; Cryptographie</string>
+    <string name="wall_job_title">Profession</string>
+    <string name="wall_location">Ville / Région</string>
+    <string name="wall_bio_placeholder">Aucune bio renseignée.</string>
+    <string name="wall_no_interests">Aucun centre d\'intérêt renseigné.</string>
+    <string name="wall_key_fingerprint">Empreinte Schnorr</string>
+    <string name="wall_view_full_wall">Voir le mur complet ➔</string>
+    <string name="wall_phone_label">Numéro de téléphone</string>
+    <string name="wall_sovereignty_badge">Souveraineté Active</string>
+    <string name="auth_profile_enrich_title">Personnaliser mon profil</string>
+    <string name="auth_profile_enrich_subtitle">Ajoutez une bio et vos centres d\'intérêt (optionnel)</string>
+    <string name="auth_bio_label">Bio / Slogan personnel</string>
+    <string name="auth_bio_hint">Ex: Souverain et chiffré sur Orbis</string>
+    <string name="auth_job_label">Profession / Titre</string>
+    <string name="auth_job_hint">Ex: Développeur, Étudiant, Médecin...</string>
+    <string name="auth_location_label">Ville / Région</string>
+    <string name="auth_location_hint">Ex: Alger, Paris, Oran...</string>
+    <string name="auth_interests_label">Centres d\'intérêt</string>
+    <string name="auth_chip_tech">🚀 Tech &amp; Code</string>
+    <string name="auth_chip_design">🎨 Art &amp; Design</string>
+    <string name="auth_chip_science">📚 Science &amp; Éducation</string>
+    <string name="auth_chip_business">💼 Entrepreneuriat</string>
+    <string name="auth_chip_sport">⚽ Sport &amp; Santé</string>
+    <string name="auth_chip_music">🎵 Musique &amp; Audio</string>
+    <string name="auth_chip_crypto">🔒 Crypto &amp; Sécurité</string>
+    <string name="auth_chip_nature">🌿 Nature &amp; Voyages</string>
+    <string name="profile_save_changes">Enregistrer les modifications</string>
+    <string name="profile_updated_success">Profil mis à jour avec succès !</string>
+
+    <!-- Algorithme de Recommandation & Feed P2P (TikTok / FB Style) -->
+    <string name="feed_tab_for_you">Pour vous</string>
+    <string name="feed_tab_following">Amis</string>
+    <string name="feed_tab_trending">Tendances</string>
+    <string name="feed_action_like">J\'aime</string>
+    <string name="feed_reactions_count">%1$d réactions</string>
+    <string name="feed_see_who_reacted">Voir qui a réagi</string>
+    <string name="feed_view_all_comments">Afficher les %1$d commentaires</string>
+    <string name="feed_view_one_comment">Voir le commentaire</string>
+    <string name="feed_post_more_options">Plus d\'options</string>
+    <string name="feed_hero_default_name">Vous</string>
+    <string name="feed_edit_post_hashtags_example">#tech #crypto</string>
+    <string name="feed_comment_send">Envoyer le commentaire</string>
+    <string name="social_block_reason_feed">Bloqué depuis le fil d\'actualité</string>
+    <string name="feed_comments_sheet_subtitle">%1$d commentaires</string>
+    <string name="feed_chip_all">Tous</string>
+    <string name="feed_wall_banner_title">Votre Mur Personnel 👤</string>
+    <string name="feed_wall_banner_desc">Publiez sur votre mur personnel pour propager vos idées sur le réseau Orbis.</string>
+    <string name="feed_wall_banner_btn">Publier sur mon mur</string>
+    <string name="feed_rec_for_you_interests">✨ Pour Vous • %1$s</string>
+    <string name="feed_rec_trending">🔥 Tendance entre amis</string>
+    <string name="feed_rec_circle">👥 Populaire dans vos cercles</string>
+    <string name="feed_rec_official">📢 Annonce Officielle</string>
+    <string name="feed_rec_explore">🚀 Découverte Cercles</string>
+    <string name="feed_empty_for_you_title">Aucune recommandation pour le moment</string>
+    <string name="feed_empty_for_you_desc">Sélectionnez vos centres d\'intérêt dans votre profil ou interagissez avec des publications pour calibrer l\'algorithme.</string>
+
+    <!-- Partage de Publication en Discussion Privée E2EE (Style Facebook / Messenger) -->
+    <string name="social_action_share_chat">Partager en privé</string>
+    <string name="social_share_to_chat_title">Partager en privé</string>
+    <string name="social_share_to_chat_subtitle">Envoyer cette publication à un contact en E2EE</string>
+    <string name="social_share_note_label">Message d\'accompagnement (optionnel)</string>
+    <string name="social_share_note_hint">Écrire un mot... Ex: Regarde ça !</string>
+    <string name="social_share_search_hint">Rechercher un ami...</string>
+    <string name="social_share_send_btn">Envoyer</string>
+    <string name="social_share_sent_btn">Envoyé ✓</string>
+    <string name="social_share_toast_success">Publication partagée en privé avec %1$s 💬</string>
+    <string name="social_share_bubble_header">Publication</string>
+    <string name="social_share_view_wall_btn">Voir le mur de l\'auteur ➔</string>
+
+    <!-- Navigation & Accès Rapide au Mur Personnel (UX Simplifiée) -->
+    <string name="feed_tab_my_wall">Mon mur</string>
+    <string name="feed_hero_whats_on_your_mind">À quoi pensez-vous, %1$s ?</string>
+    <string name="feed_hero_view_my_wall">Voir mon mur</string>
+    <string name="feed_hero_create_post">Publier</string>
+    <string name="settings_open_my_wall">Mon Mur Personnel &amp; Publications</string>
+    <string name="settings_open_my_wall_sub">Voir mon profil public, mes posts et mes abonnés</string>
+    <string name="contacts_me_card_title">%1$s (Moi)</string>
+    <string name="contacts_me_card_sub">Voir et gérer mon mur personnel</string>
+
+    <!-- Wall FB / X Design & Modular Profile -->
+    <string name="tab_wall_reposts">Republications</string>
+    <string name="wall_stat_reposts">Partages</string>
+    <string name="wall_empty_reposts">Aucune republication</string>
+    <string name="wall_empty_reposts_desc">Les publications republiées sur ce mur apparaîtront ici.</string>
+    <string name="wall_action_share_profile">Partager le profil</string>
+    <string name="wall_action_my_friends">Mes amis</string>
+    <string name="wall_friends_hub_title">Réseau d\'amis souverain</string>
+    <string name="wall_friends_hub_subtitle">%1$d pair(s) chiffré(s) dans votre cercle social</string>
+    <string name="wall_friends_hub_cta">Voir la liste</string>
+    <string name="my_friends_title">Mes amis</string>
+    <string name="my_friends_subtitle">%1$d ami(s) actif(s) sur Orbis</string>
+    <string name="my_friends_search_hint">Rechercher par nom ou numéro…</string>
+    <string name="my_friends_network_hint">Seuls les amis acceptés et contacts E2EE apparaissent ici. Les publications sont partagées avec ce cercle via Nostr.</string>
+    <string name="my_friends_empty_title">Aucun ami pour le moment</string>
+    <string name="my_friends_empty_desc">Acceptez une invitation ou invitez un contact pour constituer votre cercle social souverain.</string>
+    <string name="my_friends_empty_cta">Gérer les demandes d\'amitié</string>
+    <string name="my_friends_badge_e2ee">Connecté E2EE</string>
+    <string name="my_friends_action_chat">Message sécurisé</string>
+    <string name="my_friends_action_wall">Ouvrir le mur</string>
+    <string name="my_friends_action_more">Options</string>
+    <string name="my_friends_action_remove">Retirer des amis</string>
+    <string name="my_friends_action_block">Bloquer l\'utilisateur</string>
+    <string name="my_friends_dialog_remove_title">Retirer des amis ?</string>
+    <string name="my_friends_dialog_remove_desc">Voulez-vous vraiment retirer %1$s de votre liste d\'amis ? Vous ne verrez plus vos publications mutuelles.</string>
+    <string name="my_friends_dialog_block_title">Bloquer l\'utilisateur ?</string>
+    <string name="my_friends_dialog_block_desc">Bloquer %1$s ? Vous ne recevrez plus ses messages ni ses appels, et il ne pourra plus voir vos publications ni votre profil.</string>
+    <string name="my_friends_toast_removed">%1$s a été retiré de votre liste d\'amis</string>
+    <string name="my_friends_toast_blocked">%1$s a été bloqué</string>
+    <string name="my_friends_manage_requests">Demandes &amp; invitations</string>
+    <string name="wall_joined_date">Membre Souverain Orbis</string>
+    <string name="wall_edit_dialog_title">Modifier mon Profil</string>
+    <string name="wall_edit_name_label">Nom d\'affichage</string>
+    <string name="wall_edit_bio_label">Bio / Description</string>
+    <string name="wall_edit_job_label">Profession / Titre</string>
+    <string name="wall_edit_location_label">Localisation / Ville</string>
+    <string name="wall_edit_interests_title">Centres d\'intérêt</string>
+    <string name="wall_copy_fingerprint">Copier l\'empreinte</string>
+    <string name="wall_fingerprint_copied">Empreinte Schnorr copiée dans le presse-papier !</string>
+    <string name="error_reserved_username">Ce pseudonyme est réservé à l\'équipe officielle et au compte Fondateur O R B I S net.</string>
+    <string name="wall_phone_confidential">🔒 Identité Masquée &amp; Confidentielle (Fondateur O R B I S net)</string>
+    <string name="wall_handle_confidential">@orbis • 🛡️ Identité Confidentielle Fondateur</string>
+
+    <!-- Help Center & User Guide (Modular FAQ & README Knowledge) -->
+    <string name="settings_help_row_title">Aide &amp; Guide d\'Utilisation</string>
+    <string name="settings_help_row_sub">Guides décentralisé, audio, réseau social entre amis, double SIM &amp; sécurité</string>
+    <string name="help_center_title">Aide &amp; Guide</string>
+    <string name="help_search_placeholder">Rechercher une question ou un sujet...</string>
+    <string name="help_cat_all">Tout</string>
+    <string name="help_cat_getting_started">Prise en main</string>
+    <string name="help_cat_messaging">Messagerie &amp; Audio</string>
+    <string name="help_cat_calls">Appels &amp; Voix</string>
+    <string name="help_cat_social">Fil d\'actualité &amp; Stories</string>
+    <string name="help_cat_dual_sim">Double SIM</string>
+    <string name="help_cat_contacts">Contacts &amp; Groupes</string>
+    <string name="help_cat_security">Sécurité &amp; Quotas</string>
+    <string name="help_empty_search">Aucun sujet trouvé</string>
+    <string name="help_empty_search_desc">Essayez avec d\'autres mots-clés ou sélectionnez une catégorie ci-dessus.</string>
+    <string name="help_quick_tips_title">💡 Astuces Essentielles</string>
+    <string name="help_tip_calls_e2ee">Appels vocaux chiffrés : signalisation via Nostr compacts, voix chiffrée AES-256-GCM et bascule GSM standard si relais indisponible.</string>
+    <string name="help_tip_default_sms">Orbis doit être défini comme Application SMS par défaut pour chiffrer et déchiffrer les messages reçus.</string>
+    <string name="help_tip_offline_ready">décentralisé : les messages transitent directement de téléphone à téléphone via le réseau Nostr.</string>
+    <string name="help_tip_dual_sim_switch">Touchez votre avatar avec la pastille SIM dans l\'en-tête pour changer de ligne active en 1 clic.</string>
+    <string name="help_about_title">À propos d\'Orbis Écosystème Souverain</string>
+    <string name="help_about_desc">Orbis est une plateforme de messagerie et de réseau social décentralisé et décentralisée, sans aucun serveur centralisé, protégée par chiffrement de bout en bout.</string>
+    <string name="help_about_version">Version 1.4.0 • Architecture Souveraine Décentralisé</string>
+
+    <string name="help_topic_offline_title">Comment Orbis fonctionne-t-il sans Internet ?</string>
+    <string name="help_topic_offline_summary">Communication directe de téléphone à téléphone via Nostr.</string>
+    <string name="help_topic_offline_content">Orbis n\'utilise aucun serveur centralisé ni connexion Internet (Wi-Fi, 4G, 5G). Chaque message texte, note vocale et publication sociale est chiffré directement sur votre téléphone et transmis par relais Nostr standard. Vous pouvez communiquer en pleine zone blanche ou lors d\'une coupure Internet totale.</string>
+
+    <string name="help_topic_keys_title">Comment démarrer ma première discussion chiffrée ?</string>
+    <string name="help_topic_keys_summary">Échange automatique de clé publique ou scan QR Code.</string>
+    <string name="help_topic_keys_content">Lorsque vous écrivez à un nouveau contact, Orbis envoie automatiquement une demande d\'échange de clé publique via Nostr. Dès que votre contact accepte, vos discussions sont sécurisées de bout en bout. Vous pouvez également scanner son QR Code en face à face dans l\'onglet Contacts pour certifier immédiatement son identité.</string>
+
+    <string name="help_topic_audio_title">Comment fonctionnent les notes vocales via Nostr ?</string>
+    <string name="help_topic_audio_summary">Compression audio avancée et lecteur avec forme d\'onde.</string>
+    <string name="help_topic_audio_content">Maintenez le bouton micro pour enregistrer votre message vocal. OrbisNet compresse l\'audio avec un codec haute efficacité et le découpe en petits paquets SMS. À la réception, les paquets sont automatiquement réassemblés et vous pouvez écouter le message avec le lecteur interactif, régler la vitesse (1x, 1.5x, 2x) et naviguer sur la forme d\'onde.</string>
+
+    <string name="help_topic_ephemeral_title">Comment utiliser les messages éphémères ?</string>
+    <string name="help_topic_ephemeral_summary">Autodestruction automatique de 10 secondes à 7 jours.</string>
+    <string name="help_topic_ephemeral_content">Dans une conversation, touchez le menu des options (⋮) puis \'Messages éphémères\'. Choisissez une durée (10s, 1m, 1h, 24h, 7j). Dès que votre correspondant lit le message, un compte à rebours se déclenche et le message s\'efface définitivement des deux téléphones.</string>
+
+    <string name="help_topic_call_e2ee_title">Comment fonctionnent les Appels Vocaux Chiffrés (E2EE) ?</string>
+    <string name="help_topic_call_e2ee_summary">Signalisation via relais Nostr, flux audio P2P chiffré en AES-256-GCM et zéro serveur cloud.</string>
+    <string name="help_topic_call_e2ee_content">Orbis initialise l\'appel vocal sécurisé en transmettant un SMS compact de signalisation (Offre ORB:CO:). Dès acceptation par votre contact (ORB:CA:), un flux audio direct chiffré en AES-256-GCM est établi. Aucun serveur cloud, aucun relais tiers et immunité totale contre les écoutes téléphoniques.</string>
+
+    <string name="help_topic_call_credit_title">Que faire en cas de crédit SMS épuisé lors d\'un appel ?</string>
+    <string name="help_topic_call_credit_summary">Détection instantanée de panne relais et bascule sur appel GSM standard.</string>
+    <string name="help_topic_call_credit_content">Si les relais Nostr sont indisponibles, OrbisNet détecte le problème en temps réel et propose de basculer en appel classique. Le récepteur peut alors répondre via l\'appel GSM standard de l\'opérateur, et l\'émetteur en est immédiatement informé.</string>
+
+    <string name="help_topic_call_sas_title">Qu\'est-ce que le Code de Sécurité SAS lors d\'un appel ?</string>
+    <string name="help_topic_call_sas_summary">Code court d\'authentification dérivé des clés Schnorr à comparer de vive voix contre les attaques Man-in-the-Middle.</string>
+    <string name="help_topic_call_sas_content">Le code SAS (Short Authentication String) est un code cryptographique unique affiché en haut de l\'écran d\'appel. En le comparant à voix haute avec votre contact au début de la communication, vous certifiez mathématiquement l\'absence totale d\'interception ou de fausse antenne relais (IMSI-Catcher).</string>
+
+    <string name="help_topic_call_hangup_title">Comment fonctionne le raccrochage sécurisé garanti ?</string>
+    <string name="help_topic_call_hangup_summary">Rafale UDP sur thread dédié, SMS de fin d\'appel (ORB:CE:) et chien de garde automatique à 4.5 secondes.</string>
+    <string name="help_topic_call_hangup_content">Lorsque vous raccrochez, OrbisNet émet une rafale prioritaire de paquets de fermeture sur un thread dédié, envoie un SMS de fin (ORB:CE:) et active une surveillance active (Dead-Peer Detection). En cas de perte subite de réseau, l\'appel s\'arrête automatiquement sous 4.5 secondes pour économiser la batterie.</string>
+
+    <string name="help_topic_feed_title">Comment fonctionnent le fil d\'actualité et les stories ?</string>
+    <string name="help_topic_feed_summary">Réseau social sans serveur exclusivement partagé entre amis confirmés.</string>
+    <string name="help_topic_feed_content">Le fil d\'actualité et les stories 24h fonctionnent en réseau direct strictement entre amis confirmés et cercles de confiance. Vos publications et sondages sont transmis uniquement à vos amis acceptés via Nostr, sans qu\'aucun serveur ne stocke vos données ni ne spamme votre carnet d\'adresses.</string>
+
+    <string name="help_topic_dual_sim_title">Comment gérer deux cartes SIM dans Orbis ?</string>
+    <string name="help_topic_dual_sim_summary">Basculez de ligne en 1 clic grâce à l\'avatar en haut à droite.</string>
+    <string name="help_topic_dual_sim_content">OrbisNet détecte automatiquement vos cartes SIM insérées. Touchez votre avatar en haut à droite du header (qui affiche \'SIM 1\' ou \'SIM 2\') pour basculer instantanément de ligne active ou ajouter un deuxième profil étanche avec son propre trousseau de clés.</string>
+
+    <string name="help_topic_contacts_title">Comment gérer mes contacts et créer un groupe ?</string>
+    <string name="help_topic_contacts_summary">Annuaire du téléphone complet, groupes chiffrés et certification.</string>
+    <string name="help_topic_contacts_content">Dans l\'onglet Contacts, retrouvez l\'ensemble de votre carnet d\'adresses. Touchez \'Nouveau groupe\' pour créer un groupe chiffré sécurisé avec vos proches, ou \'Nouveau contact\' pour enregistrer directement un numéro dans votre téléphone.</string>
+
+    <string name="help_topic_security_title">Comment sécuriser l\'application avec un code PIN ?</string>
+    <string name="help_topic_security_summary">Verrouillage par empreinte digitale, code PIN et coffre-fort local.</string>
+    <string name="help_topic_security_content">Dans les Réglages > Sécurité, activez le verrouillage par code PIN ou biométrie. Vos conversations locales sont protégées par un chiffrement au repos et vous pouvez sauvegarder l\'intégralité de vos données décentralisé dans un fichier de sauvegarde (.orbis).</string>
+
+    <string name="help_topic_quota_title">Comment contrôler ma consommation de SMS ?</string>
+    <string name="help_topic_quota_summary">Suivi des quotas journaliers et optimisation automatique.</string>
+    <string name="help_topic_quota_content">Dans les Réglages > Forfait &amp; Quota SMS, suivez en temps réel le nombre de SMS émis aujourd\'hui et ce mois-ci. OrbisNet optimise automatiquement le découpage des caractères pour minimiser le nombre de SMS envoyés.</string>
+
+    <!-- Help Topics - Extended Features -->
+    <string name="help_tip_gps_offline">GPS direct : partagez vos coordonnées satellites via Nostr sans aucune connexion data 4G/5G.</string>
+    <string name="help_tip_polls_stories">Créez des sondages et des stories 24h directement diffusés à vos cercles de confiance.</string>
+
+    <string name="help_topic_polls_title">Comment créer et voter dans des sondages ?</string>
+    <string name="help_topic_polls_summary">Sondages souverains distribués via Nostr avec barres de pourcentage en direct.</string>
+    <string name="help_topic_polls_content">Dans le fil d\'actualité, créez un sondage décentralisé avec plusieurs options. Lorsque vos amis votent, leurs choix sont transmis sous forme de paquets SMS chiffrés. Orbis comptabilise automatiquement les votes en temps réel, affiche des graphiques de pourcentages et garantit l\'unicité du vote de chaque participant.</string>
+
+    <string name="help_topic_stories_title">Comment fonctionnent les stories de 24h ?</string>
+    <string name="help_topic_stories_summary">Statuts éphémères de 24h avec textes, dégradés et anneaux lumineux sur les avatars.</string>
+    <string name="help_topic_stories_content">Partagez des statuts éphémères visibles pendant 24 heures. Vos stories peuvent contenir du texte ou des photos avec de superbes arrière-plans dégradés. Les contacts ayant publié une story active arborent un anneau coloré autour de leur avatar dans le fil et la liste des discussions. Les stories s\'autodétruisent après 24 heures.</string>
+
+    <string name="help_topic_reactions_title">Comment utiliser les réactions émojis et les commentaires ?</string>
+    <string name="help_topic_reactions_summary">Réactions rapides par émojis (❤️, 🔥, 👏, 💡, 🛡️) dans les discussions, publications et commentaires imbriqués.</string>
+    <string name="help_topic_reactions_content">Exprimez-vous instantanément sans envoyer de SMS superflus. Touchez ou maintenez n\'importe quelle bulle de message, publication ou story pour apposer une réaction émoji. Dans le fil d\'actualité, vous pouvez également échanger dans des fils de discussion en commentant directement les statuts de vos amis.</string>
+
+    <string name="help_topic_gps_title">Comment fonctionne le partage de position GPS décentralisé ?</string>
+    <string name="help_topic_gps_summary">Capture satellite directe et transmission via Nostr chiffré sans aucune connexion Internet.</string>
+    <string name="help_topic_gps_content">Dans une discussion, ouvrez le menu des pièces jointes (+) et choisissez \'Partager ma position GPS\'. Orbis interroge directement la puce satellite GPS de votre téléphone. Une fois le signal acquis, vos coordonnées exactes sont envoyées via Nostr chiffré et peuvent être ouvertes instantanément dans Google Maps ou OpenStreetMap.</string>
+
+    <string name="help_topic_groups_circles_title">Comment fonctionnent les Groupes et Cercles Souverains ?</string>
+    <string name="help_topic_groups_circles_summary">Clé de groupe AES-256, cercles (Famille, Amis, Travail) et multi-diffusion via Nostr.</string>
+    <string name="help_topic_groups_circles_content">Créez des groupes chiffrés associés à vos Cercles Souverains (Famille, Amis, Travail, Communauté). Chaque groupe dispose d\'une clé AES-256 dédiée. Lorsque vous écrivez dans un groupe, Orbis chiffre et transmet automatiquement le message via Nostr à l\'ensemble des membres simultanément.</string>
+
+    <string name="help_topic_devtools_title">Qu\'est-ce que la Console Développeur et la Télémétrie ?</string>
+    <string name="help_topic_devtools_summary">Diagnostics moteur en direct, bac à sable crypto, télémétrie batterie et journaux SMS.</string>
+    <string name="help_topic_devtools_content">Accessible dans Paramètres > Console Développeur, ce centre de diagnostic vous permet d\'exécuter des tests d\'intégrité sur les algorithmes AES-256-GCM et Schnorr BIP-340, de surveiller l\'empreinte mémoire et batterie, et d\'inspecter en direct les événements Nostr.</string>
+
+    <!-- Coffre-Fort Souverain, Migration P2P & Nettoyeur -->
+    <string name="vault_hub_title">Coffre-Fort &amp; Sauvegarde Souveraine</string>
+    <string name="vault_hub_subtitle">Sauvegarde chiffrée, migration P2P &amp; nettoyage</string>
+    <string name="vault_hub_row_title">Gestion du Coffre &amp; Migration</string>
+    <string name="vault_hub_row_subtitle">Sauvegarder, restaurer ou transférer votre identité</string>
+    <string name="vault_tab_backup">Sauvegarde</string>
+    <string name="vault_tab_restore">Restauration</string>
+    <string name="vault_tab_p2p">Migration P2P</string>
+    <string name="vault_tab_cleaner">Nettoyage</string>
+    <string name="vault_backup_desc_title">Chiffrement Militaire PBKDF2 + AES-256</string>
+    <string name="vault_backup_desc_body">Votre coffre-fort contient vos profils, clés Schnorr/AES, contacts, messages, cercles et publications. Dérivation par 100 000 itérations PBKDF2 pour résister au piratage.</string>
+    <string name="vault_passphrase_label">Mot de passe maître</string>
+    <string name="vault_pass_strength">Force du mot de passe</string>
+    <string name="vault_pass_strength_none">Vide</string>
+    <string name="vault_pass_strength_weak">Faible ⚠️</string>
+    <string name="vault_pass_strength_medium">Moyen 🔒</string>
+    <string name="vault_pass_strength_max">Blindé 🛡️</string>
+    <string name="vault_pass_too_short">Le mot de passe doit contenir au moins 6 caractères.</string>
+    <string name="vault_btn_save_documents">Enregistrer dans Documents/Orbis</string>
+    <string name="vault_btn_share_archive">Partager l\'Archive Sécurisée</string>
+    <string name="vault_restore_desc_title">Restauration Complète Décentralisé</string>
+    <string name="vault_restore_desc_body">Sélectionnez une archive .orbis sauvegardée précédemment pour restaurer l\'intégralité de vos données chiffrées.</string>
+    <string name="vault_btn_select_file">Sélectionner un fichier .orbis</string>
+    <string name="vault_select_file_first">Veuillez d\'abord sélectionner un fichier d\'archive.</string>
+    <string name="vault_btn_execute_restore">Déchiffrer &amp; Restaurer le Coffre</string>
+    <string name="vault_p2p_desc_title">Migration sans Cloud d\'Appareil à Appareil</string>
+    <string name="vault_p2p_desc_body">Transférez votre identité souveraine et vos clés cryptographiques vers un autre téléphone sans aucun serveur intermédiaire.</string>
+    <string name="vault_p2p_pairing_key_label">Code secret d\'appairage</string>
+    <string name="vault_p2p_btn_generate">Générer la trame chiffrée</string>
+    <string name="vault_p2p_btn_apply_import">Déchiffrer et Importer l\'Identité</string>
+    <string name="vault_cleaner_desc_title">Optimisation du Stockage &amp; Caches</string>
+    <string name="vault_cleaner_desc_body">Scanne et purge les stories expirées (>24h), fragments SMS temporaires et miniatures orphelines pour libérer de la mémoire.</string>
+    <string name="vault_cleaner_btn_purge">Purger et Libérer l\'Espace</string>
+    <string name="chat_action_reply">Répondre</string>
+    <string name="widget_sos_desc">Balise d\'alerte et géolocalisation d\'urgence en 1 clic</string>
+
+    <!-- Support Dual-SIM SMS Classique -->
+    <string name="sim_filter_all">Toutes les SIMs</string>
+    <string name="sim_sending_via">Envoyer via la ligne :</string>
+    <string name="sim_switched_toast">Basculé sur SIM %1$d (%2$s)</string>
+    <string name="sim_slot_1">SIM 1</string>
+    <string name="sim_slot_2">SIM 2</string>
+    <string name="sim_carrier_format">SIM %1$d • %2$s</string>
+
+    <!-- Gestion SMS Classique Avancée (Suppression, Blocage, Épinglage, Archivage, Transfert) -->
+    <string name="plain_sms_cat_archived">Archivés 📦</string>
+    <string name="plain_sms_cat_blocked">Spam &amp; Bloqués 🚫</string>
+    <string name="plain_sms_action_pin">Épingler en haut</string>
+    <string name="plain_sms_action_unpin">Désépingler</string>
+    <string name="plain_sms_action_archive">Archiver</string>
+    <string name="plain_sms_action_unarchive">Désarchiver</string>
+    <string name="plain_sms_action_mark_read">Marquer comme lu</string>
+    <string name="plain_sms_action_mark_unread">Marquer comme non lu</string>
+    <string name="plain_sms_action_block">Bloquer le contact</string>
+    <string name="plain_sms_action_unblock">Débloquer le contact</string>
+    <string name="plain_sms_action_delete_thread">Supprimer la conversation</string>
+    <string name="plain_sms_action_forward">Transférer le SMS</string>
+    <string name="plain_sms_action_share">Partager</string>
+    <string name="plain_sms_action_details">Détails du message</string>
+    <string name="plain_sms_action_search_thread">Rechercher dans la discussion</string>
+    <string name="plain_sms_action_add_contact">Ajouter aux contacts</string>
+    <string name="plain_sms_delete_thread_title">Supprimer la conversation ?</string>
+    <string name="plain_sms_delete_thread_desc">Les %1$s messages échangés avec %2$s seront définitivement supprimés de votre appareil.</string>
+    <string name="plain_sms_batch_delete_title">Supprimer les conversations ?</string>
+    <string name="plain_sms_batch_delete_desc">Voulez-vous supprimer définitivement les %1$d conversations sélectionnées ?</string>
+    <string name="plain_sms_batch_delete_all_desc">Voulez-vous supprimer TOUTES les conversations message classiques (%1$d) ?</string>
+    <string name="plain_sms_batch_delete_msg_title">Supprimer les messages ?</string>
+    <string name="plain_sms_batch_delete_msg_desc">Voulez-vous supprimer définitivement les %1$d messages sélectionnés ?</string>
+    <string name="plain_sms_select_all">Tout sélectionner</string>
+    <string name="plain_sms_deselect_all">Tout désélectionner</string>
+    <string name="plain_sms_selected_count">%1$d sélectionné(s)</string>
+    <string name="plain_sms_delete_msg_title">Supprimer ce message ?</string>
+    <string name="plain_sms_delete_msg_desc">Ce SMS sera définitivement effacé de cet appareil.</string>
+    <string name="plain_sms_block_confirm_title">Bloquer %1$s ?</string>
+    <string name="plain_sms_block_confirm_desc">Vous ne recevrez plus de notifications ni de messages de ce numéro dans votre boîte principale.</string>
+    <string name="plain_sms_unblocked_toast">Contact %1$s débloqué</string>
+    <string name="plain_sms_blocked_toast">Contact %1$s bloqué et déplacé vers Spam</string>
+    <string name="plain_sms_pinned_toast">Conversation épinglée 📌</string>
+    <string name="plain_sms_unpinned_toast">Conversation désépinglée</string>
+    <string name="plain_sms_archived_toast">Conversation archivée 📦</string>
+    <string name="plain_sms_unarchived_toast">Conversation désarchivée</string>
+    <string name="plain_sms_search_in_thread_hint">Rechercher dans les messages...</string>
+    <string name="plain_sms_search_matches">%1$d résultat(s)</string>
+    <string name="plain_sms_msg_details_title">Détails du SMS</string>
+    <string name="plain_sms_msg_details_date">Date &amp; Heure</string>
+    <string name="plain_sms_msg_details_type">Type</string>
+    <string name="plain_sms_msg_details_sim">Carte SIM</string>
+    <string name="plain_sms_msg_type_received">SMS Reçu</string>
+    <string name="plain_sms_msg_type_sent">SMS Envoyé</string>
+    <string name="plain_sms_status_label">Accusé de réception</string>
+    <string name="plain_sms_status_delivered">Reçu par le destinataire (Accusé confirmé ✓✓)</string>
+    <string name="plain_sms_status_sent">Transmis au réseau (En attente d\'accusé ✓)</string>
+    <string name="plain_sms_status_sending">En cours d\'envoi...</string>
+    <string name="plain_sms_status_failed">Échec d\'envoi</string>
+    <string name="plain_sms_status_delivered_short">Reçu</string>
+    <string name="plain_sms_status_sent_short">Envoyé</string>
+    <string name="plain_sms_status_sending_short">Envoi...</string>
+    <string name="plain_sms_status_failed_short">Échec</string>
+    <string name="plain_sms_action_copy">Copier le message</string>
+    <string name="plain_sms_copied_toast">Message copié dans le presse-papier</string>
+    <string name="plain_sms_url_open">Ouvrir le lien</string>
+    <string name="plain_sms_url_copy">Copier le lien</string>
+    <string name="plain_sms_url_copied">Lien copié dans le presse-papier</string>
+    <string name="plain_sms_url_preview_title">Lien Web</string>
+    <string name="plain_sms_url_open_browser_failed">Aucun navigateur trouvé pour ouvrir le lien</string>
+
+    <!-- Appel Vocal Sécurisé E2EE Orbis -->
+    <string name="chat_call_btn_desc">Appel vocal sécurisé</string>
+    <string name="call_req_dialog_title">Appel Vocal Orbis E2EE</string>
+    <string name="call_req_dialog_subtitle">Chiffrement direct P2P de bout en bout</string>
+    <string name="call_req_dialog_body">Pour garantir l\'absence totale de serveurs cloud et le chiffrement direct AES-256 de la voix, les appels vocaux sécurisés nécessitent qu\'Orbis soit installé chez votre correspondant.\n\nInvitez ce contact via Nostr pour activer la ligne vocale chiffrée.</string>
+    <string name="call_req_btn_invite">Inviter via Nostr</string>
+    <string name="call_req_invite_sms_text">Bonjour ! Rejoins-moi sur Orbis pour échanger des messages et passer des appels vocaux 100% chiffrés de bout en bout sans serveurs cloud : https://shadevpro.github.io</string>
+    <string name="call_status_calling">Établissement de la ligne sécurisée...</string>
+    <string name="call_status_ringing">Sonnerie...</string>
+    <string name="call_status_incoming">Appel vocal sécurisé entrant...</string>
+    <string name="call_status_connected">En communication sécurisée</string>
+    <string name="call_status_ended">Appel terminé</string>
+    <string name="call_duration_format">Durée : %1$s</string>
+    <string name="call_action_mute">Muet</string>
+    <string name="call_action_unmute">Micro actif</string>
+    <string name="call_action_speaker">Haut-parleur</string>
+    <string name="call_action_earpiece">Écouteur</string>
+    <string name="call_action_accept">Accepter</string>
+    <string name="call_action_decline">Refuser</string>
+    <string name="call_action_end">Raccrocher</string>
+    <string name="call_action_crypto_info">Sécurité E2EE</string>
+    <string name="call_sas_label">Code de sécurité SAS</string>
+    <string name="call_sas_hint">Comparez ce code de vive voix pour certifier l\'absence d\'interception.</string>
+    <string name="call_crypto_details_title">Chiffrement Vocal Souverain</string>
+    <string name="call_crypto_details_body">Cette communication utilise un flux audio chiffré en temps réel avec AES-256-GCM et signatures Schnorr BIP-340. Aucun serveur tiers, aucun relais cloud et aucune écoute opérateur possible.</string>
+    <string name="call_no_credit_title">Échec d\'Établissement</string>
+    <string name="call_no_credit_desc">Impossible d\'établir la communication sécurisée.</string>
+    <string name="call_action_accept_gsm">Répondre</string>
+    <string name="call_security_standard_gsm_badge">Ligne Sécurisée • E2EE Internet</string>
+    <string name="call_security_standard_gsm_dialog_title">Sécurité de la Ligne Vocale</string>
+    <string name="call_security_standard_gsm_desc">Cet appel utilise un flux audio chiffré de bout en bout via Internet &amp; Données (AES-256). Validez l\'identité de votre correspondant avec le code de sécurité SAS %1$s.</string>
+    <string name="call_feedback_no_answer_title">Appel non abouti</string>
+    <string name="call_feedback_no_answer_sub">Délai d\'attente dépassé (30s)</string>
+    <string name="call_feedback_no_answer_desc">Le destinataire n\'a pas répondu à votre appel dans le délai imparti.</string>
+    <string name="call_feedback_hint">Conseil : Vous pouvez lui envoyer un message sécurisé ou réessayer ultérieurement.</string>
+    <string name="call_feedback_btn_plain_sms">Envoyer un message</string>
+    <string name="call_feedback_btn_chat">Envoyer un message Orbis</string>
+    <string name="call_feedback_btn_dismiss">Compris</string>
+    <string name="call_feedback_rejected_title">Appel refusé</string>
+    <string name="call_feedback_rejected_desc">%1$s a refusé votre appel vocal sécurisé.</string>
+    <string name="call_choice_card_desc">Appel vocal 100%% chiffré de bout en bout via Internet &amp; Données.</string>
+    <string name="call_action_accept_e2ee">Répondre Chiffré (E2EE)</string>
+    <string name="call_action_switch_to_gsm">Terminer l\'appel</string>
+    <string name="call_sms_send_failed_title">Échec de Connexion</string>
+    <string name="call_sms_send_failed_desc">Impossible de joindre le correspondant via Internet/Relais.</string>
+    <string name="call_pre_dialog_title">Appel Vocal Sécurisé</string>
+    <string name="call_pre_dialog_subtitle">Souveraineté P2P directe</string>
+    <string name="call_pre_dialog_desc">Cet appel sera 100%% chiffré de bout en bout (AES-256) via Internet &amp; Données (Wi-Fi, 4G, 5G).\n\nLancer l\'appel avec %1$s ?</string>
+    <string name="call_pre_dialog_btn_call">Appeler</string>
+    <string name="call_pre_dialog_btn_cancel">Annuler</string>
+    <string name="call_receiver_notice_text">Appel entrant chiffré de bout en bout (AES-256) via Internet et Données.</string>
+    <string name="call_caller_waiting_notice">En attente de réponse : Ligne chiffrée de bout en bout (AES-256) via Internet &amp; Données.</string>
+    <string name="call_caller_security_notice">Note de sécurité : Flux audio P2P 100%% chiffré via Internet &amp; Données sans passerelle intermédiaire.</string>
+    <string name="call_banner_gsm_active">Ligne sécurisée active. Vérifiez l\'identité avec le code SAS %1$s.</string>
+    <string name="call_banner_e2ee_active">Voix chiffrée de bout en bout (AES-256-GCM)</string>
+    <string name="call_cellular_required_toast">Appel sécurisé : assurez-vous d\'avoir une connexion Internet active (Wi-Fi ou Données).</string>
+    <string name="call_caller_no_credit_toast">Connexion échouée pour émettre un appel chiffré</string>
+    <string name="call_feedback_caller_no_credit_title">Connexion échouée</string>
+    <string name="call_feedback_caller_no_credit_sub">Échec d\'émission</string>
+    <string name="call_feedback_caller_no_credit_desc">Impossible d\'initier l\'appel chiffré OrbisNet. Veuillez vérifier votre connexion Internet (Wi-Fi ou Données mobiles).</string>
+
+    <!-- Video Call & Pre-Call Choice -->
+    <string name="call_pre_choice_title">Démarrer un appel sécurisé</string>
+    <string name="call_pre_choice_desc">Choisissez le mode d\'appel avec %1$s :</string>
+    <string name="call_option_voice_title">Appel Vocal</string>
+    <string name="call_option_voice_desc">Audio chiffré E2EE • Économie de données</string>
+    <string name="call_option_video_title">Appel Vidéo</string>
+    <string name="call_option_video_desc">Visio chiffrée E2EE • Vidéo et son en direct</string>
+    <string name="call_action_accept_video">Accepter en vidéo</string>
+    <string name="call_action_accept_voice_only">Répondre en vocal</string>
+    <string name="call_status_incoming_video">Appel vidéo entrant...</string>
+    <string name="call_action_switch_camera">Changer de caméra</string>
+    <string name="call_action_toggle_camera">Caméra</string>
+    <string name="call_video_camera_off">Caméra désactivée</string>
+    <string name="call_video_connecting">Connexion du flux vidéo...</string>
+    <string name="call_video_peer_camera_off">Le correspondant a coupé sa caméra</string>
+    <string name="call_peer_answered_voice_only">%1$s a répondu en vocal seulement</string>
+    <string name="call_permission_camera_required">L\'autorisation caméra est nécessaire pour les appels vidéo.</string>
+    <string name="call_pip_label_self">Vous</string>
+    <string name="call_pip_swap_hint">Appuyez pour permuter</string>
+
+    <string name="plain_sms_batch_delete_all_msg_desc">Voulez-vous supprimer définitivement TOUS les messages (%1$d) de cette conversation ?</string>
+    <string name="plain_sms_copy_otp_btn">Copier le code : %1$s</string>
+    <string name="plain_sms_otp_copied_toast">Code copié : %1$s</string>
+    <string name="plain_sms_batch_deleted_threads_toast">%1$d conversations supprimées</string>
+    <string name="plain_sms_batch_deleted_msgs_toast">%1$d messages supprimés</string>
+    <string name="plain_sms_selection_mode">Sélectionner des messages</string>
+    <string name="friend_save_contact_btn">Enregistrer</string>
+    <string name="social_delete_story_title">Supprimer cette story ?</string>
+    <string name="social_notif_new_story_title">Story de %1$s</string>
+    <string name="social_toast_story_broadcast">Story publiée et diffusée via Nostr ⏱️</string>
+    <string name="social_toast_story_deleted">Story supprimée 🗑️</string>
+    <string name="help_community_card_title">Communauté &amp; Mises à Jour Directes</string>
+    <string name="help_community_card_desc">Rejoignez la communauté souveraine sur Telegram et consultez notre site web officiel pour télécharger les dernières versions (APK), suivre les alertes et participer aux discussions.</string>
+    <string name="help_telegram_channel_title">Communauté Telegram Officielle</string>
+    <string name="help_telegram_channel_sub">Échanges, APKs &amp; Retours</string>
+    <string name="help_website_link_title">Site Web Officiel &amp; Téléchargements</string>
+    <string name="help_website_link_sub">Documentation, Guides &amp; Changelog</string>
+    <string name="help_topic_community_title">Communauté Telegram &amp; Mises à jour</string>
+    <string name="help_topic_community_summary">Comment obtenir les mises à jour directes d\'Orbis et rejoindre la communauté souveraine.</string>
+    <string name="help_topic_community_content">ORBIS fonctionne décentralisé sans passer par les magasins d\'applications centralisés. Pour télécharger les nouveaux APKs signés, recevoir les alertes de sécurité et échanger avec la communauté, rejoignez notre communauté Telegram officielle (https://t.me/orbis_community) et visitez notre site web (https://orbisoffline-cloud.github.io/ORBIS/). Vous serez également averti directement dans l\'application lors de chaque nouvelle version !</string>
+    <string name="privacy_terms_row_title">Confidentialité &amp; Conditions</string>
+    <string name="privacy_terms_row_sub">Zéro cloud, chiffrement E2EE &amp; mentions légales</string>
+    <string name="privacy_terms_dialog_title">Confidentialité &amp; Conditions</string>
+    <string name="privacy_terms_tab_privacy">Confidentialité</string>
+    <string name="privacy_terms_tab_terms">Conditions &amp; Légal</string>
+    <string name="privacy_terms_badge">100% Décentralisé • Souverain</string>
+    <string name="privacy_terms_p1_title">1. Zéro Collecte &amp; Zéro Serveur</string>
+    <string name="privacy_terms_p1_desc">ORBIS ne dispose d\'aucun serveur, base de données centrale ou service d\'analyse. Aucune donnée d\'utilisation, adresse IP, identifiant ou contact n\'est jamais collecté, transmis ou revendu.</string>
+    <string name="privacy_terms_p2_title">2. Chiffrement de Bout en Bout Matériel</string>
+    <string name="privacy_terms_p2_desc">Toutes les communications (messages, notes vocales, publications, sondages) sont chiffrées sur votre appareil avec AES-256-GCM, Double Ratchet (PFS) et Schnorr BIP-340 adossés à l\'Android KeyStore matériel.</string>
+    <string name="privacy_terms_p3_title">3. Stockage Exclusivement Local</string>
+    <string name="privacy_terms_p3_desc">L\'historique de vos discussions, clés privées et publications est conservé localement dans le stockage protégé de l\'application. Vous pouvez exporter une archive chiffrée (PBKDF2) ou tout effacer à tout instant.</string>
+    <string name="privacy_terms_p4_title">4. Métadonnées Relais Nostr</string>
+    <string name="privacy_terms_p4_desc">Les paquets chiffrés transitent par le relais Nostr de votre opérateur téléphonique. Bien que le contenu soit illisible sans vos clés, les relais peuvent observer les métadonnées de transmission habituelles (numéros, horodatage, antennes-relais) conformément à la réglementation télécoms locale.</string>
+    <string name="privacy_terms_t1_title">1. Licence d\'Utilisation &amp; Fourniture « En l\'état »</string>
+    <string name="privacy_terms_t1_desc">ORBIS est un logiciel souverain et propriétaire concédé sous licence d\'utilisation personnelle, distribué SANS AUCUNE GARANTIE, expresse ou implicite, y compris les garanties d\'adéquation à un usage particulier, d\'absence d\'erreurs ou de disponibilité continue.</string>
+    <string name="privacy_terms_t2_title">2. Responsabilité Exclusive de l\'Utilisateur</string>
+    <string name="privacy_terms_t2_desc">Vous reconnaissez être seul responsable de l\'utilisation que vous faites de l\'application et de vos communications. Vous vous engagez à respecter l\'ensemble des lois, réglementations et restrictions en vigueur dans votre juridiction.</string>
+    <string name="privacy_terms_t3_title">3. Décharge de Responsabilité des Développeurs</string>
+    <string name="privacy_terms_t3_desc">Les créateurs, développeurs et contributeurs d\'ORBIS déclinent expressément toute responsabilité civile ou pénale quant aux dommages, litiges ou infractions découlant d\'une utilisation illicite, frauduleuse ou détournée de l\'application.</string>
+    <string name="privacy_terms_t4_title">4. Fonctionnalités d\'Urgence (SOS / GPS)</string>
+    <string name="privacy_terms_t4_desc">Les fonctions de partage de position GPS et d\'alerte SOS sont des outils d\'assistance de pair à pair et ne se substituent en aucun cas aux services publics d\'urgence officiels.</string>
+    <string name="privacy_terms_btn_close">Compris &amp; Accepter</string>
+    <string name="help_topic_legal_title">Politique de Confidentialité &amp; Conditions</string>
+    <string name="date_today">Aujourd\'hui</string>
+    <string name="date_yesterday">Hier</string>
+
+    <!-- Moteurs LLM ORBIS IA (Guard & Reply) -->
+    <string name="orbis_ai_guard_title">ORBIS Guard</string>
+    <string name="orbis_ai_guard_spam_warning">Attention : Ce message a été identifié comme une arnaque ou un spam par l\'IA ORBIS Guard.</string>
+    <string name="orbis_ai_block_and_report">Bloquer &amp; Signaler spam</string>
+    <string name="orbis_ai_mark_as_safe">Marquer comme sûr</string>
+    <string name="orbis_ai_smart_replies_title">Suggestions ORBIS IA</string>
+    <string name="orbis_ai_notif_threat_title">Alerte Sécurité ORBIS Guard</string>
+    <string name="orbis_ai_notif_threat_desc">SMS suspect de %1$s : Risque de fraude ou hameçonnage détecté</string>
+    <string name="orbis_ai_threat_critical">Arnaque Critique</string>
+    <string name="orbis_ai_threat_high_risk">Risque Élevé</string>
+    <string name="orbis_ai_threat_suspicious">Spam Suspect</string>
+    <string name="orbis_ai_threat_safe">Message Vérifié</string>
+    <string name="orbis_ai_toast_feedback_recorded">Merci, l\'IA ORBIS a appris de votre signalement.</string>
+
+    <!-- Rubriques d'Aide : ORBIS IA -->
+    <string name="help_cat_ai">IA &amp; Sécurité Active</string>
+    <string name="help_topic_guard_llm_title">ORBIS Guard : Détection IA des Arnaques &amp; Phishing</string>
+    <string name="help_topic_guard_llm_summary">Protection neuronale locale contre le phishing bancaire, les faux colis et les arnaques d\'urgence.</string>
+    <string name="help_topic_guard_llm_content">ORBIS Guard-LLM est un moteur d\'IA souverain fonctionnant à décentralisé. Il analyse chaque message classique entrant pour détecter le phishing bancaire, les fausses notifications de livraison et les escroqueries à l\'urgence familiale. Les messages suspects sont isolés dans l\'onglet \'Spam &amp; bloqués\' et signalés par des badges de menace précis. L\'IA s\'adapte en continu à vos signalements locaux sans jamais envoyer le moindre octet sur Internet.</string>
+    <string name="help_topic_reply_llm_title">ORBIS Reply : Suggestions Intelligentes 1-Clic</string>
+    <string name="help_topic_reply_llm_summary">Suggestions contextuelles en temps réel pour vos discussions chiffrées et message classiques.</string>
+    <string name="help_topic_reply_llm_content">ORBIS Reply-LLM analyse instantanément le contexte de vos messages reçus et génère 3 propositions de réponses rapides en 1 clic. Il prend en charge le français, l\'anglais, l\'arabe standard et le dialecte Darija / Franco-Arabe. De plus, il apprend vos tournures de phrases habituelles directement sur votre appareil pour personnaliser les futures suggestions.</string>
+    <string name="help_topic_ai_privacy_title">Moteur IA Propriétaire : 100% Décentralisé &amp; Zéro Cloud</string>
+    <string name="help_topic_ai_privacy_summary">Zéro cloud, zéro serveur, poids ultra-léger (&lt; 2 Mo) et inférence instantanée.</string>
+    <string name="help_topic_ai_privacy_content">Les deux modèles de langage ORBIS (Guard et Reply) sont codés en Kotlin natif vectorisé avec des embeddings quantifiés en INT8, sans aucune bibliothèque externe lourde. Avec une taille totale inférieure à 2 Mo, l\'inférence s\'exécute en moins de 10 ms directement sur le processeur de votre smartphone. Aucune donnée textuelle n\'est transmise ni collectée : votre vie privée et votre autonomie restent absolues.</string>
+    <string name="help_tip_guard_llm">ORBIS Guard filtre automatiquement les faux SMS bancaires et de livraison dans l\'onglet \'Spam &amp; bloqués\'.</string>
+    <string name="help_tip_reply_llm">Utilisez la rangée d\'IA au-dessus du champ de saisie pour répondre en 1 tap avec ORBIS Reply.</string>
+
+    <!-- Paramètres IA & Benchmark -->
+    <string name="settings_section_ai">Intelligence Artificielle ORBIS (LLMs)</string>
+    <string name="settings_ai_title">Intelligence Artificielle (LLMs)</string>
+    <string name="settings_ai_subtitle">Moteurs locaux souverains &amp; Benchmark</string>
+    <string name="settings_ai_badge">2 LLMs</string>
+    <string name="settings_ai_status_disabled">Désactivé par défaut (0/2)</string>
+    <string name="settings_ai_status_partial">Partiellement actif (1/2)</string>
+    <string name="settings_ai_status_all_active">Tous actifs (2/2)</string>
+    <string name="ai_master_switch_title">Activer tous les moteurs IA</string>
+    <string name="ai_master_switch_desc">Active ou désactive simultanément ORBIS Guard-LLM et ORBIS Reply-LLM.</string>
+    <string name="ai_guard_switch_title">ORBIS Guard-LLM</string>
+    <string name="ai_guard_switch_desc">Détection en temps réel des spams, fausses urgences familiales, faux colis et phishing bancaire.</string>
+    <string name="ai_reply_switch_title">ORBIS Reply-LLM</string>
+    <string name="ai_reply_switch_desc">Génération de 3 suggestions de réponses instantanées en 1 clic pour SMS et Chat E2EE.</string>
+    <string name="ai_state_active">Actif</string>
+    <string name="ai_state_inactive">Désactivé</string>
+    <string name="ai_benchmark_title">Banc de Test &amp; Benchmark Matériel</string>
+    <string name="ai_benchmark_desc">Mesurez la latence, le débit et l\'efficacité d\'inférence de vos moteurs IA en conditions réelles.</string>
+    <string name="ai_benchmark_tab_guard">Guard-LLM</string>
+    <string name="ai_benchmark_tab_reply">Reply-LLM</string>
+    <string name="ai_benchmark_tab_combined">Test Combiné</string>
+    <string name="ai_benchmark_run_btn">Lancer le Benchmark</string>
+    <string name="ai_benchmark_running">Test en cours...</string>
+    <string name="ai_benchmark_metric_latency">Latence Moyenne</string>
+    <string name="ai_benchmark_metric_throughput">Débit d\'Inférence</string>
+    <string name="ai_benchmark_metric_accuracy">Précision Test</string>
+    <string name="ai_benchmark_metric_memory">Empreinte RAM</string>
+    <string name="ai_benchmark_metric_score">Score Matériel</string>
+    <string name="ai_benchmark_inferences_unit">inf/s</string>
+    <string name="ai_benchmark_zero_cloud_badge">100% Décentralisé • CPU Dalvik Local • Zéro Cloud</string>
+    <string name="ai_benchmark_results_title">Rapport de Performance</string>
+    <string name="ai_benchmark_languages_label">Langues Testées : FR • EN • AR • Darija</string>
+
+    <!-- Flux Guidé Sauvegarde & Restauration (WhatsApp & Telegram) -->
+    <string name="vault_share_dialog_title">Sauvegarde chiffrée générée avec succès !</string>
+    <string name="vault_share_dialog_desc">Les services d\'e-mail (comme Gmail) bloquent les fichiers d\'archives .orbis. Pour garantir la restauration de vos données lors d\'un changement de téléphone ou d\'une réinstallation, envoyez votre fichier sur :</string>
+    <string name="vault_share_opt_telegram_title">Envoyer sur Telegram (Recommandé)</string>
+    <string name="vault_share_opt_telegram_sub">Enregistrez-le dans vos \"Messages enregistrés\" (cloud privé gratuit &amp; illimité).</string>
+    <string name="vault_share_opt_whatsapp_title">Envoyer sur WhatsApp</string>
+    <string name="vault_share_opt_whatsapp_sub">Envoyez-le dans votre discussion personnelle (\"Vous\" / Mon numéro).</string>
+    <string name="vault_share_opt_other_title">Autre application ou Fichiers</string>
+    <string name="vault_share_opt_other_sub">Quick Share, Clé USB, Bluetooth ou gestionnaire de fichiers.</string>
+    <string name="vault_restore_dialog_title">Restaurer votre Coffre Orbis</string>
+    <string name="vault_restore_dialog_subtitle">Où avez-vous conservé votre sauvegarde .orbis chiffrée ?</string>
+    <string name="vault_restore_last_used_badge">Dernier choix utilisé ⭐</string>
+    <string name="vault_restore_opt_telegram_title">Récupérer depuis Telegram</string>
+    <string name="vault_restore_opt_telegram_desc">Ouvrez vos « Messages enregistrés » dans Telegram, téléchargez l\'archive .orbis puis sélectionnez-la ci-dessous.</string>
+    <string name="vault_restore_btn_open_telegram">Ouvrir Telegram</string>
+    <string name="vault_restore_opt_whatsapp_title">Récupérer depuis WhatsApp</string>
+    <string name="vault_restore_opt_whatsapp_desc">Ouvrez votre discussion personnelle dans WhatsApp, enregistrez l\'archive .orbis puis sélectionnez-la ci-dessous.</string>
+    <string name="vault_restore_btn_open_whatsapp">Ouvrir WhatsApp</string>
+    <string name="vault_restore_opt_local_title">Fichier local / Documents</string>
+    <string name="vault_restore_opt_local_desc">Si votre fichier .orbis est déjà présent dans Documents/Orbis ou sur une clé USB.</string>
+    <string name="vault_restore_btn_browse">Parcourir les fichiers</string>
+    <string name="vault_restore_btn_pick_file">Sélectionner le fichier .orbis</string>
+    <string name="vault_restore_passphrase_title">Saisissez votre mot de passe</string>
+    <string name="vault_restore_passphrase_error">Mot de passe incorrect ou fichier d\'archive corrompu.</string>
+    <string name="vault_restore_stats_summary">Restauration réussie ! (%1$d contacts, %2$d conversations, %3$d messages)</string>
+
+    <!-- Mode 1-Clic Transparent -->
+    <string name="vault_mode_one_click_badge">⚡ Mode 1-Clic</string>
+    <string name="vault_mode_one_click_title">Sauvegarde 1-Clic Recommandée</string>
+    <string name="vault_mode_one_click_desc">Votre coffre est chiffré automatiquement avec la clé souveraine Orbis. Aucun mot de passe à mémoriser ni à risquer d\'oublier !</string>
+    <string name="vault_btn_one_click_save">Sauvegarder en 1-Clic (Recommandé)</string>
+    <string name="vault_custom_password_toggle">Options avancées : Mot de passe personnalisé</string>
+    <string name="vault_restore_invalid_format">Ce fichier n\'est pas une archive Orbis (.orbis) valide.</string>
+
+    <!-- Nostr Decentralized Relays & Identity -->
+    <string name="nostr_relays_active">%1$d/%2$d relais</string>
+    <string name="nostr_relays_connecting">Connexion...</string>
+    <string name="nostr_relays_disconnected">Déconnecté</string>
+    <string name="nostr_relays_title">Pool de Relais Nostr</string>
+    <string name="nostr_relays_subtitle">Réseau décentralisé et ouvert de transmission E2EE</string>
+    <string name="nostr_relays_latency">%1$d ms</string>
+    <string name="nostr_relays_reconnect_btn">Reconnecter les relais</string>
+    <string name="nostr_identity_npub">Identifiant Souverain Nostr (npub)</string>
+    <string name="nostr_identity_copied">Identifiant Nostr copié dans le presse-papier</string>
+
+    <!-- Settings: Section Réseau Nostr (remplace Quota SMS) -->
+    <string name="settings_section_nostr_network">Réseau Nostr</string>
+    <string name="nostr_relay_connected_count">%1$d/%2$d relais connectés</string>
+    <string name="nostr_relay_avg_ping">Ping moyen : %1$d ms</string>
+    <string name="nostr_relay_reconnect">Reconnecter les relais</string>
+    <string name="nostr_relay_status_good">Réseau opérationnel ✓</string>
+    <string name="nostr_relay_status_degraded">Réseau dégradé ⚠</string>
+    <string name="nostr_relay_status_offline">Hors ligne — aucun relais ✗</string>
+
+    <!-- Settings: Messages Standards (app SMS par défaut) -->
+    <string name="settings_section_plain_sms">Messages Standards</string>
+    <string name="default_sms_row_subtitle_context">Définir OrbisNet comme application de messagerie principale vous permet de lire vos codes OTP, alertes opérateur et messages non chiffrés depuis un seul endroit.</string>
+
+    <!-- Settings: Coffre Schnorr (remplace RSA) -->
+    <string name="settings_vault_schnorr_subtitle">Coffre, clés Schnorr BIP-340 &amp; identité Nostr</string>
+
+    <!-- Settings: PIN i18n -->
+    <string name="settings_pin_active_desc">Code PIN &amp; Profil Leurre actif 🛡️</string>
+    <string name="settings_pin_inactive_desc">Désactivé</string>
+
+    <!-- Toasts/Dialogs hardcodés → i18n -->
+    <string name="contact_certified_toast">Contact certifié et enregistré : %1$s</string>
+    <string name="quota_stats_reset_toast">Statistiques réinitialisées.</string>
+    <string name="vault_restore_passphrase_empty_error">Veuillez saisir votre mot de passe de sauvegarde.</string>
+    <string name="vault_restore_wrong_password">Mot de passe incorrect ou archive corrompue.</string>
+
+    <!-- Vault & Backup Transfer i18n -->
+    <string name="vault_choose_destination_title">Choisissez votre destination sécurisée :</string>
+    <string name="vault_telegram_not_installed">Telegram n\'est pas installé sur cet appareil.</string>
+    <string name="vault_whatsapp_not_installed">WhatsApp n\'est pas installé sur cet appareil.</string>
+    <string name="vault_btn_recovery_guide">Guide Récupération Telegram / WhatsApp</string>
+    <string name="vault_file_selected_ok">Fichier sélectionné ✅</string>
+    <string name="vault_restore_success_badge">Restauration réussie !</string>
+    <string name="vault_stat_contacts_count">%1$d contacts restaurés</string>
+    <string name="vault_stat_conversations_count">%1$d conversations restaurées</string>
+    <string name="vault_stat_messages_count">%1$d messages restaurés</string>
+    <string name="vault_stat_posts_count">%1$d publications &amp; stories</string>
+    <string name="vault_stat_nostr_restored">Clés d\'identité Nostr souveraines restaurées</string>
+    <string name="vault_p2p_pairing_hint">Ex: 849201 ou mot de passe court</string>
+    <string name="vault_p2p_enter_code_error">Saisissez un code secret.</string>
+    <string name="vault_p2p_payload_generated_title">🔑 Trame de migration générée :</string>
+    <string name="vault_p2p_share_chooser_title">Transférer identité P2P</string>
+    <string name="vault_p2p_btn_share_payload">Partager la trame chiffrée</string>
+    <string name="vault_p2p_import_section_title">📥 Importer sur un nouvel appareil :</string>
+    <string name="vault_p2p_paste_label">Coller la trame de migration</string>
+    <string name="vault_p2p_restore_success_toast">Identité restaurée avec succès : %1$s (%2$s)</string>
+    <string name="vault_p2p_account_imported_badge">Compte importé : %1$s (%2$s)</string>
+    <string name="vault_cleaner_total_space">Espace Total Orbis :</string>
+    <string name="vault_cleaner_expired_stories_label">Stories 24h expirées :</string>
+    <string name="vault_cleaner_purgeable_count">%1$d purgeables</string>
+    <string name="vault_cleaner_temp_fragments_label">Fragments temporaires de cache :</string>
+    <string name="vault_cleaner_fragments_count">%1$d fragments</string>
+    <string name="vault_cleaner_voice_notes_label">Notes vocales conservées :</string>
+    <string name="vault_cleaner_reclaimable_space_label">Espace récupérable estimé :</string>
+    <string name="vault_cleaner_done_toast">Nettoyage terminé ! %1$d éléments purgés (%2$d Ko libérés)</string>
+
+    <!-- Background Sync & Nostr Connectivity -->
+    <string name="settings_nostr_bg_sync_title">Synchronisation en veille</string>
+    <string name="settings_nostr_bg_sync_desc">Relève périodique automatique et reconnexion réseau via WorkManager</string>
+    <string name="settings_nostr_bg_sync_status">Actif (15 min)</string>
+    <string name="nostr_fg_service_channel_name">Service Réseau OrbisNet</string>
+    <string name="nostr_fg_service_channel_desc">Maintient la connexion souveraine Nostr en temps réel et en veille</string>
+    <string name="nostr_fg_service_title">Réseau souverain connecté</string>
+    <string name="nostr_fg_service_desc">Maintien du maillage Nostr en veille pour messages et appels</string>
+    <string name="settings_nostr_fg_service_status">Actif (Temps Réel)</string>
+    <string name="settings_nostr_fg_service_desc">Connexion continue aux relais Nostr en veille et écran éteint</string>
+
+    <!-- Wall Privacy -->
+    <string name="wall_private_title">Mur privé</string>
+    <string name="wall_private_desc">Ce profil est réservé aux amis mutuels. Vous devez être amis pour voir ses publications.</string>
+
+    <!-- Media & Attachments (Chat & Feed) -->
+    <string name="chat_attach_title">Partager du contenu</string>
+    <string name="chat_attach_subtitle">Chiffré de bout en bout 🛡️</string>
+    <string name="chat_attach_gallery">Galerie</string>
+    <string name="chat_attach_camera">Caméra</string>
+    <string name="chat_attach_document">Document</string>
+    <string name="chat_attach_location">Position GPS</string>
+    <string name="chat_image_viewer_title">Aperçu photo</string>
+    <string name="chat_image_viewer_share">Partager la photo</string>
+    <string name="chat_doc_open">Ouvrir</string>
+    <string name="chat_doc_downloading">Ouverture du document…</string>
+    <string name="chat_last_message_image">📷 Photo</string>
+    <string name="chat_last_message_doc">📄 Document</string>
+    <string name="chat_last_message_audio">🎤 Note vocale</string>
+    <string name="social_post_action_photo">Photo</string>
+    <string name="social_post_action_video">Vidéo</string>
+    <string name="social_post_remove_photo">Retirer le média</string>
+    <string name="social_post_photo_attached">Photo attachée ✓</string>
+    <string name="social_post_video_attached">Vidéo attachée ✓</string>
+    <string name="social_story_mode_media">Photo &amp; Vidéo</string>
+    <string name="social_story_add_media">Ajouter une Photo ou Vidéo (24h)</string>
+    <string name="social_story_video_hint">Vidéo (jusqu\'à 60s)</string>
+    <string name="chat_error_file_too_large">Fichier trop volumineux (maximum 1 Mo)</string>
+    <string name="chat_error_file_open">Impossible d\'ouvrir ce fichier</string>
+    <string name="chat_error_camera_unavailable">Appareil photo indisponible sur cet appareil</string>
+
+    <!-- Système d'amis style Facebook/Instagram -->
+    <string name="friends_btn_confirm">Confirmer</string>
+    <string name="friends_btn_delete">Supprimer</string>
+    <string name="friends_btn_add">Ajouter</string>
+    <string name="friends_btn_added">Demande envoyée</string>
+    <string name="friends_btn_cancel_invite">Annuler</string>
+    <string name="friends_badge_mutual_count">%1$d ami(s) en commun</string>
+    <string name="friends_badge_suggested">Suggéré pour vous</string>
+    <string name="friends_badge_in_phonebook">Dans vos contacts</string>
+    <string name="friends_request_accepted_state">Demande acceptée ✓</string>
+    <string name="friends_request_deleted_state">Demande supprimée</string>
+    <string name="friends_banner_invite_title">Ajouter %1$s à vos amis ?</string>
+    <string name="friends_banner_invite_subtitle">Connectez-vous sur OrbisNet pour discuter en E2EE et partager vos publications en toute sécurité.</string>
+    <string name="friends_banner_btn_invite">Ajouter comme ami</string>
+    <string name="friends_banner_btn_share">Partager le lien</string>
+    <string name="friends_invite_notif_title">Nouvelle demande d\'ami</string>
+    <string name="friends_invite_notif_body">%1$s vous a envoyé une demande d\'ami sur OrbisNet.</string>
+    <string name="friends_invite_ack_notif_title">Demande d\'ami acceptée</string>
+    <string name="friends_invite_ack_notif_body">%1$s a accepté votre demande d\'ami. Vous pouvez maintenant discuter !</string>
+    <string name="friends_tab_pills_requests">Demandes</string>
+    <string name="friends_tab_pills_suggestions">Suggestions</string>
+    <string name="friends_tab_pills_sent">Envoyées</string>
+    <string name="friends_tab_pills_blocked">Bloqués</string>
+
+    <!-- Case 2: Invite Friends to Install OrbisNet -->
+    <string name="invite_install_title">Inviter sur OrbisNet</string>
+    <string name="invite_install_subtitle">Faites découvrir à vos proches la messagerie souveraine, privée et décentralisée.</string>
+    <string name="invite_install_sms_msg">Bonjour ! %1$s vous invite à le rejoindre sur OrbisNet, l\'application de messagerie souveraine, décentralisée et chiffrée de bout en bout. Téléchargez l\'application ici : %2$s pour commencer à discuter en toute confidentialité.</string>
+    <string name="invite_install_btn_sms">Envoyer un SMS d\'invitation</string>
+    <string name="invite_install_btn_sms_to">Envoyer un SMS à %1$s</string>
+    <string name="invite_install_btn_share">Partager via d\'autres applications</string>
+    <string name="invite_install_btn_copy">Copier le lien d\'invitation</string>
+    <string name="invite_install_copied_toast">Lien d\'invitation copié dans le presse-papier !</string>
+    <string name="invite_install_sms_sent_toast">SMS d\'invitation envoyé à %1$s !</string>
+    <string name="invite_install_qr_tab">Scanner le QR Code</string>
+    <string name="invite_install_qr_hint">Faites scanner ce QR code avec l\'appareil photo pour télécharger OrbisNet directement.</string>
+    <string name="invite_install_option_has_app">Via Internet (A déjà OrbisNet)</string>
+    <string name="invite_install_option_has_app_desc">Envoi direct par Internet (Réseau Nostr souverain, sans aucun SMS)</string>
+    <string name="invite_install_option_no_app">Inviter à installer OrbisNet (Par SMS)</string>
+    <string name="invite_install_option_no_app_desc">Envoie un SMS clair, poli et soigné avec le lien de téléchargement officiel</string>
+    <string name="invite_install_download_url">https://github.com/ShaDevPro/O-R-B-I-S-net/releases/download/OrbisNet-v1.4.0/O.R.B.I.S.apk</string>
+    <string name="invite_install_chooser_title">Inviter un proche sur OrbisNet</string>
+    <string name="friends_hero_invite_title">Invitez vos proches sur OrbisNet</string>
+    <string name="friends_hero_invite_desc">Communiquez en toute souveraineté, sans serveur central ni surveillance.</string>
+    <string name="friends_hero_invite_btn">Inviter sur OrbisNet</string>
+    <string name="friends_btn_invite_install">Inviter</string>
+    <string name="friends_dialog_choose_invite_title">Comment souhaitez-vous inviter %1$s ?</string>
+    <string name="friends_btn_invite">Inviter</string>
+    <string name="friends_tile_title">Demandes d\'amis &amp; Suggestions</string>
+    <string name="friends_tile_subtitle">Gérer vos invitations et découvrir des contacts</string>
+    <string name="friends_see_all">Voir tout</string>
+    <string name="friends_connected_last_msg">Vous êtes désormais connectés en toute confidentialité 🛡️</string>
+    <string name="chat_nostr_waiting_friend_key">En attente que le contact accepte et se connecte via Nostr...</string>
+    <string name="call_nostr_key_not_found">Impossible de joindre le contact : clé Nostr introuvable</string>
+
+    <!-- Robust Cache & Storage Management -->
+    <string name="storage_management_title">Stockage &amp; Données</string>
+    <string name="storage_management_subtitle">Gestion du cache et optimisation</string>
+    <string name="storage_management_desc">Optimisez l\'espace disque de votre appareil. Vous pouvez vider le cache des photos et fichiers temporaires sans perdre vos discussions, vos amis ni vos clés chiffrées.</string>
+    <string name="storage_category_media">Photos &amp; Médias</string>
+    <string name="storage_category_media_desc">Photos de fil d\'actualité, stories et aperçus</string>
+    <string name="storage_category_messages">Discussions &amp; Base locale</string>
+    <string name="storage_category_messages_desc">Messages chiffrés, contacts et carnets d\'amis</string>
+    <string name="storage_category_cache">Caches temporaires &amp; Fragments</string>
+    <string name="storage_category_cache_desc">Fragments SMS, fichiers de transit et captures appareil photo</string>
+    <string name="storage_total_used">Espace total utilisé</string>
+    <string name="storage_btn_clear_media">Vider le cache des photos</string>
+    <string name="storage_btn_clear_cache">Vider les fichiers temporaires</string>
+    <string name="storage_btn_optimize_all">Nettoyage intelligent complet</string>
+    <string name="storage_toast_freed">%1$s libérés avec succès ✅</string>
+    <string name="storage_toast_already_clean">Le stockage est déjà parfaitement optimisé ✨</string>
+    <string name="storage_calculating">Calcul de l\'espace disque en cours…</string>
+
+    <!-- Pin, Deletion, Block & Social Relative Time -->
+    <string name="social_toast_post_pinned">📌 Publication épinglée en haut</string>
+    <string name="social_toast_post_unpinned">Publication désépinglée</string>
+    <string name="social_action_unpin">Désépingler</string>
+    <string name="chat_menu_block_contact">Bloquer ce contact</string>
+    <string name="block_contact_confirm_title">Bloquer %1$s ?</string>
+    <string name="block_contact_confirm_desc">Ce contact ne pourra plus vous envoyer de messages, vous appeler, ni voir vos publications dans son fil.</string>
+    <string name="block_contact_btn">Bloquer</string>
+    <string name="chat_toast_contact_blocked">Contact bloqué 🚫</string>
+    <string name="chat_toast_contact_unblocked">Contact débloqué ✅</string>
+    <string name="wall_action_block">Bloquer l\'utilisateur</string>
+    <string name="wall_action_unblock">Débloquer l\'utilisateur</string>
+    <string name="social_hide_post_from_feed">Masquer de mon fil</string>
+    <string name="social_hide_post_desc">Cette publication sera masquée de votre fil d\'actualité local.</string>
+    <string name="social_btn_hide">Masquer</string>
+    <string name="social_comments_empty">Soyez le premier à commenter ce post chiffré 🔒</string>
+    <string name="social_comment_delete_action">Supprimer le commentaire</string>
+    <string name="time_just_now">À l\'instant</string>
+    <string name="time_minutes_ago">%1$d min</string>
+    <string name="time_hours_ago">%1$d h</string>
+    <string name="time_yesterday_at">Hier à %1$s</string>
+    <string name="time_at">%1$s à %2$s</string>
+
+    <!-- Comment & Post Editing, Replies & Link Detection -->
+    <string name="social_action_edit">Modifier</string>
+    <string name="social_action_save">Enregistrer</string>
+    <string name="social_edit_post_title">Modifier la publication</string>
+    <string name="social_edit_post_content_hint">Modifier le texte de votre publication…</string>
+    <string name="social_edit_post_hashtags_hint">Hashtags (séparés par un espace)</string>
+    <string name="social_toast_post_edited">Publication modifiée avec succès ✅</string>
+    <string name="social_post_edited">modifié</string>
+    <string name="social_edit_comment_title">Modifier le commentaire</string>
+    <string name="social_edit_comment_hint">Modifier votre commentaire…</string>
+    <string name="social_toast_comment_edited">Commentaire modifié avec succès ✅</string>
+    <string name="social_view_replies">Voir les %1$d réponses</string>
+    <string name="social_view_reply_single">Voir 1 réponse</string>
+    <string name="social_hide_replies">Masquer les réponses</string>
+    <string name="social_link_copied">Lien copié dans le presse-papier 📋</string>
+    <string name="social_link_open_error">Impossible d\'ouvrir ce lien</string>
+
+    <!-- Chat Attachment Preview & Context Menu Actions -->
+    <string name="chat_action_send">Envoyer</string>
+    <string name="chat_attach_preview_title_image">Envoyer la photo</string>
+    <string name="chat_attach_preview_title_multi_image">Envoyer les photos</string>
+    <string name="chat_attach_selected_count">%1$d photos sélectionnées</string>
+    <string name="chat_attach_send_photos_btn">Envoyer %1$d photos</string>
+    <string name="chat_album_more_photos">+%1$d</string>
+    <string name="chat_photo_compressing_progress">Compression des photos… (%1$d%%)</string>
+    <string name="chat_photo_too_large_nostr">La photo dépasse le poids maximal autorisé pour le réseau Nostr.</string>
+    <string name="chat_voice_too_long_nostr">Les notes vocales sont limitées à 60 secondes maximum pour le réseau Nostr.</string>
+    <string name="chat_attach_preview_title_doc">Envoyer le document</string>
+    <string name="chat_attach_caption_hint_image">Ajouter une légende…</string>
+    <string name="chat_attach_caption_hint_doc">Ajouter une note ou légende…</string>
+    <string name="chat_action_open_image">Afficher la photo</string>
+    <string name="chat_action_open_doc">Ouvrir le document</string>
+
+    <!-- Media & Document Download / Storage -->
+    <string name="media_download_image">Enregistrer dans la galerie</string>
+    <string name="media_download_doc">Télécharger le document</string>
+    <string name="media_saved_to_gallery">Photo enregistrée dans la galerie (Pictures/Orbis) 🖼️</string>
+    <string name="media_saved_to_downloads">Document enregistré dans Téléchargements : %1$s 📥</string>
+    <string name="media_download_error">Échec de l\'enregistrement dans le stockage</string>
+
+    <!-- Family Circle Hub & Selective Post Exclusions -->
+    <string name="family_hub_title">Mon Cercle Famille</string>
+    <string name="family_hub_badge">Cocon Privé 🛡️</string>
+    <string name="family_hub_empty_desc">Gardez le contact avec vos proches en toute sérénité. Ajoutez les membres de votre famille en 1 clic.</string>
+    <string name="family_hub_add_members_btn">+ Ajouter mes proches</string>
+    <string name="family_hub_action_chat">Discussion</string>
+    <string name="family_hub_action_photo">Souvenir</string>
+    <string name="family_hub_action_sos">SOS Position</string>
+    <string name="family_hub_action_call">Appel direct</string>
+    <string name="family_hub_manage">Gérer la famille</string>
+    <string name="family_manager_title">Membres de la Famille</string>
+    <string name="family_manager_subtitle">Seuls les membres de cette liste peuvent voir vos souvenirs de famille et recevoir vos alertes directes.</string>
+    <string name="family_manager_current_section">Membres enregistrés</string>
+    <string name="family_manager_add_section">Ajouter depuis les contacts</string>
+    <string name="family_manager_empty_members">Aucun membre pour le moment. Ajoutez vos proches ci-dessous !</string>
+    <string name="family_manager_search_hint">Rechercher un contact…</string>
+    <string name="family_call_picker_title">Appeler un proche</string>
+    <string name="family_call_picker_subtitle">Sélectionnez un proche et choisissez un appel vocal ou vidéo</string>
+    <string name="family_chat_picker_title">Discussion Famille</string>
+    <string name="family_chat_picker_subtitle">Choisissez d\'écrire au groupe ou à un proche en privé</string>
+    <string name="family_chat_group_option">Cocon Famille (Groupe)</string>
+    <string name="family_chat_group_desc">Discussion collective avec tous les proches (%1$d membres)</string>
+    <string name="family_chat_direct_section">Discussions privées</string>
+    <string name="family_member_actions_title">Contacter un proche</string>
+    <string name="family_action_voice_call">Appel vocal</string>
+    <string name="family_action_video_call">Appel vidéo</string>
+    <string name="family_action_send_message">Message direct</string>
+    <string name="social_post_exclude_family_title">Masquer pour mon Cercle Famille</string>
+    <string name="social_post_exclude_family_subtitle">Votre famille ne verra pas cette publication de travail</string>
+    <string name="social_post_exclude_contacts_action">+ Ne pas montrer à certains contacts…</string>
+    <string name="social_post_excluded_contacts_count">%1$d contact(s) exclu(s)</string>
+    <string name="social_post_exclusion_summary">🔒 Visible par vos collègues • Invisible pour la Famille</string>
+    <string name="social_post_exclusion_dialog_title">Masquer pour certains contacts</string>
+    <string name="social_post_exclusion_dialog_desc">Cochez les personnes qui ne doivent pas voir cette publication :</string>
+    <string name="family_sos_broadcast_sent">Alerte SOS transmise à votre famille 🚨</string>
+    <string name="family_sos_alert_title">🚨 ALERTE SOS FAMILLE - Position partagée en direct !</string>
+    <string name="family_sos_acquiring_gps">Acquisition de la position GPS en cours…</string>
+    <string name="family_sos_gps_error_no_permission">Permission de localisation requise pour partager votre position SOS.</string>
+    <string name="family_sos_gps_disabled_prompt">Veuillez activer le GPS de votre appareil pour transmettre vos coordonnées SOS.</string>
+    <string name="family_sos_btn_open_maps">Voir sur Maps</string>
+    <string name="family_sos_btn_emergency_call">Appel d\'urgence</string>
+    <string name="family_sos_coordinates_label">Position d\'urgence en direct</string>
+    <string name="family_sos_accuracy_label">Précision : ±%1$.0fm</string>
+    <string name="family_sos_no_location_note">Coordonnées GPS non disponibles au moment de l\'alerte.</string>
+    <string name="social_badge_verified_official">Compte officiel certifié</string>
+    <string name="social_post_audience_family">Cercle Famille</string>
+    <string name="common_add">Ajouter</string>
+    <string name="common_done">Terminé</string>
+    <string name="common_save">Enregistrer</string>
+    <string name="common_search">Rechercher</string>
+
+    <!-- Message Delivery Statuses (WhatsApp Style ✓ / ✓✓) -->
+    <string name="msg_status_sending">Envoi en cours…</string>
+    <string name="msg_status_sent">Envoyé ✓</string>
+    <string name="msg_status_delivered">Reçu ✓✓</string>
+    <string name="msg_status_read">Lu ✓✓</string>
+    <string name="msg_status_failed">Échec d\'envoi</string>
+
+    <!-- Call Log / Calls Tab -->
+    <string name="tab_calls">Appels</string>
+    <string name="calls_filter_all">Tous</string>
+    <string name="calls_filter_missed">Manqués</string>
+    <string name="calls_new_call">Nouvel appel</string>
+    <string name="calls_clear_history">Effacer l\'historique</string>
+    <string name="calls_clear_confirm">Voulez-vous vraiment effacer tout le journal d\'appels ?</string>
+    <string name="calls_empty_title">Aucun appel récent</string>
+    <string name="calls_empty_desc">Vos appels vocaux et vidéo chiffrés apparaîtront ici.</string>
+    <string name="calls_incoming">Entrant</string>
+    <string name="calls_outgoing">Sortant</string>
+    <string name="calls_missed">Manqué</string>
+    <string name="calls_voice_call">Appel vocal</string>
+    <string name="calls_video_call">Appel vidéo</string>
+    <string name="calls_delete_entry">Supprimer</string>
+    <string name="calls_section_today">Aujourd\'hui</string>
+    <string name="calls_section_yesterday">Hier</string>
+    <string name="calls_detail_type">Type</string>
+    <string name="calls_detail_datetime">Date &amp; Heure</string>
+    <string name="calls_detail_duration">Durée</string>
+    <string name="calls_missed_badge">%d manqué(s)</string>
+    <string name="calls_more_calls">+%d autres</string>
+    <string name="calls_delete_group">Suppr. groupe</string>
+    <string name="calls_duration_hours">%1$dh %2$02dmin</string>
+    <string name="calls_duration_mins">%1$dmin %2$02ds</string>
+    <string name="calls_duration_secs">%1$ds</string>
+    <string name="calls_stacked_count">%d appels</string>
+    <string name="calls_stacked_single">1 appel</string>
+    <string name="calls_stacked_missed_count">%d manqués</string>
+    <string name="calls_expand_history">Déplier l\'historique (%d)</string>
+    <string name="calls_collapse_history">Replier l\'historique</string>
+    <string name="calls_clear_user_history">Effacer les appels de ce contact</string>
+    <string name="calls_unanswered">Sans réponse</string>
+    <string name="calls_call_back">Rappeler</string>
+    <string name="new_post">Nouvelle publication</string>
+
+    <!-- Télémétrie & Mise à jour obligatoire (Backend Souverain Vercel) -->
+    <string name="force_update_title">Mise à jour obligatoire requise</string>
+    <string name="force_update_version_current">Actuelle</string>
+    <string name="force_update_version_required">Requise</string>
+    <string name="force_update_description">Une mise à jour critique de sécurité et de stabilité est disponible. Vous devez mettre à jour l\'application pour continuer à utiliser OrbisNet.</string>
+    <string name="force_update_release_notes_label">Nouveautés de cette version :</string>
+    <string name="force_update_btn_download">Télécharger la mise à jour</string>
+    <string name="force_update_btn_exit">Quitter l\'application</string>
+
+    <string name="telemetry_title">Télémétrie Mondiale &amp; Mises à Jour</string>
+    <string name="telemetry_backend_server">Serveur Vercel</string>
+    <string name="telemetry_server_config_title">Configuration du Serveur Backend</string>
+    <string name="telemetry_url_label">URL Backend Vercel (https://...)</string>
+    <string name="telemetry_admin_secret_label">Clé Secrète Admin</string>
+    <string name="telemetry_saved_locally">Paramètres serveur enregistrés localement ✓</string>
+    <string name="telemetry_apply_btn">Appliquer</string>
+    <string name="telemetry_fetch_error">Impossible de joindre le serveur de télémétrie Vercel</string>
+    <string name="telemetry_sync_success">Lot de télémétrie transmis avec succès ✓</string>
+    <string name="telemetry_sync_error">Échec de transmission du lot de télémétrie</string>
+    <string name="telemetry_kpi_dau">Utilisateurs Actifs (24h)</string>
+    <string name="telemetry_kpi_dau_sub">DAU HyperLogLog</string>
+    <string name="telemetry_kpi_mau">Utilisateurs Actifs (30j)</string>
+    <string name="telemetry_kpi_mau_sub">MAU Unique</string>
+    <string name="telemetry_kpi_countries">Pays</string>
+    <string name="telemetry_countries_title">Répartition Géographique (Edge GeoIP)</string>
+    <string name="telemetry_no_countries_yet">Aucune donnée géographique enregistrée.</string>
+    <string name="telemetry_features_title">Taux d\'Adoption des Fonctionnalités</string>
+    <string name="telemetry_no_features_yet">Aucun événement d\'usage enregistré.</string>
+    <string name="telemetry_update_management_title">Gestion des Mises à Jour &amp; Forçage</string>
+    <string name="telemetry_update_management_desc">Les appareils exécutant un code de version inférieur au minimum requis seront bloqués par un écran de mise à jour obligatoire.</string>
+    <string name="telemetry_force_update_toggle_title">Bloquer les versions obsolètes (Mise à jour obligatoire)</string>
+    <string name="telemetry_force_update_toggle_sub">Si activé, les utilisateurs avec des versions obsolètes ne peuvent pas contourner l\'écran.</string>
+    <string name="telemetry_min_code_label">Code Version Min</string>
+    <string name="telemetry_min_name_label">Nom Version Min (ex: 1.1.0)</string>
+    <string name="telemetry_download_url_label">Lien de Téléchargement (APK ou site)</string>
+    <string name="telemetry_release_notes_section">Notes de Version Multilingues</string>
+    <string name="telemetry_test_dialog_btn">Prévisualiser l\'Écran Bloquant</string>
+    <string name="telemetry_push_config_btn">Publier la Configuration</string>
+    <string name="telemetry_config_pushed_success">Configuration publiée et active sur Vercel ✓</string>
+    <string name="telemetry_config_pushed_error">Échec de publication vers Vercel</string>
+
+    <!-- Superviseur Security Gate -->
+    <string name="telemetry_auth_title">Accès Superviseur Sécurisé</string>
+    <string name="telemetry_auth_desc">Cet espace administrateur est protégé. Entrez le mot de passe superviseur pour déverrouiller la télémétrie et le pilotage des versions.</string>
+    <string name="telemetry_auth_password_label">Mot de passe superviseur</string>
+    <string name="telemetry_auth_unlock_btn">Déverrouiller la Console</string>
+    <string name="telemetry_auth_invalid_pwd">Mot de passe incorrect (Erreur 401). Accès refusé par le serveur.</string>
+    <string name="telemetry_auth_lock_btn">Verrouiller</string>
+    <string name="telemetry_auth_verifying">Vérification auprès du serveur Vercel...</string>
+    <!-- Clés manquantes i18n -->
+    <string name="call_service_channel_name">Appels OrbisNet</string>
+    <string name="call_service_voice_title">Appel vocal avec %1$s</string>
+    <string name="call_service_video_title">Appel vidéo avec %1$s</string>
+    <string name="call_service_ringing_content">Appel sécurisé entrant</string>
+    <string name="call_service_active_content">Micro et caméra protégés pendant l\'appel</string>
+    <string name="help_topic_legal_summary">Zéro collecte, chiffrement E2EE, licence souveraine et responsabilité utilisateur.</string>
+    <string name="help_topic_legal_content">ORBISnet est une infrastructure souveraine décentralisée via relais Nostr. Aucune donnée personnelle n\'est collectée ni stockée sur nos serveurs.</string>
+    <string name="vault_custom_password_desc">Si vous définissez un mot de passe personnalisé, vous devrez le saisir obligatoirement à chaque accès au coffre-fort.</string>
+    <!-- OEM Call & Background Diagnostic -->
+    <string name="oem_diag_title">"Diagnostic Appels &amp; Arrière-plan"</string>
+    <string name="oem_diag_subtitle">"Assurer la réception fiable des appels et notifications en veille"</string>
+    <string name="oem_diag_device_detected">"Appareil détecté : %1$s"</string>
+    <string name="oem_diag_battery_status">"Optimisation batterie système"</string>
+    <string name="oem_diag_guide_title">"Configuration recommandée pour %1$s"</string>
+    <string name="oem_diag_step_vivo_1">"1. Activer le démarrage automatique dans iManager > Autorisations d'applications"</string>
+    <string name="oem_diag_step_vivo_2">"2. Dans Batterie > Consommation en arrière-plan, autoriser OrbisNet"</string>
+    <string name="oem_diag_step_vivo_3">"3. Verrouiller OrbisNet dans l'écran des applications récentes"</string>
+    <string name="oem_diag_step_vivo_4">"4. Activer « Pop-up en arrière-plan » et « Sur écran de verrouillage »"</string>
+    <string name="oem_diag_step_honor_1">"1. Dans Paramètres > Batterie > Lancement d'application, désactiver la gestion automatique"</string>
+    <string name="oem_diag_step_honor_2">"2. Activer manuellement : Lancement auto, Lancement secondaire et Exécution en arrière-plan"</string>
+    <string name="oem_diag_step_xiaomi_1">"1. Activer le démarrage automatique dans Sécurité > Autorisations"</string>
+    <string name="oem_diag_step_xiaomi_2">"2. Définir l'économiseur de batterie sur 'Pas de restrictions'"</string>
+    <string name="oem_diag_step_samsung_1">"1. Dans Batterie > Limites en arrière-plan, ajouter OrbisNet aux 'Applications jamais en veille'"</string>
+    <string name="oem_diag_step_generic_1">"1. Désactiver l'optimisation de batterie pour OrbisNet"</string>
+    <string name="oem_diag_step_generic_2">"2. Autoriser l'activité en arrière-plan et les notifications prioritaires"</string>
+    <string name="oem_diag_btn_open_oem">"Ouvrir les paramètres constructeur"</string>
+    <string name="oem_diag_btn_open_battery">"Désactiver l'optimisation batterie"</string>
+    <string name="oem_diag_settings_row_title">"Diagnostic Appels &amp; Arrière-plan"</string>
+    <string name="oem_diag_settings_row_sub">"Optimisations Vivo, Honor, Xiaomi, Samsung"</string>
+
+    <!-- Universal Call Diagnostic & Auto-Repair Strings -->
+    <string name="call_diag_tab_repair">Diagnostic &amp; Réparation</string>
+    <string name="call_diag_tab_guide">Guide Constructeur &amp; Batterie</string>
+    <string name="call_diag_header_title">Universalité des Appels Audio &amp; Vidéo</string>
+    <string name="call_diag_header_desc">Vérification en continu du matériel, des codecs, du réseau et de la veille pour garantir des appels 100% fiables.</string>
+    <string name="call_diag_btn_run_all">Lancer le diagnostic complet</string>
+    <string name="call_diag_btn_running">Diagnostic en cours…</string>
+    <string name="call_diag_btn_repair_step">Auto-réparer</string>
+    <string name="call_diag_btn_retest_step">Re-tester</string>
+    <string name="call_diag_btn_test_audio">Tester le son</string>
+    <string name="call_diag_btn_stop_audio">Arrêter le son</string>
+    <string name="call_diag_btn_grant_perms">Autoriser</string>
+    <string name="call_diag_btn_open_settings">Paramètres</string>
+    <string name="call_diag_btn_phone_accounts">Comptes d\'appel</string>
+    <string name="call_diag_status_idle">En attente</string>
+    <string name="call_diag_status_running">En cours…</string>
+    <string name="call_diag_status_success">Opérationnel</string>
+    <string name="call_diag_status_warning">Optimisation requise</string>
+    <string name="call_diag_status_failed">Anomalie détectée</string>
+    <string name="call_diag_status_repaired">Auto-corrigé</string>
+    <string name="call_diag_summary_all_good">Tous les systèmes d\'appel audio et vidéo sont prêts et universellement compatibles !</string>
+    <string name="call_diag_summary_issues">%1$d anomalie(s) détectée(s). Cliquez sur Réparer pour corriger automatiquement.</string>
+    <string name="call_diag_summary_repaired">%1$d anomalie(s) auto-corrigée(s) avec succès pour votre appareil.</string>
+    <string name="call_diag_step_permissions_title">Autorisations d\'appel</string>
+    <string name="call_diag_step_permissions_desc">Accès micro, caméra, notifications d\'appel et téléphonie</string>
+    <string name="call_diag_step_mic_title">Matériel Microphone</string>
+    <string name="call_diag_step_mic_desc">Capture PCM audio, état muet système et allocation HAL</string>
+    <string name="call_diag_step_audio_routing_title">Routage Audio &amp; Haut-Parleur</string>
+    <string name="call_diag_step_audio_routing_desc">Mode communication VoIP, écouteur, haut-parleur et Bluetooth</string>
+    <string name="call_diag_step_camera_title">Capteurs Caméra &amp; Orientation</string>
+    <string name="call_diag_step_camera_desc">Pilote Camera2, fallback Camera1 et rotation du capteur avant</string>
+    <string name="call_diag_step_webrtc_title">Moteur WebRTC &amp; Codecs</string>
+    <string name="call_diag_step_webrtc_desc">Accélération matérielle GPU H.264 et secours logiciel universel</string>
+    <string name="call_diag_step_network_title">Réseau UDP &amp; Résolution STUN</string>
+    <string name="call_diag_step_network_desc">Traversée NAT, découverte IP publique et connectivité TURN relay</string>
+    <string name="call_diag_step_telecom_title">Intégration Android Telecom</string>
+    <string name="call_diag_step_telecom_desc">Enregistrement PhoneAccount VoIP et priorité contre l\'extinction</string>
+    <string name="call_diag_step_background_title">Résilience Veille &amp; Sonnerie</string>
+    <string name="call_diag_step_background_desc">Exemption batterie Doze et canal de notification prioritaire</string>
+    <string name="call_diag_report_title">Rapport de Débogage Développeur</string>
+    <string name="call_diag_report_desc">Fichier texte ciblé généré automatiquement à chaque essai pour identifier les anomalies matérielles et réseau.</string>
+    <string name="call_diag_report_path_label">Emplacement sur l\'appareil :</string>
+    <string name="call_diag_btn_share_report">Partager le rapport</string>
+    <string name="call_diag_btn_copy_report">Copier les logs</string>
+    <string name="call_diag_btn_fullscreen_intent">Plein écran</string>
+    <string name="call_diag_btn_reset_defaults">Réinitialiser les réglages par défaut</string>
+    <string name="call_diag_last_call_title">Diagnostic du Dernier Appel Réel</string>
+    <string name="call_diag_last_call_desc">Télémétrie en direct et négociation WebRTC du dernier appel passé ou reçu.</string>
+    <string name="call_diag_last_call_empty">Aucun appel enregistré depuis le lancement. Passez un appel test pour voir les métriques réelles (SDP/ICE).</string>
+    <string name="call_diag_last_call_codecs">Codecs négociés : %1$s</string>
+    <string name="call_diag_last_call_ice">ICE : %1$s (Local : %2$d, Reçu : %3$d)</string>
+
+    <!-- External Shares (Facebook, Instagram, TikTok, etc.) -->
+    <string name="share_to_orbis_label">Partager dans OrbisNet</string>
+    <string name="external_share_title">Partager dans OrbisNet</string>
+    <string name="external_share_subtitle">Choisissez un ami ou publiez sur votre mur</string>
+    <string name="external_share_tab_chat">Message privé</string>
+    <string name="external_share_tab_wall">Mur &amp; Cercle</string>
+    <string name="external_share_add_note_hint">Ajouter un message accompagnant…</string>
+    <string name="external_share_search_hint">Rechercher un ami…</string>
+    <string name="external_share_send_btn">Envoyer</string>
+    <string name="external_share_publish_btn">Publier sur mon mur</string>
+    <string name="external_share_sent_success">Partagé avec succès à %1$s !</string>
+    <string name="external_share_no_contacts">Aucun ami trouvé</string>
+    <string name="external_share_publish_success">Publication partagée sur votre mur !</string>
+    <string name="external_share_media_preview">Médias joints (%1$d)</string>
+    <string name="external_share_wall_checkbox">Partager sur mon mur</string>
+    <string name="external_share_wall_audience_title">Audience &amp; Confidentialité du mur</string>
+    <string name="external_share_friends_section">Envoyer dans mes discussions</string>
+    <string name="external_share_selected_friends_count">%1$d ami(s) sélectionné(s)</string>
+    <string name="external_share_action_share_both">Partager (Mur + %1$d amis)</string>
+    <string name="external_share_action_send_friends">Envoyer à %1$d ami(s)</string>
+    <string name="external_share_action_share">Partager</string>
+    <string name="external_share_success_both">Partagé avec succès dans vos discussions et sur votre mur !</string>
+    <string name="external_share_success_friends">Envoyé avec succès à %1$d ami(s) !</string>
+    <string name="external_share_circle_public">👤 Mon Mur (Tous mes amis)</string>
+    <string name="external_share_advanced_options">Options avancées…</string>
+
+    <!-- Partage de l'Application & QR Code Officiel -->
+    <string name="settings_section_share">Partage &amp; Communauté</string>
+    <string name="settings_share_app_title">Partager l\'application OrbisNet</string>
+    <string name="settings_share_app_subtitle">QR Code officiel du site web &amp; téléchargement direct</string>
+    <string name="settings_share_app_badge">Site Web &amp; QR 🚀</string>
+    <string name="share_dialog_title">Partager OrbisNet</string>
+    <string name="share_dialog_subtitle">Invitez vos proches à rejoindre le réseau souverain et décentralisé.</string>
+    <string name="share_qr_badge">Scan Rapide</string>
+    <string name="share_qr_card_title">Installation Directe Smartphone</string>
+    <string name="share_qr_card_desc">Scannez ce QR Code avec l\'appareil photo d\'un smartphone Android pour télécharger immédiatement l\'APK officiel OrbisNet.</string>
+    <string name="share_btn_share_link">Partager le lien</string>
+    <string name="share_btn_copy_link">Copier le lien</string>
+    <string name="share_btn_open_website">Site Web Officiel</string>
+    <string name="share_link_copied_toast">Lien de téléchargement copié dans le presse-papier ✅</string>
+    <string name="share_invite_message">Rejoins-moi sur OrbisNet, l\'application de messagerie et d\'appels 100%% chiffrés de bout en bout sans serveurs centraux ! Télécharge l\'APK officiel ici : %1$s ou visite notre site web : %2$s</string>
+
+    <!-- Prévisualisation des Liens Sociaux & Miniature -->
+    <string name="link_preview_open_in_app">Ouvrir dans %1$s ↗</string>
+    <string name="link_preview_open_link">Ouvrir le lien ↗</string>
+    <string name="link_preview_copied">Lien copié dans le presse-papier ✅</string>
+    <string name="link_preview_post">Publication</string>
+    <string name="link_preview_video">Vidéo</string>
+    <string name="link_preview_reel">Reel</string>
+    <string name="link_preview_loading">Chargement de l\'aperçu…</string>
+
+    <!-- Sovereign Video Sharing & ExoPlayer -->
+    <string name="chat_attach_video">Vidéo</string>
+    <string name="video_file_not_found">Fichier vidéo introuvable ou supprimé</string>
+    <string name="video_process_error">Impossible de traiter la vidéo</string>
+    <string name="chat_attach_preview_title_video">Envoyer une vidéo</string>
+    <string name="chat_attach_caption_hint_video">Ajouter une légende à la vidéo…</string>
+    <string name="chat_action_open_video">Lire la vidéo</string>
+    <string name="video_compressing_progress">Préparation de la vidéo %1$d%%</string>
+    <string name="video_downloading_progress">Téléchargement de la vidéo %1$d%%</string>
+    <string name="video_size_too_large">Vidéo trop volumineuse (max 50 Mo)</string>
+    <string name="video_loading">Chargement de la vidéo…</string>
+    <string name="video_action_download">Télécharger la vidéo</string>
+    <string name="video_saved_to_gallery">Vidéo enregistrée dans la galerie (Movies/Orbis)</string>
+    <string name="video_download_error">Impossible d\'enregistrer la vidéo</string>
+
+    <!-- Mandatory Profile at Registration -->
+    <string name="auth_mandatory_profile_title">Pseudo et photo requis</string>
+    <string name="auth_mandatory_profile_desc">Pour garantir l\'authenticité et la sécurité de votre identité souveraine dans OrbisNet, vous devez obligatoirement choisir un pseudonyme personnalisé et ajouter une photo de profil.</string>
+    <string name="auth_mandatory_profile_btn">Définir mon profil</string>
+
+    <!-- Chat Locked Pending Friend Acceptance -->
+    <string name="chat_locked_pending_title">Discussion verrouillée</string>
+    <string name="chat_locked_pending_desc">Votre invitation a été envoyée à %1$s. Par mesure de sécurité et de respect de la vie privée, la discussion sera déverrouillée dès qu\'elle aura accepté votre demande d\'ami.</string>
+    <string name="chat_locked_pending_btn">Voir les demandes d\'amis</string>
+
+    <!-- Contacts Screen UX -->
+    <string name="contacts_list_empty_hint">Aucun contact trouvé dans votre répertoire</string>
+    <string name="contacts_status_connected_badge">Connecté 🛡️</string>
+    <string name="contacts_status_pending_badge">En attente ⏳</string>
+    <string name="contacts_status_pending_toast">Invitation déjà envoyée à %1$s. En attente de son acceptation.</string>
+    <string name="contacts_cancel_invite_dialog_title">Annuler l\'invitation ?</string>
+    <string name="contacts_cancel_invite_dialog_message">Voulez-vous annuler l\'invitation d\'ami envoyée à %1$s ?</string>
+    <string name="contacts_cancel_invite_dialog_confirm">Annuler l\'invitation</string>
+    <string name="contacts_cancel_invite_dialog_dismiss">Conserver</string>
+    <string name="contacts_cancel_invite_success">Invitation annulée pour %1$s</string>
+
+    <!-- Sovereign Local Self-SMS Verification (Solution A - Cryptographic Hash & Bi-SIM) -->
+    <string name="auth_self_sms_title">Certification de votre ligne</string>
+    <string name="auth_self_sms_desc">Pour certifier que ce numéro vous appartient (%1$s), envoyez le jeton de sécurité cryptographique préparé vers ce numéro.</string>
+    <string name="auth_self_sms_message_body">OrbisNet Security Token [HASH:%1$s]</string>
+    <string name="auth_self_sms_token_label">Jeton cryptographique de session</string>
+    <string name="auth_self_sms_bisim_tip">Astuce Bi-SIM : Si cette puce n\'a pas de crédit (solde épuisé), vous pouvez envoyer le SMS depuis votre 2ème puce (Orange, Vodafone, T-Mobile...) vers ce numéro !</string>
+    <string name="auth_self_sms_step1_badge">1</string>
+    <string name="auth_self_sms_step1_title">Ouvrir vos SMS &amp; Envoyer</string>
+    <string name="auth_self_sms_step1_desc">Le SMS est prêt vers votre numéro. Envoyez-le depuis cette puce ou depuis votre 2ème SIM.</string>
+    <string name="auth_self_sms_step2_badge">2</string>
+    <string name="auth_self_sms_step2_title">Validation automatique à la réception</string>
+    <string name="auth_self_sms_step2_desc">La détection du jeton cryptographique certifie immédiatement votre compte.</string>
+    <string name="auth_self_sms_btn_open_sms">Ouvrir l\'application SMS</string>
+    <string name="auth_self_sms_waiting_incoming">En attente de réception du jeton sur cet appareil…</string>
+    <string name="auth_self_sms_waiting_subtext">Dès réception du SMS sur votre ligne, la validation se fait automatiquement.</string>
+    <string name="auth_self_sms_no_credit_title">Échec d\'envoi détecté (Solde insuffisant)</string>
+    <string name="auth_self_sms_no_credit_desc">Votre opérateur a bloqué l\'envoi du SMS (solde de crédit épuisé ou nul). Veuillez recharger votre forfait ou envoyer le SMS depuis une autre SIM avec du crédit.</string>
+    <string name="auth_self_sms_btn_retry_recharge">Recharger et réessayer</string>
+    <string name="auth_self_sms_tip">Conseil : Ne modifiez pas le texte du message. Appuyez sur Envoyer, puis revenez sur OrbisNet.</string>
+    <string name="auth_self_sms_paste_token_btn">Valider le jeton copié (%1$s)</string>
+    <string name="auth_self_sms_manual_paste_hint">Ou collez le message/jeton reçu :</string>
+    <string name="auth_self_sms_btn_validate_received">J\'ai reçu le SMS (Valider)</string>
+    <string name="auth_self_sms_paste_clipboard">Coller et valider le SMS</string>
+    <string name="auth_self_sms_clipboard_ready">Jeton détecté dans le presse-papier (%1$s)</string>
+    <string name="auth_self_sms_credit_warning_title">1 SMS local requis (Tarif opérateur habituel)</string>
+    <string name="auth_self_sms_credit_warning_desc">Ce test envoie un seul SMS local à votre ligne. Aucune donnée n\'est transmise à un serveur tiers ou cloud.</string>
+    <string name="auth_self_sms_banner_sovereign">Boucle GSM cryptographique • 100% Souverain &amp; Privé</string>
+    <string name="auth_self_sms_resend_timer">Vérification de la réception… (%1$ds)</string>
+    <string name="auth_self_sms_resend_now">Renvoyer le SMS</string>
+    <string name="auth_self_sms_btn_verify">Confirmer &amp; S\'inscrire</string>
+    <string name="auth_self_sms_invalid_code">Jeton de vérification incorrect. Veuillez renvoyer un SMS.</string>
+    <string name="auth_self_sms_invalid_code_attempts">Tentative incorrecte. Tentatives restantes : %1$d</string>
+    <string name="auth_self_sms_expired">Délai expiré (5 min). Veuillez renvoyer un SMS.</string>
+    <string name="auth_self_sms_max_attempts">Nombre maximal d\'essais dépassé. Veuillez renvoyer un nouveau SMS.</string>
+    <string name="auth_self_sms_error_launch_sms">Impossible d\'ouvrir l\'application de messagerie SMS de votre appareil.</string>
+    <string name="auth_self_sms_consent_error">Détection automatique ignorée. Veuillez appuyer sur Renvoyer pour réessayer.</string>
+    <string name="auth_self_sms_success_title">Vérification réussie</string>
+    <string name="auth_self_sms_success_desc">Votre ligne a été certifiée avec succès. Touchez pour revenir à OrbisNet.</string>
+
+    <!-- Chat & Wall Collapsible Share Flow -->
+    <string name="chat_action_share_friends">Partager avec des amis</string>
+    <string name="chat_action_share_wall">Partager sur le mur</string>
+    <string name="collapsible_friends_title">Envoyer à des amis</string>
+    <string name="collapsible_friends_subtitle">Touchez pour choisir les destinataires</string>
+    <string name="collapsible_friends_selected_count">%1$d sélectionné(s)</string>
+    <string name="collapsible_friends_collapse">Réduire la liste d\'amis</string>
+    <string name="collapsible_friends_expand">Dérouler la liste d\'amis</string>
+    <string name="collapsible_friends_clear_all">Effacer</string>
+    <string name="collapsible_friends_select_all">Tout sélectionner</string>
+    <string name="chat_share_to_friends_title">Partager le message</string>
+    <string name="chat_share_to_friends_subtitle">Sélectionnez les amis qui recevront ce message</string>
+    <string name="chat_share_to_wall_title">Publier sur votre mur</string>
+    <string name="chat_share_to_wall_subtitle">Partagez ce message sur votre fil d\'actualité</string>
+    <string name="chat_share_success_friends">Message partagé avec %1$d ami(s) !</string>
+    <string name="chat_share_success_wall">Publication partagée sur votre mur !</string>
+    <string name="chat_share_media_preview">Pièce jointe multimédia</string>
+
+    <!-- Missed Call Notifications (WhatsApp Flow) -->
+    <string name="notif_channel_missed_calls">Appels en absence</string>
+    <string name="notif_channel_missed_calls_desc">Notifications pour les appels vocaux et vidéo manqués</string>
+    <string name="missed_call_audio">Appel vocal manqué</string>
+    <string name="missed_call_video">Appel vidéo manqué</string>
+    <string name="missed_call_multiple">%1$d appels manqués</string>
+    <string name="missed_call_action_callback">Rappeler</string>
+    <string name="missed_call_action_message">Message</string>
+    <string name="missed_call_notif_center_desc">Appel %1$s manqué de %2$s</string>
+    <string name="missed_call_voice_label">vocal</string>
+    <string name="missed_call_video_label">vidéo</string>
+    <!-- Private Chats & Hidden Posts -->
+    <string name="private_chat_title">Discussions privées</string>
+    <string name="private_chat_subtitle">Conversations verrouillées</string>
+    <string name="private_chat_empty_title">Aucune discussion privée</string>
+    <string name="private_chat_empty_desc">Faites un appui long sur une discussion pour la verrouiller ici.</string>
+    <string name="private_chat_locked_preview">Discussion privée verrouillée</string>
+    <string name="private_chat_menu_lock">Verrouiller discussion</string>
+    <string name="private_chat_lock_title">Verrouiller %1$s</string>
+    <string name="private_chat_pass_desc">Créez un mot de passe et trois réponses de récupération. Gardez-les courtes et mémorisables.</string>
+    <string name="private_chat_pass_label">Mot de passe</string>
+    <string name="private_chat_pass_confirm_label">Confirmer le mot de passe</string>
+    <string name="private_chat_secret_question_1">Réponse secrète 1</string>
+    <string name="private_chat_secret_question_2">Réponse secrète 2</string>
+    <string name="private_chat_secret_question_3">Réponse secrète 3</string>
+    <string name="private_chat_error_pass_short">Le mot de passe doit contenir au moins 4 caractères.</string>
+    <string name="private_chat_error_pass_mismatch">Les mots de passe ne correspondent pas.</string>
+    <string name="private_chat_error_answers_required">Les trois réponses de récupération sont obligatoires.</string>
+    <string name="private_chat_error_wrong_pass">Mot de passe incorrect.</string>
+    <string name="private_chat_error_wrong_answers">Les réponses de récupération sont incorrectes.</string>
+    <string name="private_chat_lock_action">Verrouiller</string>
+    <string name="private_chat_unlock_title">Déverrouiller %1$s</string>
+    <string name="private_chat_unlock_action">Déverrouiller</string>
+    <string name="private_chat_change_pass_title">Changer le mot de passe privé</string>
+    <string name="private_chat_change_pass_action">Changer le mot de passe</string>
+    <string name="private_chat_forgot_action">Mot de passe oublié</string>
+    <string name="private_chat_recover_title">Récupérer le mot de passe de %1$s</string>
+    <string name="private_chat_recover_action">Récupérer</string>
+    <string name="private_chat_recovered_pass_title">Mot de passe récupéré</string>
+    <string name="private_chat_recovered_pass_desc">Ce mot de passe reste visible pendant 5 secondes.</string>
+    <string name="private_chat_remove_lock_action">Afficher normalement</string>
+    <string name="private_chat_actions_title">Options de discussion privée</string>
+    <string name="private_chat_actions_desc">Vous pouvez ouvrir cette discussion ou la retirer des Discussions privées.</string>
+    <string name="private_chat_toast_locked">%1$s déplacée dans Discussions privées</string>
+    <string name="private_chat_toast_unlocked">%1$s est affichée normalement</string>
+    <string name="private_chat_toast_pass_changed">Mot de passe privé mis à jour</string>
+    <string name="private_chat_settings_title">Discussions privées</string>
+    <string name="private_chat_settings_count">%1$d discussion(s) verrouillée(s)</string>
+    <string name="private_chat_settings_empty">Aucune discussion privée verrouillée</string>
+    <string name="private_chat_notification_title">Discussion privée</string>
+    <string name="private_chat_notification_body">Nouveau message privé</string>
+    <string name="social_action_hide_post">Masquer ce post</string>
+    <string name="social_toast_post_hidden">Post masqué</string>
+    <string name="settings_hidden_posts_title">Posts masqués</string>
+    <string name="settings_hidden_posts_count">%1$d post(s) masqué(s)</string>
+    <string name="settings_hidden_posts_empty">Aucun post masqué</string>
+    <string name="settings_hidden_post_empty_preview">Post masqué</string>
+    <string name="settings_hidden_post_restore_btn">Réafficher</string>
+    <string name="settings_hidden_post_restored">Post réaffiché dans le fil</string>
+
+    <!-- Reactions Detail -->
+    <string name="reactions_detail_title">Réactions</string>
+    <string name="reactions_detail_close">Fermer</string>
+    <string name="reactions_detail_tab_all">Tous</string>
+    <string name="reactions_detail_empty">Aucune réaction</string>
+    <string name="reactions_detail_you">Vous</string>
+
+    <!-- Conversation Pin -->
+    <string name="conversation_action_pin">Épingler</string>
+    <string name="conversation_action_unpin">Désépingler</string>
+    <string name="conversation_pinned_toast">Conversation épinglée</string>
+    <string name="conversation_unpinned_toast">Conversation désépinglée</string>
+
+    <!-- Story Viewers -->
+    <string name="story_viewers_title">Vues</string>
+    <string name="story_reactors_title">Réactions</string>
+    <string name="story_viewers_tab_viewers">Vues</string>
+    <string name="story_viewers_tab_reactions">Réactions</string>
+    <string name="story_viewers_empty">Aucune vue pour le moment</string>
+    <string name="story_reactors_empty">Aucune réaction pour le moment</string>
+    <string name="story_viewers_close">Fermer</string>
+    <string name="video_play">Lire la vidéo</string>
+
+    <!-- Call Guard History Badges & Actions -->
+    <string name="call_guard_badge_verified">Vérifié</string>
+    <string name="call_guard_badge_unknown">Inconnu</string>
+    <string name="call_guard_badge_suspicious">Suspect</string>
+    <string name="call_guard_action_block_report">Bloquer et signaler</string>
+    <string name="call_guard_block_dialog_title">Bloquer ce numéro ?</string>
+    <string name="call_guard_block_dialog_desc">Ce correspondant ne pourra plus vous appeler ni vous envoyer de messages.</string>
+    <string name="call_guard_block_success">Numéro bloqué et signalé avec succès</string>
+    <string name="call_guard_tooltip_trust">Score de confiance Guard : %1$d%%</string>
+
+    <!-- Smart Recall Contextual -->
+    <string name="smart_recall_dialog_title">Rappel tardif</string>
+    <string name="smart_recall_dialog_desc">Il est tard, votre correspondant se repose peut-être. Privilégier un message ?</string>
+    <string name="smart_recall_btn_send_message">Envoyer le message</string>
+    <string name="smart_recall_btn_call_anyway">Appeler quand même</string>
+    <string name="smart_recall_msg_sent">Message envoyé</string>
+
+    <!-- Auto Decline & Driving Mode -->
+    <string name="call_guard_auto_declined_driving">Appel refusé automatiquement (Mode Conduite)</string>
+    <string name="call_guard_auto_declined_dnd">Appel refusé automatiquement (Ne pas déranger)</string>
+
+    <!-- Call Unanswered Fallback & Walkie-Talkie PTT -->
+    <string name="call_fallback_unanswered_title">Correspondant indisponible</string>
+    <string name="call_fallback_ptt_action">Laisser un message vocal souverain</string>
+    <string name="call_fallback_chat_action">Ouvrir la discussion</string>
+
+    <!-- Silent Spam & Burst Filter -->
+    <string name="call_guard_silent_spam_title">Appel suspect silencieux</string>
+    <string name="call_guard_silent_spam_desc">Alerte de sécurité Guard : rafale d\'appels anormale détectée (%1$s).</string>
+
+    <!-- Contact Language Affinity & Manual Override -->
+    <string name="contact_lang_dialog_title">Langue du correspondant</string>
+    <string name="contact_lang_dialog_desc">Sélectionnez la langue utilisée par l\'IA souveraine pour les suggestions d\'appels et réponses automatiques avec ce contact.</string>
+    <string name="contact_lang_option_dz">🇩🇿 الدارجة الجزائرية (DZ)</string>
+    <string name="contact_lang_option_fr">🇫🇷 Français (FR)</string>
+    <string name="contact_lang_option_en">🇬🇧 English (EN)</string>
+    <string name="contact_lang_option_ar">🇸🇦 العربية الفصحى (AR)</string>
+    <string name="contact_lang_updated_toast">Langue du contact mise à jour : %1$s</string>
+
+    <!-- Smart Telecom & VoIP Automation Settings -->
+    <string name="settings_voip_telecom_section_title">AUTOMATISATION TÉLÉCOM &amp; VOIP INTELLIGENTE</string>
+    <string name="settings_voip_telecom_banner_desc">L\'automatisation souveraine adapte la gestion des appels entrants selon votre contexte réel (conduite, sommeil, réunion) et la langue de l\'appelant.</string>
+    <string name="settings_driving_mode_title">Mode En Voiture (Refus Automatisé)</string>
+    <string name="settings_driving_mode_desc">Refuse poliment les appels entrants avec un message contextuel dans la langue du correspondant lorsqu\'un appareil audio voiture est connecté.</string>
+    <string name="settings_dnd_mode_title">Refus Auto Ne Pas Déranger</string>
+    <string name="settings_dnd_mode_desc">Refuse silencieusement les appels et envoie une réponse automatique polie quand le mode Ne Pas Déranger est actif.</string>
+    <string name="settings_smart_recall_title">Smart Recall (Protection Heures Creuses)</string>
+    <string name="settings_smart_recall_desc">Suggère l\'envoi d\'un message rapide plutôt qu\'un appel direct la nuit ou aux aurores (22h00 - 08h00).</string>
+    <string name="settings_silent_burst_title">Bouclier Anti-Burst &amp; Spam Silencieux</string>
+    <string name="settings_silent_burst_desc">Coupe immédiatement la sonnerie en cas de rafales d\'appels répétés, tentatives de flooding ou menaces critiques.</string>
+
+    <!-- Walkie-Talkie Post-Call Voice Memo -->
+    <string name="call_ended_walkie_talkie_hint">Laisser un mémo vocal chiffré instantané :</string>
+    <string name="call_ended_recording_press_hold">Appuyez ou maintenez le micro pour dicter</string>
+    <string name="call_ended_recording_in_progress">Enregistrement du mémo vocal (%1$02d:%2$02d)...</string>
+    <string name="call_ended_voice_memo_sent">Mémo vocal chiffré envoyé avec succès !</string>
+    <string name="call_action_leave_voice_note">Mémo vocal</string>
+    <string name="call_voice_memo_send">Envoyer</string>
+    <string name="call_voice_memo_cancel">Annuler</string>
+    <string name="call_voice_recording_failed">Impossible de démarrer l\'enregistrement vocal</string>
+
+    <!-- Additional AI Settings Section Titles -->
+    <string name="ai_proprietary_engines_title">Moteurs LLM Propriétaires ORBIS</string>
+    <string name="ai_proprietary_engines_desc">Les modèles ORBIS sont exécutés 100% hors-ligne en Kotlin natif vectorisé. Ils fonctionnent sans serveurs distants, préservent votre batterie et garantissent la confidentialité absolue de vos communications.</string>
+    <string name="ai_section_switches_title">COMMUTATEURS DES MODÈLES</string>
+    <string name="ai_section_benchmark_title">BANC D\'ÉVALUATION &amp; BENCHMARK MATÉRIEL</string>
+    <string name="ai_master_enabled_toast">Tous les moteurs IA activés</string>
+    <string name="ai_master_disabled_toast">Tous les moteurs IA désactivés</string>
+
+    <!-- Sovereign Peer-to-Peer Auto-Synchronization -->
+    <string name="sync_sovereign_peer_title">Synchronisation souveraine</string>
+    <string name="sync_sovereign_peer_desc">Échange bilatéral sécurisé entre amis</string>
+    <string name="sync_sovereign_peer_success">Données synchronisées avec succès</string>
+    <string name="text_show_more">Voir plus</string>
+    <string name="text_show_less">Voir moins</string>
+    <string name="text_truncated_warning">Texte trop long, tronqué par sécurité</string>
+    <string name="notif_social_poll_voted">%1$s a voté à votre sondage</string>
+
+    <!-- Onboarding Call & Battery Setup -->
+    <string name="onboarding_call_setup_title">Configuration des appels &amp; autonomie</string>
+    <string name="onboarding_call_setup_desc">Deux réglages indispensables pour que vos proches puissent vous joindre même quand votre téléphone est en veille.</string>
+    <string name="onboarding_battery_title">1. Réception des appels en veille</string>
+    <string name="onboarding_battery_desc">Empêche Android de couper la sonnerie et la connexion quand l\'écran est éteint.</string>
+    <string name="onboarding_lockscreen_title">2. Allumer l\'écran lors d\'un appel</string>
+    <string name="onboarding_lockscreen_desc">Affiche l\'écran d\'appel au-dessus de l\'écran verrouillé pour décrocher immédiatement.</string>
+    <string name="onboarding_oem_title">3. Réglages spécifiques %1$s</string>
+    <string name="onboarding_oem_desc">Activez le « Démarrage automatique » et « Affichage sur écran verrouillé » pour ce téléphone.</string>
+    <string name="onboarding_btn_enable">Activer</string>
+    <string name="onboarding_btn_check">Vérifier</string>
+    <string name="onboarding_status_active">Actif</string>
+    <string name="onboarding_status_needed">À activer</string>
+    <string name="onboarding_status_recommended">Recommandé</string>
+    <string name="onboarding_btn_finish">Accéder à mes conversations</string>
+    <string name="onboarding_call_setup_skip">Ignorer pour l\'instant</string>
+    <string name="onboarding_hint_battery">Appuyez sur « Autoriser » dans la fenêtre système qui s\'affiche.</string>
+    <string name="onboarding_hint_lockscreen">Activez l\'autorisation de réveil plein écran pour Orbis.</string>
+
+    <!-- Trust & Verification Suite (Web of Trust) -->
+    <string name="social_badge_verified_founder">Compte officiel Fondateur &amp; Développeur Principal</string>
+    <string name="social_badge_verified_p2p">Identité vérifiée par le réseau de confiance P2P (Web of Trust)</string>
+    <string name="trust_score_title">Score de Confiance Orbis</string>
+    <string name="trust_score_summary">%1$d / 100 points de confiance mérités</string>
+</resources>
+
+

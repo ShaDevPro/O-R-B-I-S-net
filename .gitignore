@@ -41,9 +41,11 @@ gradlew
 gradlew.bat
 settings.gradle.kts
 
-# Android Application Source Code (Proprietary - Local Only, Never on Public Git)
-/app/
-app/
+# Vrais fichiers Nostr — JAMAIS poussés (implémentation propriétaire)
+# Les maquettes dans docs/stubs/ sont la version publique
+# NE PAS décommenter ces lignes — les maquettes dans app/ sont ce qui est poussé
+# app/src/main/java/com/sha/orbis/nostr/service/NostrSyncManager.kt
+# app/src/main/java/com/sha/orbis/nostr/protocol/NostrProtocolEngine.kt
 
 # Build Artifacts & Binaries (Never push APKs to Git)
 *.apk
