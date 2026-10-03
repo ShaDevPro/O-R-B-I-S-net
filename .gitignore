@@ -18,11 +18,14 @@ local.properties
 backend/node_modules/
 backend/.next/
 
-# Secrets & Tokens & Private Guides
+# Secrets & Tokens & Private Guides & Scripts
 github_token.txt
 *.token
 *.key
 GUIDE_MISE_A_JOUR_ORBIS.md
+publish-release.ps1
+publish.bat
+.admin_key
 
 # Android Application Source Code (Proprietary - Local Only, Never on Public Git)
 /app/
