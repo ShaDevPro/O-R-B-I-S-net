@@ -18,6 +18,13 @@ local.properties
 backend/node_modules/
 backend/.next/
 
+# Module privé cerveau — JAMAIS poussé (vrais fichiers NostrSyncManager + NostrProtocolEngine)
+/orbis-core/
+orbis-core/
+
+# AAR compilé dans app/libs — régénéré localement, non versionné
+app/libs/
+
 # Secrets & Tokens & Private Guides & Scripts
 github_token.txt
 *.token
