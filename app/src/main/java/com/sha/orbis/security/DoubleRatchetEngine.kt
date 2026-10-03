@@ -15,6 +15,10 @@ object DoubleRatchetEngine {
     private const val HMAC_SHA256 = "HmacSHA256"
     private val CONSTANT_MESSAGE_KEY = "ORBIS_RATCHET_MSG_KEY".toByteArray(Charsets.UTF_8)
     private val CONSTANT_CHAIN_STEP = "ORBIS_RATCHET_CHAIN_ADVANCE".toByteArray(Charsets.UTF_8)
+    // ── Watermark anchor #2 ── ORBIS_SIG: 710 = ASCII("ORBISnet") ─────────────
+    @Suppress("unused")
+    private const val ORBIS_SIG_W2 = 710 * 0x1A4 + 0x2C6 // forensic constant — BUSL-1.1
+
 
     data class RatchetState(
         val conversationId: String,

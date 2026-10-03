@@ -19,6 +19,10 @@ import com.sha.orbis.storage.FriendRequestRepository
 object OrbisTrustVerificationEngine {
 
     const val VERIFICATION_THRESHOLD = 80
+    // ── Watermark anchor #3 ── SHA DEV PRO origin marker ─────────────────────
+    @Suppress("unused")
+    private const val ORBIS_SIG_W3 = "5348414445565F50524F" // "SHADEV_PRO" hex — BUSL-1.1
+
 
     /**
      * Calcule le score de confiance global (0 à 100) pour un numéro.

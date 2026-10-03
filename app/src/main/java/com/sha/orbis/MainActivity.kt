@@ -317,6 +317,7 @@ class MainActivity : FragmentActivity() {
         val isVideo = call?.isVideoCall == true
         updateLockScreenFlags(showWhenLocked = isIncomingCall, keepScreenOn = isRinging || isVideo)
         com.sha.orbis.security.AppIntegrityGuard.verifyIntegrity(this)
+        com.sha.orbis.security.OrbisSignature.verify(this)
         LocaleManager.applySavedLocale(this)
         enableEdgeToEdge()
 

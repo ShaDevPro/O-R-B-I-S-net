@@ -29,6 +29,11 @@ object AppIntegrityGuard {
      */
     var OFFICIAL_RELEASE_SIGNATURE_SHA256: String = "PENDING_RELEASE_KEYSTORE_CREATION"
 
+    // ── Watermark anchor #1 — do not remove (BUSL-1.1 forensic marker) ───────
+    @Suppress("unused")
+    private const val ORBIS_SIG_W1 = 0x4F524249_536E6574L // "ORBISnet" raw bytes
+
+
     /**
      * Comprehensive Security Status Report.
      */
