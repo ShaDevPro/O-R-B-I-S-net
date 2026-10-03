@@ -805,11 +805,17 @@ document.addEventListener('DOMContentLoaded', () => {
     sha256: "4c366bac0e926ecfdd11c5fb7878faa3a08fada1582b96902554abd5384ba5d2"
   };
 
+  function buildQrUrl(targetUrl) {
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=svg&qzone=1&color=000000&bgcolor=ffffff&data='
+      + encodeURIComponent(targetUrl);
+  }
+
   function updateDownloadUrls(url) {
     const qrImg = document.getElementById('apkQrCodeImg');
     const directBtn = document.getElementById('directDownloadBtn');
     if (qrImg) {
-      qrImg.src = 'qr-code.svg';
+      qrImg.src = buildQrUrl(url);
+      qrImg.alt = 'QR Code Téléchargement OrbisNet';
     }
     if (directBtn) {
       directBtn.href = url;
