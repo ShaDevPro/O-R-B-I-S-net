@@ -27,6 +27,13 @@ publish-release.ps1
 publish.bat
 .admin_key
 
+# Root Gradle Files (Private - Local Only)
+build.gradle.kts
+gradle.properties
+gradlew
+gradlew.bat
+settings.gradle.kts
+
 # Android Application Source Code (Proprietary - Local Only, Never on Public Git)
 /app/
 app/
