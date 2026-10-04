@@ -1,5 +1,7 @@
 # 🌐 OrbisNet — Sovereign Decentralized Social Network & Messaging (Nostr/WebSockets, Android Telecom & WebRTC E2EE)
 
+> *One, two, three — viva l'Algérie 🇩🇿*
+
 [![Version](https://img.shields.io/badge/Version-v1.5.0_Stable-0284c7.svg?style=flat&logo=github)](https://github.com/ShaDevPro/O-R-B-I-S-net/releases)
 [![Package](https://img.shields.io/badge/Package-com.sha.orbisnet-0284c7.svg?style=flat&logo=android)](https://github.com/ShaDevPro/O-R-B-I-S-net)
 [![Protocol](https://img.shields.io/badge/Protocol-Nostr_(WebSockets_wss)-8b5cf6.svg?style=flat&logo=nostr)](https://nostr.com)
