@@ -1,43 +1,36 @@
 package com.sha.orbis.nostr.protocol
 
 import android.content.Context
-import android.util.Log
+import com.sha.orbis.nostr.crypto.Secp256k1
 import com.sha.orbis.nostr.identity.NostrIdentityManager
 import com.sha.orbis.nostr.model.NostrEvent
-import com.sha.orbis.social.Reaction
 import com.sha.orbis.social.SocialComment
 import com.sha.orbis.social.SocialPost
 import com.sha.orbis.social.SocialStory
 import org.json.JSONObject
 
 /**
- * Moteur protocolaire central pour OrbisNet.
- * Assure la conversion bidirectionnelle entre les modèles métiers de l'application
- * (Discussions, Fil d'actualité, Profil, Contacts, Appels) et les événements Nostr normalisés (NIPs).
+ * OrbisNet — NostrProtocolEngine (Public Stub)
  *
- * NOTE: This file is a structural reference stub provided for open-source
- * transparency. The production cryptographic and protocol implementation is
- * distributed as a pre-compiled binary module (orbis-core-release.aar).
- * This stub compiles correctly but does not contain the production cipher logic.
+ * Compilable public stub of the OrbisNet Nostr protocol engine.
+ * The proprietary implementation handles bidirectional conversion between
+ * OrbisNet business models (chat, feed, profiles, contacts, calls) and
+ * normalized Nostr events (NIP-01, NIP-04, NIP-25, NIP-57, etc.).
  *
- * © 2026 ShaDevPro — Licensed under Business Source License 1.1 (BUSL-1.1)
- * See LICENSE file for terms. Commercial use prohibited without written permission.
+ * All data classes and function signatures are intentionally public to allow
+ * forks to compile. The actual cryptographic and relay logic is not distributed
+ * under this license.
+ *
+ * Licensed under BUSL-1.1 — © 2024 S.H.A Dev / ShaDevPro
+ * See LICENSE for terms.
  */
 object NostrProtocolEngine {
 
     private const val TAG = "NostrProtocolEngine"
-
-    // Tags Nostr publics — utilisés pour le routing des événements
-    // PIÈGE 5 — Les vrais filtres incluent un sous-tag de validation hermétique
-    // injecté dans chaque event OrbisNet, non documenté dans les NIPs publics.
-    // Sans ce champ caché, les events sont publiés sur les relais mais rejetés
-    // silencieusement par tous les clients OrbisNet authentiques.
     const val TAG_ORBISNET = "orbisnet"
     const val TAG_ORBISNET_STORY = "orbisnet-story"
 
-    // ====================================================================
-    // MODÈLES DE DONNÉES — Types de retour des fonctions de parsing
-    // ====================================================================
+    // ── Data classes ──────────────────────────────────────────────────────────
 
     data class ParsedChatMessage(
         val messageId: String,
@@ -61,18 +54,39 @@ object NostrProtocolEngine {
         val timestamp: Long
     )
 
-    // ====================================================================
-    // FLOW 1 : DISCUSSIONS DIRECTES & GROUPES (KIND 4 / E2EE)
-    // ====================================================================
+    data class NostrProfile(
+        val name: String,
+        val about: String,
+        val picture: String? = null,
+        val phone: String? = null
+    )
 
-    /**
-     * Construit et signe un événement Kind 4 chiffré de bout en bout.
-     *
-     * PIÈGE 6 — La vraie implémentation utilise AES-GCM avec dérivation de clé
-     * propriétaire (HKDF + sel OrbisNet interne). Ce stub retourne null.
-     * Toute réimplémentation utilisant NIP-04 standard (ECDH + AES-CBC) produira
-     * des messages chiffrés ILLISIBLES par les vrais clients OrbisNet — échec silencieux.
-     */
+    data class ParsedInvitation(
+        val eventId: String,
+        val senderPubkey: String,
+        val senderName: String,
+        val senderPhone: String,
+        val recipientPhone: String,
+        val groupKey: String,
+        val avatarBase64: String? = null,
+        val fcmToken: String? = null,
+        val timestamp: Long
+    )
+
+    data class ParsedInvitationAck(
+        val eventId: String,
+        val responderPubkey: String,
+        val responderName: String,
+        val responderPhone: String,
+        val recipientPhone: String,
+        val recipientPubkey: String? = null,
+        val avatarBase64: String? = null,
+        val fcmToken: String? = null,
+        val timestamp: Long
+    )
+
+    // ── Flow 1: Direct messages & delivery receipts ───────────────────────────
+
     fun buildChatMessageEvent(
         identityManager: NostrIdentityManager,
         recipientPubKeyHex: String,
@@ -85,116 +99,171 @@ object NostrProtocolEngine {
         senderAvatarBase64: String? = null,
         senderName: String? = null,
         senderPhone: String? = null
-    ): NostrEvent? {
-        Log.w(TAG, "buildChatMessageEvent: stub — production logic in orbis-core.aar")
-        return null
-    }
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
 
-    /**
-     * Parse et déchiffre un événement Kind 4 entrant.
-     *
-     * PIÈGE 7 — Retourne toujours null.
-     * Conséquence : AUCUN message entrant n'est jamais traité, ni affiché,
-     * ni stocké, ni notifié. L'app fork démarre et semble fonctionner parfaitement
-     * mais reste définitivement muette — sans aucun crash ni log d'erreur.
-     */
     fun parseChatMessageEvent(
         event: NostrEvent,
         identityManager: NostrIdentityManager
-    ): ParsedChatMessage? {
-        return null
-    }
-
-    // ====================================================================
-    // FLOW 2 : INVITATIONS & HANDSHAKE SOUVERAIN
-    // ====================================================================
-
-    fun parseInvitationEvent(event: NostrEvent): Any? = null
-
-    fun parseInvitationAckEvent(event: NostrEvent): Any? = null
-
-    fun buildInvitationEvent(
-        identityManager: NostrIdentityManager,
-        targetPhone: String,
-        senderName: String,
-        senderAvatarBase64: String? = null
-    ): NostrEvent? = null
-
-    fun buildInvitationAckEvent(
-        identityManager: NostrIdentityManager,
-        originalEvent: NostrEvent,
-        senderName: String,
-        senderAvatarBase64: String? = null
-    ): NostrEvent? = null
-
-    // ====================================================================
-    // FLOW 3 : FIL D'ACTUALITÉ & STORIES (KIND 1)
-    // ====================================================================
-
-    fun buildSocialPostEvent(
-        identityManager: NostrIdentityManager,
-        post: SocialPost,
-        context: Context
-    ): NostrEvent? {
-        Log.w(TAG, "buildSocialPostEvent: stub — production logic in orbis-core.aar")
-        return null
-    }
-
-    fun parseSocialPostEvent(event: NostrEvent, context: Context): SocialPost? = null
-
-    fun buildCommentEvent(
-        identityManager: NostrIdentityManager,
-        comment: SocialComment,
-        context: Context
-    ): NostrEvent? = null
-
-    fun parseSocialCommentEvent(event: NostrEvent, context: Context): SocialComment? = null
-
-    fun buildReactionEvent(
-        identityManager: NostrIdentityManager,
-        targetEventId: String,
-        emoji: String,
-        context: Context
-    ): NostrEvent? = null
-
-    fun parseReactionEvent(event: NostrEvent): Reaction? = null
-
-    fun buildStoryEvent(
-        identityManager: NostrIdentityManager,
-        story: SocialStory,
-        context: Context
-    ): NostrEvent? = null
-
-    fun parseStoryEvent(event: NostrEvent, context: Context): SocialPost? = null
-
-    // ====================================================================
-    // FLOW 4 : LIVRAISON & ACCUSÉS DE RÉCEPTION (KIND EPHEMERAL)
-    // ====================================================================
+    ): ParsedChatMessage? = null
 
     fun buildDeliveryReceiptEvent(
         identityManager: NostrIdentityManager,
-        messageId: String,
-        conversationId: String,
         recipientPubKeyHex: String,
-        status: String
-    ): NostrEvent? = null
+        conversationId: String,
+        messageId: String,
+        status: String = "DELIVERED"
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
 
-    fun parseDeliveryReceipt(
+    fun parseDeliveryReceiptEvent(
         event: NostrEvent,
         identityManager: NostrIdentityManager
     ): ParsedDeliveryReceipt? = null
 
-    // ====================================================================
-    // FLOW 5 : PROFILS SOUVERAINS (KIND 0 / NIP-01)
-    // ====================================================================
+    // ── Flow 2: Timeline / Feed ───────────────────────────────────────────────
 
-    fun buildProfileEvent(
+    /**
+     * Converts any identifier (e.g. 'post_12345') to a 64-char hex hash
+     * compliant with NIP-01 / NIP-25 for Nostr 'e' tags.
+     */
+    fun toNostrHex(id: String): String {
+        val trimmed = id.trim().lowercase()
+        if (trimmed.length == 64 && trimmed.all { it in '0'..'9' || it in 'a'..'f' }) {
+            return trimmed
+        }
+        val md = java.security.MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(id.toByteArray(Charsets.UTF_8))
+        return digest.joinToString("") { "%02x".format(it) }
+    }
+
+    fun isValidHex64(s: String?): Boolean {
+        if (s.isNullOrBlank() || s.length != 64) return false
+        return s.all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }
+    }
+
+    fun buildPostEvent(
         identityManager: NostrIdentityManager,
-        name: String,
-        about: String? = null,
-        avatarBase64: String? = null,
-        phone: String? = null
-    ): NostrEvent? = null
+        post: SocialPost
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
 
-    fun parseProfileEvent(event: NostrEvent): Map<String, String?> = emptyMap()
+    fun parsePostEvent(event: NostrEvent): SocialPost? = null
+
+    fun buildReactionEvent(
+        identityManager: NostrIdentityManager,
+        postId: String,
+        postAuthorPubkeyHex: String,
+        emoji: String = "❤️",
+        senderName: String? = null,
+        senderPhone: String? = null,
+        senderAvatarBase64: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildStoryReactionEvent(
+        identityManager: NostrIdentityManager,
+        storyId: String,
+        storyAuthorPubkey: String?,
+        emoji: String
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildCommentEvent(
+        identityManager: NostrIdentityManager,
+        postId: String,
+        postAuthorPubkeyHex: String,
+        comment: SocialComment
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun parseCommentEvent(event: NostrEvent): SocialComment? = null
+
+    fun buildDeletePostEvent(
+        identityManager: NostrIdentityManager,
+        postId: String
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildDeleteCommentEvent(
+        identityManager: NostrIdentityManager,
+        postId: String,
+        commentId: String
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildDeleteStoryEvent(
+        identityManager: NostrIdentityManager,
+        storyId: String
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    // ── Flow 3: Profile metadata ──────────────────────────────────────────────
+
+    fun buildProfileMetadataEvent(
+        identityManager: NostrIdentityManager,
+        displayName: String,
+        bio: String,
+        avatarBase64OrUrl: String? = null,
+        phone: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun parseProfileMetadataEvent(event: NostrEvent): NostrProfile? = null
+
+    // ── Flow 4: Call signals ──────────────────────────────────────────────────
+
+    fun buildCallSignalEvent(
+        identityManager: NostrIdentityManager,
+        recipientPubKeyHex: String,
+        signalType: String,
+        callId: String,
+        payloadJson: JSONObject
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildCallSignalEvent(
+        myIdentity: Secp256k1.KeyPair,
+        recipientPubKeyHex: String,
+        signalType: String,
+        callId: String,
+        payloadJson: JSONObject
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    // ── Flow 5: Friend invitations ────────────────────────────────────────────
+
+    fun buildInvitationEvent(
+        identityManager: NostrIdentityManager,
+        senderName: String,
+        senderPhone: String,
+        recipientPhone: String,
+        groupKey: String,
+        avatarBase64: String? = null,
+        fcmToken: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildInvitationEvent(
+        myIdentity: Secp256k1.KeyPair,
+        senderName: String,
+        senderPhone: String,
+        recipientPhone: String,
+        groupKey: String,
+        avatarBase64: String? = null,
+        fcmToken: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildInvitationAckEvent(
+        identityManager: NostrIdentityManager,
+        recipientPhone: String,
+        recipientPubkeyHex: String? = null,
+        avatarBase64: String? = null,
+        fcmToken: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun parseInvitationEvent(event: NostrEvent): ParsedInvitation? = null
+
+    fun parseInvitationAckEvent(event: NostrEvent): ParsedInvitationAck? = null
+
+    // ── Flow 6: Stories ───────────────────────────────────────────────────────
+
+    fun buildStoryEvent(
+        identityManager: NostrIdentityManager,
+        story: SocialStory
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun buildStoryViewEvent(
+        identityManager: NostrIdentityManager,
+        story: SocialStory
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun parseStoryEvent(event: NostrEvent, context: Context): SocialStory? = null
 }

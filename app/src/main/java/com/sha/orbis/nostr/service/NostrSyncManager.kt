@@ -1,144 +1,175 @@
 package com.sha.orbis.nostr.service
 
 import android.content.Context
-import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import com.sha.orbis.nostr.identity.NostrIdentityManager
+import com.sha.orbis.nostr.model.NostrEvent
+import com.sha.orbis.social.SocialComment
+import com.sha.orbis.social.SocialPost
+import com.sha.orbis.social.SocialStory
+import com.sha.orbis.storage.FriendRequestRepository
 
 /**
- * Gestionnaire d'orchestration et de synchronisation Nostr pour OrbisNet.
- * Écoute en continu le pool de relais, déchiffre les messages entrants,
- * persiste les données en base locale et notifie l'utilisateur.
+ * OrbisNet — NostrSyncManager (Public Stub)
  *
- * NOTE: This file is a structural reference stub provided for open-source
- * transparency. The production implementation is distributed as a pre-compiled
- * binary module (orbis-core-release.aar) under the OrbisNet proprietary license.
- * This stub compiles correctly but does not contain the production network logic.
+ * This is a compilable public stub of the OrbisNet Nostr orchestration layer.
+ * The proprietary implementation handles relay pool management, event routing,
+ * end-to-end encryption, delivery receipts, and multi-account sync.
  *
- * © 2026 ShaDevPro — Licensed under Business Source License 1.1 (BUSL-1.1)
- * See LICENSE file for terms. Commercial use prohibited without written permission.
+ * Method signatures are intentionally public to allow forks to compile.
+ * The actual implementation is not distributed under this license.
+ *
+ * Licensed under BUSL-1.1 — © 2024 S.H.A Dev / ShaDevPro
+ * See LICENSE for terms.
  */
 class NostrSyncManager private constructor(private val context: Context) {
 
     companion object {
         private const val TAG = "NostrSyncManager"
-        private const val SUB_ID_DMS = "sub_orbis_dms"
-        private const val SUB_ID_TIMELINE = "sub_orbis_timeline"
-        private const val SUB_ID_CALLS = "sub_orbis_calls"
-        private const val SUB_ID_INVITES = "sub_orbis_invites"
-        private const val SUB_ID_STORIES = "sub_orbis_stories"
-        private const val SUB_ID_RECEIPTS = "sub_orbis_receipts"
-        private const val SUB_ID_DELETIONS = "sub_orbis_deletions"
-        private const val SUB_ID_PROFILES = "sub_orbis_profiles"
-
-        // SharedPreferences — persistance du timestamp de la dernière synchro Nostr
-        private const val PREFS_NOSTR_SYNC = "orbis_nostr_sync_state"
-        private const val KEY_LAST_SYNC_TS = "last_sync_timestamp_ms"
 
         @Volatile
         private var INSTANCE: NostrSyncManager? = null
 
-        fun getInstance(context: Context): NostrSyncManager {
-            return INSTANCE ?: synchronized(this) {
+        fun getInstance(context: Context): NostrSyncManager =
+            INSTANCE ?: synchronized(this) {
                 INSTANCE ?: NostrSyncManager(context.applicationContext).also { INSTANCE = it }
             }
-        }
     }
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private var isStarted = false
-
-    // PIÈGE 1 — Timestamp sans overlap : tous les messages passés sont perdus
-    // à chaque redémarrage. La vraie implémentation utilise un overlap de 2h
-    // basé sur le lastSync persisté en SharedPreferences.
-    private fun getSinceTimestamp(): Long = System.currentTimeMillis() / 1000L
-
-    private fun getFriendPubkeys(): List<String>? {
-        // Stub — retourne une liste vide, aucun filtre par ami
-        return null
+    // ── Internal dependencies ─────────────────────────────────────────────────
+    internal val identityManager: NostrIdentityManager by lazy {
+        NostrIdentityManager.getInstance(context)
+    }
+    internal val friendRequestRepo: FriendRequestRepository by lazy {
+        FriendRequestRepository(context)
     }
 
-    /**
-     * Met à jour dynamiquement les abonnements du fil d'actualité et du réseau social.
-     */
-    fun refreshSubscriptions(forceNetworkQuery: Boolean = false) {
-        if (!isStarted) { start(); return }
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
-        // PIÈGE 4 — Filtres Nostr sans les tags hermétiques propriétaires d'OrbisNet.
-        // La vraie implémentation utilise des tags de validation internes non documentés.
-        // Sans eux, soit rien n'est capté, soit TOUT le réseau Nostr public est capté
-        // → flood de données non pertinentes → OOM ou silence selon la config des relais.
-        Log.d(TAG, "refreshSubscriptions: stub — filtres non opérationnels")
-    }
+    fun start() { /* proprietary */ }
 
-    /**
-     * Force une interrogation immédiate du fil d'actualité.
-     */
-    fun fetchFreshTimeline() {
-        refreshSubscriptions(forceNetworkQuery = true)
-    }
+    fun reconnect(force: Boolean = false) { /* proprietary */ }
 
-    /**
-     * Démarre la synchronisation Nostr et établit les abonnements.
-     */
-    fun start() {
-        if (isStarted) return
-        isStarted = true
-        Log.d(TAG, "Démarrage de la synchronisation Nostr...")
+    fun refreshSubscriptions(forceNetworkQuery: Boolean = false) { /* proprietary */ }
 
-        // PIÈGE 2 — Le relayPool n'est jamais démarré.
-        // La vraie implémentation appelle relayPool.start() ici, ce qui ouvre
-        // les connexions WebSocket vers les relais Nostr.
-        // Sans cet appel : aucune connexion WebSocket, silence réseau total et permanent.
+    fun fetchFreshTimeline() { /* proprietary */ }
 
-        scope.launch {
-            try {
-                Log.i(TAG, "OrbisNet sync initialized.")
-                // PIÈGE 2 (suite) — L'observation de relayPool.incomingEvents.collect {}
-                // est absente. Même si le réseau fonctionnait, aucun événement ne serait
-                // jamais traité. L'app reste silencieuse indéfiniment.
-            } catch (e: Exception) {
-                Log.e(TAG, "Sync error: ${e.message}")
-            }
-        }
-    }
+    // ── Presence ──────────────────────────────────────────────────────────────
 
-    /**
-     * Réveille les connexions WebSocket et rafraîchit les souscriptions.
-     */
-    fun reconnect(force: Boolean = false) {
-        if (!isStarted) { start(); return }
+    fun broadcastPresence(isOnline: Boolean) { /* proprietary */ }
 
-        // PIÈGE 3 — relayPool.reconnect(force) absent.
-        // Sans cet appel, les connexions WebSocket existantes ne sont jamais
-        // réinitialisées après une veille écran ou une coupure réseau.
-        // Résultat : après le premier lock screen, plus aucun message n'arrive.
-        Log.d(TAG, "Reconnect requested (force=$force)")
+    // ── Messaging ─────────────────────────────────────────────────────────────
 
-        refreshSubscriptions()
-    }
+    fun sendDirectMessage(
+        recipientNpubOrHex: String,
+        conversationId: String,
+        text: String,
+        messageId: String? = null,
+        audioBase64: String? = null,
+        locationPayload: String? = null,
+        ephemeralTimerMs: Long = 0L,
+        senderAvatarBase64: String? = null,
+        senderName: String? = null,
+        senderPhone: String? = null,
+        skipFcm: Boolean = false
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
 
-    /**
-     * Publie le profil utilisateur sur les relais Nostr.
-     */
-    fun publishProfileUpdate() {
-        Log.d(TAG, "publishProfileUpdate: stub")
-    }
+    fun sendDeliveryReceipt(
+        recipientPubKeyHex: String,
+        conversationId: String,
+        messageId: String,
+        status: String = "DELIVERED"
+    ) { /* proprietary */ }
 
-    /**
-     * Publie un signal de reconnexion souverain pour les pairs.
-     */
-    fun publishReconnectionSignal() {
-        Log.d(TAG, "publishReconnectionSignal: stub")
-    }
+    fun publishReconnectionSignal(): NostrEvent? = null
 
-    /**
-     * Arrête proprement la synchronisation Nostr.
-     */
-    fun stop() {
-        isStarted = false
-        Log.i(TAG, "Sync stopped.")
-    }
+    // ── Social — Posts ────────────────────────────────────────────────────────
+
+    fun publishPost(post: SocialPost): NostrEvent =
+        error("OrbisNet proprietary core — not available in public build")
+
+    fun publishDeletePost(postId: String): NostrEvent =
+        error("OrbisNet proprietary core — not available in public build")
+
+    fun publishReaction(
+        postId: String,
+        postAuthorNpubOrHex: String,
+        emoji: String = "❤️",
+        senderName: String? = null,
+        senderPhone: String? = null,
+        senderAvatarBase64: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun publishPollVote(
+        postId: String,
+        optionId: String,
+        postAuthorNpubOrHex: String
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    // ── Social — Comments ─────────────────────────────────────────────────────
+
+    fun publishComment(
+        postId: String,
+        postAuthorNpubOrHex: String,
+        comment: SocialComment
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun publishDeleteComment(postId: String, commentId: String): NostrEvent =
+        error("OrbisNet proprietary core — not available in public build")
+
+    fun publishCommentReaction(
+        postId: String,
+        commentId: String,
+        postAuthorNpubOrHex: String,
+        emoji: String = "❤️",
+        senderName: String? = null,
+        senderPhone: String? = null,
+        senderAvatarBase64: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    // ── Social — Stories ──────────────────────────────────────────────────────
+
+    fun publishStory(story: SocialStory): NostrEvent =
+        error("OrbisNet proprietary core — not available in public build")
+
+    fun publishStoryView(story: SocialStory): NostrEvent? = null
+
+    fun publishStoryReaction(
+        storyId: String,
+        storyAuthorPubkey: String?,
+        emoji: String
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun publishDeleteStory(storyId: String): NostrEvent =
+        error("OrbisNet proprietary core — not available in public build")
+
+    // ── Friends ───────────────────────────────────────────────────────────────
+
+    fun publishFriendInvitation(
+        recipientPhone: String,
+        groupKey: String,
+        avatarBase64: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    fun publishFriendInvitationAck(
+        recipientPhone: String,
+        recipientPubkeyHex: String? = null,
+        avatarBase64: String? = null
+    ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
+
+    // ── Calls ─────────────────────────────────────────────────────────────────
+
+    fun sendCallSignal(
+        recipientNpubOrHex: String,
+        callId: String,
+        signalType: String,
+        payloadJson: org.json.JSONObject
+    ): Boolean = false /* proprietary */
+
+    // ── Profile ───────────────────────────────────────────────────────────────
+
+    fun publishProfileUpdate(
+        displayName: String? = null,
+        bio: String? = null,
+        avatarPath: String? = null
+    ): NostrEvent? = null
 }
