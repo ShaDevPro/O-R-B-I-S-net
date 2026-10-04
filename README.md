@@ -34,6 +34,7 @@
 |---|:---:|:---:|:---:|
 | 📵 **Stranger contact isolation** — nobody outside your friends list can message, call, or interact with you through any channel | ❌ Anyone with your number can reach you | ❌ Anyone can send a message request | ✅ **Impossible by design** |
 | 👁️ **Strict mutual-friend visibility** — if two of your friends are not friends with each other, they will never see each other's posts, comments, reactions or stories | ❌ No equivalent isolation | ❌ All your friends see the same content | ✅ **Only mutual friends see each other** |
+| 🔐 **True zero-transit E2EE** — data leaves Orbis1 already encrypted, travels encrypted, arrives encrypted at Orbis2 — no server, no cloud, no intermediate can read or intercept anything | ⚠️ E2EE claimed, but routes via WhatsApp servers | ❌ All data transits Meta servers unencrypted | ✅ **Military-grade, untraceable, direct** |
 
 ### How it works
 
@@ -42,6 +43,21 @@ On OrbisNet, if you are not in someone's friends list, you **cannot reach them**
 
 **👥 Sealed mutual-friend social graph**
 Your posts, stories, reactions and comments are only visible to people who are **mutually connected to both parties**. If your friend Alice and your friend Bob are not friends with each other, Bob will never see Alice's posts — and Alice will never see Bob's. No bleed-through. No friends-of-friends leak. The social graph is not a web — it is a collection of isolated, sealed circles.
+
+**🔐 Military-grade E2EE — zero-transit, untraceable**
+Between two OrbisNet users, **you are completely untraceable and no third party can intercept anything.**
+Here is the exact data flow:
+
+```
+📱 Orbis1 (sender)
+  └─ Data encrypted locally with NIP-44 / Double Ratchet keys
+       └─ Travels encrypted across decentralized Nostr relays (wss://)
+            └─ No server, no cloud, no Meta, no operator can read it
+                 └─ Arrives sealed at 📱 Orbis2 (recipient)
+                      └─ Orbis2 alone holds the private key → decrypts locally
+```
+
+The data **never exists in plaintext outside the two devices**. It is not stored on any server. It does not pass through any cloud infrastructure. Nostr relays are blind couriers — they forward sealed packets they cannot open. Even if a relay is compromised, seized or subpoenaed, there is **nothing to hand over**.
 
 > OrbisNet is the **only mobile social platform** where your social life is truly compartmentalized — professionally, personally, and cryptographically.
 
