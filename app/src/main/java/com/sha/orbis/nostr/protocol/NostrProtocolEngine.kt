@@ -1,11 +1,6 @@
 package com.sha.orbis.nostr.protocol
 
-import com.sha.orbis.model.OrbisPost
-import com.sha.orbis.model.OrbisComment
-import com.sha.orbis.model.OrbisReaction
-import com.sha.orbis.model.OrbisStory
-import com.sha.orbis.model.OrbisProfile
-import com.sha.orbis.model.FriendRequest
+import com.sha.orbis.model.Message
 import java.security.MessageDigest
 
 /**
@@ -85,7 +80,7 @@ object NostrProtocolEngine {
 
     /**
      * Converts an Orbis ID to a 64-char lowercase hex string via SHA-256.
-     * This function is retained as non-proprietary (standard SHA-256 hashing).
+     * Retained as non-proprietary (standard SHA-256 hashing).
      */
     fun toNostrHex(id: String): String {
         val bytes = MessageDigest.getInstance("SHA-256").digest(id.toByteArray(Charsets.UTF_8))
@@ -129,12 +124,12 @@ object NostrProtocolEngine {
     fun buildPostEvent(
         privkey: String,
         pubkey: String,
-        post: OrbisPost
+        post: Any
     ): NostrEvent? = null
 
     fun parsePostEvent(
         eventJson: String
-    ): OrbisPost? = null
+    ): Any? = null
 
     fun buildDeletePostEvent(
         privkey: String,
@@ -168,14 +163,14 @@ object NostrProtocolEngine {
     fun buildCommentEvent(
         privkey: String,
         pubkey: String,
-        comment: OrbisComment,
+        comment: Any,
         parentEventId: String,
         parentPubkey: String
     ): NostrEvent? = null
 
     fun parseCommentEvent(
         eventJson: String
-    ): OrbisComment? = null
+    ): Any? = null
 
     fun buildDeleteCommentEvent(
         privkey: String,
@@ -189,7 +184,7 @@ object NostrProtocolEngine {
     fun buildStoryEvent(
         privkey: String,
         pubkey: String,
-        story: OrbisStory
+        story: Any
     ): NostrEvent? = null
 
     fun buildStoryViewEvent(
@@ -201,7 +196,7 @@ object NostrProtocolEngine {
 
     fun parseStoryEvent(
         eventJson: String
-    ): OrbisStory? = null
+    ): Any? = null
 
     fun buildDeleteStoryEvent(
         privkey: String,
