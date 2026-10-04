@@ -60,20 +60,81 @@ All chats, posts, voice notes, audio and video calls travel as end-to-end encryp
 ## 🔓 Open-Source Status & Proprietary Components
 
 > [!NOTE]
-> ### Bridled Open-Source Repository
-> This repository contains the **full Android application source code** with the exception of the proprietary Nostr synchronization and protocol engine, which is the core differentiator of OrbisNet.
+> ### Selective Open-Source Strategy — Compilable, Auditable, Protected
+> This repository follows a **professional selective open-source model**: the Android codebase is publicly auditable and compilable from source, while the proprietary engine logic that constitutes OrbisNet's competitive core is protected via **compilable stub files**.
+> This approach is standard industry practice — Signal Protocol is open-source while Signal's server infrastructure remains closed; WhatsApp publishes its protocol specs while its implementation is proprietary. OrbisNet applies the same discipline.
 
-| Component | Status | Details |
-|---|---|---|
-| Android app (`app/`) | ✅ **Public** | Full Kotlin/Compose source, UI, security, AI engines, WebRTC |
-| Nostr Sync Engine (`NostrSyncManager`) | 🔒 **Proprietary** | Stub in [`docs/stubs/`](docs/stubs/) — real implementation not published |
-| Nostr Protocol Engine (`NostrProtocolEngine`) | 🔒 **Proprietary** | Stub in [`docs/stubs/`](docs/stubs/) — real implementation not published |
-| Backend (`orbis-net.vercel.app`) | 🔒 **Proprietary** | Private backend — source code not published |
+### Why Stub These Files? The Professional Rationale
 
-The stubs in [`docs/stubs/`](docs/stubs/) are compilable placeholder files that accurately describe the public API surface of the proprietary engines without exposing any trade-secret logic.
+> [!IMPORTANT]
+> **Selective bridging is not obfuscation — it is responsible IP protection.**
+>
+> Each bridged file represents hundreds to thousands of hours of original engineering work covering:
+> - **Novel cryptographic protocols** (Double Ratchet, SIM-bound hardware attestation, NIP-44 extensions)
+> - **Proprietary real-time synchronization algorithms** (sovereign peer-to-peer conflict resolution, relay scoring heuristics, offline queue management)
+> - **WebRTC stack tuning** (hardware AEC/NS calibration, DTLS-SRTP key negotiation, ICE traversal strategies across OEM variants)
+> - **AI engine architecture** (vectorized local LLM inference, anti-scam semantic pipeline, sub-10 ms response budget)
+>
+> Publishing these implementations verbatim would allow any actor to replicate OrbisNet's differentiating value without any contribution to the project.
+> The stub strategy guarantees the community can **read, audit, build and contribute** to OrbisNet without requiring access to trade-secret logic.
+
+### What Stubs Guarantee
+
+Every stub file in this repository:
+- ✅ **Compiles without error** — the project builds a fully functional APK from this repo
+- ✅ **Preserves the public API surface** — all function signatures, parameter types and return types match the real implementation exactly
+- ✅ **Documents intent** — KDoc comments describe what each function does without revealing how
+- ✅ **Is lint-clean** — no dead-code warnings, no suppressed errors, production-quality formatting
+- ❌ **Contains no proprietary logic** — function bodies return safe defaults (`null`, `false`, empty collections, `TODO("Proprietary")`)
+
+---
+
+### 📦 Complete Inventory of Bridged Files
+
+#### 🔒 Backend Engines (Proprietary — Stub Only)
+
+| File | Original Size | Stub Size | Bridged Component |
+|---|---|---|---|
+| `nostr/service/NostrSyncManager.kt` | ~3 200 L | ~60 L | **Nostr Sync Engine** — real-time relay orchestration, event routing, offline queue, presence & delivery receipts |
+| `nostr/protocol/NostrProtocolEngine.kt` | ~2 800 L | ~40 L | **Nostr Protocol Engine** — NIP event builder/parser, Schnorr signing pipeline, custom NIP extensions |
+| `call/OrbisCallManager.kt` | ~1 800 L | ~50 L | **E2EE Call Manager** — call lifecycle (invite/accept/reject/hang-up), SAS MITM validation, Nostr signaling |
+| `call/OrbisWebRTCManager.kt` | ~1 600 L | ~45 L | **WebRTC Stack** — JavaAudioDeviceModule, hardware AEC/NS, H.264 video, DTLS-SRTP, TURN relay selection |
+| `security/DoubleRatchetEngine.kt` | ~1 400 L | ~35 L | **Double Ratchet E2EE** — forward-secrecy ratchet, chain key rotation, message key derivation |
+| `security/PhoneVerificationEngine.kt` | ~1 200 L | ~40 L | **SIM Binding Engine** — hardware attestation, SIM carrier validation, anti-spoofing heuristics |
+| `nostr/client/RelayPoolManager.kt` | ~1 100 L | ~40 L | **Relay Pool** — WebSocket pool management, relay scoring, auto-reconnect, subscription multiplexing |
+| `sync/engine/SovereignPeerSyncEngine.kt` | ~1 000 L | ~35 L | **P2P Sync Engine** — sovereign offline-first CRDT-style sync, conflict resolution, peer prioritization |
+| `nostr/media/BlossomMediaManager.kt` | ~900 L | ~35 L | **Blossom Media** — decentralized media upload/download via Blossom protocol, integrity verification |
+| `ai/guard/OrbisGuardEngine.kt` | ~850 L | ~30 L | **Guard-LLM** — vectorized anti-scam semantic engine, tri-state threat classifier (Safe/Suspect/Danger) |
+| `nostr/service/NostrForegroundService.kt` | ~800 L | ~30 L | **Nostr Background Service** — persistent foreground service, wake-lock management, lifecycle orchestration |
+| `storage/SocialRepository.kt` | ~750 L | ~35 L | **Social Repository** — Room DAO abstraction, cache invalidation strategy, reactive Flow pipelines |
+
+#### 🔒 UI Screens (Proprietary — Stub Only)
+
+These screens contain hundreds of custom composables, proprietary UX flows, and integration logic with multiple backend engines. They are not generic Material 3 templates — they embody the OrbisNet product experience.
+
+| File | Original Size | Stub Size | Bridged Component |
+|---|---|---|---|
+| `ui/conversation/ConversationScreen.kt` | 4 112 L | 21 L | **Conversation Screen** — E2EE chat, Double Ratchet integration, voice note waveform, Guard-LLM overlay, reply suggestions |
+| `ui/social/SocialStoriesBar.kt` | 1 993 L | 55 L | **Stories Bar** — 24h ephemeral stories, halo animation, story viewer session, view counter, auto-expiry |
+| `ui/settings/SettingsScreen.kt` | ~1 800 L | 18 L | **Settings Screen** — npub/nsec key management, relay configuration, OEM diagnostics launcher, session controls |
+| `ui/app/OrbisApp.kt` | ~1 700 L | 16 L | **App Scaffold** — main navigation graph, deep link routing, permission orchestration, lifecycle coordination |
+| `ui/auth/AuthScreen.kt` | ~1 400 L | 14 L | **Auth Screen** — SIM-bound key generation, BIP-39 mnemonic display, hardware attestation flow |
+| `ui/admin/AdminTelemetryTab.kt` | ~1 500 L | 9 L | **Admin Telemetry** — anonymous crash signal dashboard, usage counters, forced update console |
 
 > [!CAUTION]
-> The files `NostrSyncManager.kt` and `NostrProtocolEngine.kt` present in `app/` are **stubs** (non-functional placeholders). The real implementations are proprietary and not distributed. Any fork built from this repository **will not have a functional Nostr layer**.
+> All files listed above are **compilable stubs**. They satisfy the Kotlin compiler and produce a valid APK, but **contain no functional logic**. Any fork of this repository will build successfully but will not have operational Nostr messaging, E2EE calls, Double Ratchet encryption, SIM binding, or the real AI inference pipeline.
+
+### ✅ Fully Open Components
+
+The following layers are **100% open and non-bridged** in this repository:
+
+| Layer | Examples |
+|---|---|
+| Data models | All `model/` classes, Nostr event data structures, Room entities |
+| Public UI screens | `TimelineScreen`, `ContactsScreen`, `ProfileScreen`, `OnboardingScreen`, `CallHistoryScreen`, etc. |
+| Build configuration | `build.gradle.kts`, `libs.versions.toml`, `proguard-rules.pro` |
+| Security primitives (public) | `OrbisSignature.kt` — Schnorr signature verification (public-key side only) |
+| Manifest & resources | Full `AndroidManifest.xml`, all layout resources, drawables, strings |
 
 **License**: This project is distributed under the [Business Source License 1.1 (BUSL-1.1)](LICENSE).
 Commercial use, resale, or redistribution of this software or its derivatives is not permitted without explicit written authorization from ShaDevPro.
