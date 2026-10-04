@@ -1,38 +1,22 @@
 package com.sha.orbis.nostr.client
 
 import android.content.Context
-import android.util.Log
-import android.util.LruCache
 import com.sha.orbis.nostr.model.NostrEvent
 import com.sha.orbis.nostr.model.NostrFilter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
-import okhttp3.OkHttpClient
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.SynchronousQueue
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 /**
- * Gestionnaire du pool de relais décentralisés Nostr.
- * Assure la redondance maximale (multi-relais), la déduplication intelligente des flux
- * et fournit l'état de santé du réseau en temps réel pour l'UI/UX.
+ * Manages the pool of decentralised Nostr relay connections — public stub.
+ * Full implementation is proprietary and not included in this repository.
  */
 class RelayPoolManager private constructor(private val context: Context) : RelayClient.RelayListener {
 
     companion object {
-        private const val TAG = "RelayPoolManager"
-
         val DEFAULT_RELAYS = listOf(
             "wss://relay.damus.io",
             "wss://nos.lol",
@@ -54,7 +38,8 @@ class RelayPoolManager private constructor(private val context: Context) : Relay
     data class RelayDetail(
         val url: String,
         val state: RelayClient.State,
-        val pingMs: Long
+        val pingMs: Long,
+        val isConnected: Boolean = false
     )
 
     data class PoolHealth(
@@ -66,156 +51,34 @@ class RelayPoolManager private constructor(private val context: Context) : Relay
         val isConnected: Boolean get() = connectedCount > 0
     }
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .dispatcher(
-            Dispatcher(
-                ThreadPoolExecutor(
-                    0, 64, 60L, TimeUnit.SECONDS,
-                    SynchronousQueue(),
-                    ThreadFactory { runnable ->
-                        Thread(runnable).apply {
-                            name = "OkHttp-RelayPool"
-                            isDaemon = true // CRITIQUE: threads daemon pour ne JAMAIS bloquer DestroyJavaVM (WaitForOtherNonDaemonThreadsToExit) → ANR
-                        }
-                    }
-                )
-            )
-        )
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS)
-        .pingInterval(25, TimeUnit.SECONDS)
-        .retryOnConnectionFailure(true)
-        .build()
-
-    private val clients = ConcurrentHashMap<String, RelayClient>()
-
-    // Cache LRU pour dédupliquer les événements reçus simultanément de plusieurs relais
-    private val seenEventIds = LruCache<String, Boolean>(2048)
-
-    // Flux réactif des événements entrants validés et dédupliqués
-    private val _incomingEvents = MutableSharedFlow<NostrEvent>(extraBufferCapacity = 128)
+    private val _incomingEvents = MutableSharedFlow<NostrEvent>(extraBufferCapacity = 256)
     val incomingEvents: SharedFlow<NostrEvent> = _incomingEvents.asSharedFlow()
 
-    // Flux réactif de l'état du réseau pour l'interface utilisateur
-    private val _poolHealth = MutableStateFlow(
-        PoolHealth(
-            totalRelays = DEFAULT_RELAYS.size,
-            connectedCount = 0,
-            averagePingMs = -1L,
-            details = emptyList()
-        )
-    )
+    private val _poolHealth = MutableStateFlow(PoolHealth(0, 0, 0L, emptyList()))
     val poolHealth: StateFlow<PoolHealth> = _poolHealth.asStateFlow()
 
-    init {
-        for (url in DEFAULT_RELAYS) {
-            val client = RelayClient(url, okHttpClient, this)
-            clients[url] = client
-        }
-        updateHealthState()
-    }
+    /** Start all relay connections. */
+    fun start() {}
 
-    fun start() {
-        Log.d(TAG, "Démarrage du pool de relais (${clients.size} relais configurés)")
-        clients.values.forEach { it.connect() }
-    }
+    /** Stop all relay connections. */
+    fun stop() {}
 
-    fun stop() {
-        Log.d(TAG, "Arrêt du pool de relais")
-        clients.values.forEach { it.disconnect() }
-        okHttpClient.connectionPool.evictAll()
-    }
+    /** Reconnect all relays, optionally forcing disconnection first. */
+    fun reconnect(force: Boolean = false) {}
 
     /**
-     * Reconnecte les relais du pool déconnectés ou tous si [force] est true.
+     * Publish a signed event to all connected relays.
+     * @return number of relays the event was sent to.
      */
-    fun reconnect(force: Boolean = false) {
-        Log.d(TAG, "Reconnexion du pool de relais (force=$force)")
-        clients.values.forEach { it.reconnect(force) }
-    }
+    fun publish(event: NostrEvent): Int = 0
 
-    /**
-     * Publie un événement en éventail (fan-out) vers tous les relais connectés.
-     * Retourne le nombre de relais vers lesquels l'envoi a réussi.
-     */
-    fun publish(event: NostrEvent): Int {
-        var sentCount = 0
-        for (client in clients.values) {
-            if (client.sendEvent(event)) {
-                sentCount++
-            }
-        }
-        Log.d(TAG, "Événement ${event.id.take(8)} diffusé à $sentCount/${clients.size} relais")
-        return sentCount
-    }
+    /** Subscribe to events matching the given filters. */
+    fun subscribe(subscriptionId: String, filters: List<NostrFilter>) {}
 
-    /**
-     * Souscrit à un filtre d'événements sur l'ensemble des relais du pool.
-     */
-    fun subscribe(subscriptionId: String, filters: List<NostrFilter>) {
-        clients.values.forEach { it.subscribe(subscriptionId, filters) }
-    }
+    /** Cancel an existing subscription. */
+    fun unsubscribe(subscriptionId: String) {}
 
-    /**
-     * Clôture une souscription sur l'ensemble des relais.
-     */
-    fun unsubscribe(subscriptionId: String) {
-        clients.values.forEach { it.unsubscribe(subscriptionId) }
-    }
-
-    override fun onStateChanged(client: RelayClient, state: RelayClient.State) {
-        if (state == RelayClient.State.ERROR) {
-            try {
-                com.sha.orbis.telemetry.TelemetryManager.getInstance(context).recordError("nostr_relay")
-            } catch (_: Exception) {}
-        }
-        updateHealthState()
-    }
-
-    override fun onMessage(client: RelayClient, message: RelayMessage) {
-        when (message) {
-            is RelayMessage.EventMsg -> {
-                val event = message.event
-                val isNew: Boolean
-                synchronized(seenEventIds) {
-                    isNew = seenEventIds.get(event.id) == null
-                    if (isNew) {
-                        seenEventIds.put(event.id, true)
-                    }
-                }
-
-                if (isNew) {
-                    scope.launch {
-                        _incomingEvents.emit(event)
-                    }
-                }
-            }
-            is RelayMessage.OkMsg -> {
-                Log.d(TAG, "Relais ${client.url}: OK pour événement ${message.eventId.take(8)} (accepté=${message.accepted}): ${message.message}")
-            }
-            is RelayMessage.NoticeMsg -> {
-                Log.d(TAG, "Notice de ${client.url}: ${message.message}")
-            }
-            else -> {}
-        }
-    }
-
-    private fun updateHealthState() {
-        val details = clients.values.map {
-            RelayDetail(url = it.url, state = it.state, pingMs = it.pingMs)
-        }
-        val connected = details.count { it.state == RelayClient.State.CONNECTED }
-        val pings = details.filter { it.state == RelayClient.State.CONNECTED && it.pingMs > 0 }.map { it.pingMs }
-        val avgPing = if (pings.isNotEmpty()) pings.average().toLong() else -1L
-
-        _poolHealth.value = PoolHealth(
-            totalRelays = details.size,
-            connectedCount = connected,
-            averagePingMs = avgPing,
-            details = details
-        )
-    }
+    // RelayClient.RelayListener — required implementations
+    override fun onStateChanged(client: RelayClient, state: RelayClient.State) {}
+    override fun onMessage(client: RelayClient, message: RelayMessage) {}
 }
