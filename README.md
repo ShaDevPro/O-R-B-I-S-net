@@ -93,8 +93,10 @@ Every message, call, post and reaction travels as an **end-to-end encrypted data
 ### 1. Decentralized Nostr Messaging — Zero Central Server, Zero SMS
 Instant exchanges via global Nostr relays (`wss://relay.damus.io`, `wss://nos.lol`, `wss://relay.primal.net`). End-to-end encrypted private messages (NIP-04 and NIP-44) guaranteeing total mathematical confidentiality. Multi-relay resilience: if one relay drops, others take over instantly with no interruption.
 
-### 2. Sovereign Cryptographic Identity — BIP-340 Schnorr
+### 2. Sovereign Cryptographic Identity — BIP-340 Schnorr + Native Dual SIM
 Authentication uses your **phone number** — OrbisNet sends you a confirmation SMS that you re-send to yourself, validating SIM ownership without any central server. Your communication identity is then a `secp256k1` key pair — `npub` (public address) and `nsec` (private key sealed on your device). No password. No email. No cloud account. Every message, reaction and post is cryptographically signed with Schnorr. Your identity is mathematics, not a database record.
+
+**📲 Native Dual SIM support** — if your phone has two SIM lines, OrbisNet manages them **completely independently**, each as a separate OrbisNet account with its own `npub` identity, its own contact list, its own social feed and its own private messages. Switch between your personal and professional life without leaving the app — two phones in one, with full sovereign isolation between the two identities.
 
 ### 3. E2EE Voice & Video Calls — WebRTC + Android Telecom
 High-fidelity P2P calls via WebRTC (`JavaAudioDeviceModule`, hardware AEC/NS, H.264/Opus), integrated into the Android Telecom subsystem (`ConnectionService`) in `CAPABILITY_SELF_MANAGED` mode. Zero GSM, native Bluetooth/Car routing, immune to aggressive OEM overlays (Vivo, Honor, Xiaomi, Samsung). Short Authentication String (SAS) mutual validation eliminates MITM risk.
@@ -333,6 +335,7 @@ These screens contain hundreds of custom composables, proprietary UX flows and d
 |---|---|
 | **OS** | Android 8.0 Oreo (API 26) → Android 16 (API 36–37) |
 | **Validated OEMs** | Samsung (One UI 6–8), Vivo (FunTouch/OriginOS), Honor (MagicUI), Huawei (EMUI), Xiaomi/Redmi (MIUI/HyperOS) |
+| **Dual SIM** | ✅ **Fully supported** — each SIM line is a separate independent OrbisNet account |
 | **iOS / iPhone** | 🚫 **Not supported — incompatible by technical design** |
 | **Network** | Wi-Fi or Mobile Data (4G / 5G). **No SMS plan or call credit required.** |
 
