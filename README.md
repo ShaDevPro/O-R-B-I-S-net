@@ -111,7 +111,11 @@ Public or friends-only posts on the Nostr network. 24h ephemeral stories with gl
 ### 7. High-Density Compressed Voice Notes
 ZLIB Deflater-compressed audio, interactive tactile waveform player, precise progress marker, playback speed selector (1.0× / 1.5× / 2.0×). Routed as an encrypted Nostr data packet in milliseconds.
 
-### 8. Dual Embedded AI Engine — 100% Local, Zero Cloud
+### 8. Dual Embedded AI Engine — 100% Local, Zero Cloud *(🧪 Beta — Work in Progress)*
+
+> [!NOTE]
+> **The local AI engines are not yet complete.** Guard-LLM and Reply-LLM are currently in **beta / experimental** phase — they are functional but actively being trained, tuned and expanded. Results may vary. This is one of OrbisNet's most ambitious components and is still evolving.
+
 - **Guard-LLM** (Anti-Scam Shield): live vectorized semantic analysis, tri-state threat classification (*Safe* / *Suspect* / *Danger*), phishing and fake banking link detection.
 - **Reply-LLM** (Smart Suggestions): 3 contextual quick-reply suggestions above the input field, local CPU inference in under 10 ms, multilingual (French, English, Arabic).
 - **Zero data leakage**: all neural inference runs on-device. No text, no vector, no signal ever leaves the phone.
@@ -362,7 +366,7 @@ Contributions are welcome on the open layers of this repository:
 | ✅ Released | E2EE voice & video calls (WebRTC + Telecom) |
 | ✅ Released | Nostr messaging (NIP-04, NIP-44) |
 | ✅ Released | 24h ephemeral stories, social wall, polls |
-| ✅ Released | Guard-LLM anti-scam & Reply-LLM suggestions |
+| 🔄 Beta / Experimental | Guard-LLM anti-scam & Reply-LLM suggestions *(functional but incomplete — actively evolving)* |
 | ✅ Released | OEM autostart diagnostics (Vivo, Honor, Xiaomi, Samsung) |
 | ✅ Released | Duress PIN & decoy profile |
 | ✅ Released | Blossom decentralized media |
