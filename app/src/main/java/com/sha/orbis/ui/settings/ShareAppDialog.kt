@@ -40,10 +40,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -55,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.sha.orbis.R
+import com.sha.orbis.security.QrCodeHelper
 import com.sha.orbis.ui.theme.OrbisColorPalette
 import com.sha.orbis.update.RemoteAppConfig
 
@@ -192,12 +195,28 @@ fun ShareAppDialog(
                                 .padding(12.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.qr_code_download),
-                                contentDescription = stringResource(R.string.share_qr_card_title),
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.size(186.dp)
-                            )
+                            val qrBitmap = remember(ORBIS_APK_DOWNLOAD_URL) {
+                                try {
+                                    QrCodeHelper.generateQrBitmap(ORBIS_APK_DOWNLOAD_URL, sizePx = 512)
+                                } catch (_: Exception) {
+                                    null
+                                }
+                            }
+                            if (qrBitmap != null) {
+                                Image(
+                                    bitmap = qrBitmap.asImageBitmap(),
+                                    contentDescription = stringResource(R.string.share_qr_card_title),
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(186.dp)
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(id = R.drawable.qr_code_download),
+                                    contentDescription = stringResource(R.string.share_qr_card_title),
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(186.dp)
+                                )
+                            }
                         }
 
                         Text(
