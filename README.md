@@ -68,7 +68,7 @@ All chats, posts, voice notes, audio and video calls travel as end-to-end encryp
 | Android app (`app/`) | ✅ **Public** | Full Kotlin/Compose source, UI, security, AI engines, WebRTC |
 | Nostr Sync Engine (`NostrSyncManager`) | 🔒 **Proprietary** | Stub in [`docs/stubs/`](docs/stubs/) — real implementation not published |
 | Nostr Protocol Engine (`NostrProtocolEngine`) | 🔒 **Proprietary** | Stub in [`docs/stubs/`](docs/stubs/) — real implementation not published |
-| Backend (`orbis-net.vercel.app`) | ✅ **Public role** | Used **only** for forced updates & anonymous telemetry |
+| Backend (`orbis-net.vercel.app`) | 🔒 **Proprietary** | Private backend — source code not published |
 
 The stubs in [`docs/stubs/`](docs/stubs/) are compilable placeholder files that accurately describe the public API surface of the proprietary engines without exposing any trade-secret logic.
 
