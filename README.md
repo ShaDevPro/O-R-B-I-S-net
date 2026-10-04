@@ -36,14 +36,14 @@ That realization triggered a complete architectural rethink: **full abandonment 
 
 ## 📖 What is OrbisNet?
 
-**OrbisNet** (`com.sha.orbisnet`) is a sovereign, fully decentralized communication platform and social network. No central server. No phone number. No SMS plan. No subscription.
+**OrbisNet** (`com.sha.orbisnet`) is a sovereign, fully decentralized communication platform and social network. No central server. No subscription. Authentication is phone-number based (self-sent SMS confirmation), but your communication identity is a cryptographic key pair — no account stored anywhere.
 
 Every message, call, post and reaction travels as an **end-to-end encrypted data packet** across a worldwide mesh of decentralized [Nostr](https://nostr.com) relays and direct WebRTC peer-to-peer streams — mathematically private by design, structurally uncensorable by architecture.
 
 | | What OrbisNet is | What OrbisNet is NOT |
 |---|---|---|
 | 📡 **Network** | Decentralized Nostr relay mesh | No central server, no SaaS cloud |
-| 🔑 **Identity** | Cryptographic key pair (`npub`/`nsec`) | No phone number, no email, no account |
+| 🔑 **Identity** | Phone number (SMS auth) + cryptographic key pair (`npub`/`nsec`) | No password, no email, no cloud account |
 | 💬 **Messages** | E2EE via NIP-44 | Not stored on any server |
 | 📞 **Calls** | WebRTC P2P, DTLS-SRTP | Zero GSM, zero carrier charges |
 | 🧠 **AI** | 100% local CPU inference | Zero cloud, zero data leakage |
@@ -57,7 +57,7 @@ Every message, call, post and reaction travels as an **end-to-end encrypted data
 Instant exchanges via global Nostr relays (`wss://relay.damus.io`, `wss://nos.lol`, `wss://relay.primal.net`). End-to-end encrypted private messages (NIP-04 and NIP-44) guaranteeing total mathematical confidentiality. Multi-relay resilience: if one relay drops, others take over instantly with no interruption.
 
 ### 2. Sovereign Cryptographic Identity — BIP-340 Schnorr
-No phone number, SIM card or email required. Your identity is a `secp256k1` key pair — `npub` (public address) and `nsec` (private key sealed on your device). Every message, reaction and post is cryptographically signed with Schnorr. Your identity is mathematics, not a database record.
+Authentication uses your **phone number** — OrbisNet sends you a confirmation SMS that you re-send to yourself, validating SIM ownership without any central server. Your communication identity is then a `secp256k1` key pair — `npub` (public address) and `nsec` (private key sealed on your device). No password. No email. No cloud account. Every message, reaction and post is cryptographically signed with Schnorr. Your identity is mathematics, not a database record.
 
 ### 3. E2EE Voice & Video Calls — WebRTC + Android Telecom
 High-fidelity P2P calls via WebRTC (`JavaAudioDeviceModule`, hardware AEC/NS, H.264/Opus), integrated into the Android Telecom subsystem (`ConnectionService`) in `CAPABILITY_SELF_MANAGED` mode. Zero GSM, native Bluetooth/Car routing, immune to aggressive OEM overlays (Vivo, Honor, Xiaomi, Samsung). Short Authentication String (SAS) mutual validation eliminates MITM risk.
@@ -299,7 +299,7 @@ These screens contain hundreds of custom composables, proprietary UX flows and d
 
 1. **Get the APK** — from [GitHub Releases](https://github.com/ShaDevPro/O-R-B-I-S-net/releases) or [orbis-net.vercel.app](https://orbis-net.vercel.app)
 2. **Install & Approve Permissions** — open the `.apk`, allow installation, approve native Android system dialogs (Microphone, Camera, Notifications, Battery)
-3. **Connect** — join the decentralized Nostr network with your `npub` key, or scan a contact's QR code to start communicating instantly
+3. **Register** — enter your phone number, re-send the confirmation SMS to yourself to validate SIM ownership, and your cryptographic `npub` key pair is generated and sealed on your device. Scan a contact's QR code to start communicating instantly
 
 ---
 
@@ -338,8 +338,8 @@ Contributions are welcome on the open layers of this repository:
 
 ## ❓ FAQ
 
-**Q: Do I need a phone number or SIM card to use OrbisNet?**
-No. Your identity is a cryptographic key pair. No phone number, no email, no SIM required.
+**Q: Do I need a phone number to use OrbisNet?**
+Yes — authentication requires a phone number. OrbisNet sends you an SMS confirmation that you re-send to yourself, validating SIM ownership without any central server or third-party database. No password, no email, no cloud account is ever created.
 
 **Q: Are my messages stored on a server?**
 No. Messages are end-to-end encrypted and relayed through Nostr nodes. Only the sender and recipient can decrypt them.
