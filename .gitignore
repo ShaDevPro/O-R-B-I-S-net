@@ -1,6 +1,11 @@
 *.iml
 .gradle
 /local.properties
+# Keystore — never push credentials
+keystore.properties
+app/orbis_keystore
+*.jks
+*.keystore
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml

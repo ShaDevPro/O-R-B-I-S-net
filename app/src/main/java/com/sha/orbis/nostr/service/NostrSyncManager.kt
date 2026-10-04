@@ -82,6 +82,15 @@ class NostrSyncManager private constructor(private val context: Context) {
 
     fun publishReconnectionSignal(): NostrEvent? = null
 
+    // ── Calls ─────────────────────────────────────────────────────────────────
+
+    fun sendCallSignal(
+        recipientNpubOrHex: String,
+        callId: String,
+        signalType: String,
+        payloadJson: org.json.JSONObject
+    ): Boolean = false /* proprietary */
+
     // ── Social — Posts ────────────────────────────────────────────────────────
 
     fun publishPost(post: SocialPost): NostrEvent =
@@ -155,15 +164,6 @@ class NostrSyncManager private constructor(private val context: Context) {
         recipientPubkeyHex: String? = null,
         avatarBase64: String? = null
     ): NostrEvent = error("OrbisNet proprietary core — not available in public build")
-
-    // ── Calls ─────────────────────────────────────────────────────────────────
-
-    fun sendCallSignal(
-        recipientNpubOrHex: String,
-        callId: String,
-        signalType: String,
-        payloadJson: org.json.JSONObject
-    ): Boolean = false /* proprietary */
 
     // ── Profile ───────────────────────────────────────────────────────────────
 
