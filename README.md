@@ -26,6 +26,27 @@
 
 ---
 
+## 🚫 What WhatsApp & Facebook Cannot Do — OrbisNet Can
+
+> These are not settings. These are **architectural guarantees** built into the protocol itself.
+
+| | WhatsApp | Facebook | **OrbisNet** |
+|---|:---:|:---:|:---:|
+| 📵 **Stranger contact isolation** — nobody outside your friends list can message, call, or interact with you through any channel | ❌ Anyone with your number can reach you | ❌ Anyone can send a message request | ✅ **Impossible by design** |
+| 👁️ **Strict mutual-friend visibility** — if two of your friends are not friends with each other, they will never see each other's posts, comments, reactions or stories | ❌ No equivalent isolation | ❌ All your friends see the same content | ✅ **Only mutual friends see each other** |
+
+### How it works
+
+**🔒 Total stranger isolation**
+On OrbisNet, if you are not in someone's friends list, you **cannot reach them** — no message, no call, no reaction, no story view, no notification of any kind. Their existence on the network is invisible to you. This is not a privacy setting that can be misconfigured — it is enforced at the cryptographic protocol level.
+
+**👥 Sealed mutual-friend social graph**
+Your posts, stories, reactions and comments are only visible to people who are **mutually connected to both parties**. If your friend Alice and your friend Bob are not friends with each other, Bob will never see Alice's posts — and Alice will never see Bob's. No bleed-through. No friends-of-friends leak. The social graph is not a web — it is a collection of isolated, sealed circles.
+
+> OrbisNet is the **only mobile social platform** where your social life is truly compartmentalized — professionally, personally, and cryptographically.
+
+---
+
 ## 🔄 Origin Story — From GSM to Sovereign Internet
 
 **OrbisNet grew out of an earlier project built entirely on traditional SMS and GSM cellular calls.** The original concept was straightforward: enable encrypted communications by leveraging existing telephone infrastructure, with no dependency on the Internet. The project worked — but a critical problem emerged quickly in real-world use: **every message, every exchange consumed SMS credit**, and at real usage volumes, the bill became unmanageable for both the developer and the users.
