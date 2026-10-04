@@ -38,6 +38,8 @@ GUIDE_MISE_A_JOUR_ORBIS.md
 publish-release.ps1
 publish.bat
 .admin_key
+build-core.ps1
+CMakeLists.txt
 
 # Root Gradle Files — tracked in git (no secrets, required to build)
 # build.gradle.kts, settings.gradle.kts, gradlew, gradlew.bat, gradle.properties are public
