@@ -24,6 +24,14 @@
 
 ---
 
+## 🔄 Origin Story — From GSM to Sovereign Internet
+
+**OrbisNet grew out of an earlier project built entirely on traditional SMS and GSM cellular calls.** The original concept was straightforward: enable encrypted communications by leveraging existing telephone infrastructure, with no dependency on the Internet. The project worked — but a critical problem emerged quickly in real-world use: **every message, every exchange consumed SMS credit**, and at real usage volumes, the bill became unmanageable for both the developer and the users.
+
+That realization triggered a complete architectural rethink: **full abandonment of GSM, SMS and cellular voice calls**, replaced by a **100% Internet-native stack** — the Nostr protocol (encrypted WebSockets) for messaging, and WebRTC for voice and video calls. The result is OrbisNet: zero phone credit required, zero central server, native end-to-end encryption — sovereign communication that runs on any Wi-Fi or mobile data connection.
+
+---
+
 ## 📖 Executive Overview
 
 **OrbisNet** (`com.sha.orbisnet`) is a sovereign decentralized communication platform and free social network powered by the **Nostr decentralized protocol** via persistent secure WebSocket connections (`wss://`), combined with an end-to-end encrypted voice/video call engine powered by **WebRTC and Android Telecom**.
