@@ -32,26 +32,17 @@ cd O-R-B-I-S-net
 
 | Component | Status in public build |
 |---|---|
-| UI (Jetpack Compose) | ✅ Fully compilable |
-| Calls (WebRTC) | ✅ Fully compilable |
-| AI Guard / Smart Reply | ✅ Fully compilable |
-| Crypto (Secp256k1, Bech32) | ✅ Fully compilable |
-| Relay pool client | ✅ Fully compilable |
-| **NostrSyncManager** | ⚠️ Stub — compiles, no production logic |
-| **NostrProtocolEngine** | ⚠️ Stub — compiles, no production logic |
+| Open UI screens & models | ✅ Fully compilable |
+| Crypto primitives (Secp256k1, Bech32, BIP-340) | ✅ Fully compilable |
+| Zero-Knowledge Edge Backend (`/backend`) | ✅ Fully compilable & auditable |
+| Core Orchestrators (Sync, E2EE, Ratchet) | ⚠️ Compilable stubs (Preserved API surface) |
+| Proprietary Screens (Conversation, Admin) | ⚠️ Compilable stubs (Preserved API surface) |
 
-## About the proprietary Nostr layer
+## About the proprietary components
 
-`NostrSyncManager` and `NostrProtocolEngine` are the synchronization and
-protocol engines that power OrbisNet's decentralized messaging, feed, and calls.
+OrbisNet protects its competitive differentiators (Double Ratchet engine, sovereign peer sync, call management, hardware attestation) through compilable stubs following the selective open-source model.
 
-The files in `app/src/main/java/com/sha/orbis/nostr/service/NostrSyncManager.kt`
-and `app/src/main/java/com/sha/orbis/nostr/protocol/NostrProtocolEngine.kt`
-are **structural stubs**: they compile correctly and expose the full public API,
-but the production network logic is distributed as a pre-compiled binary
-(`orbis-core-release.aar`) under the [BUSL-1.1 license](LICENSE).
-
-Reference stubs with documentation are also available in [`docs/stubs/`](docs/stubs/).
+See [README.md](README.md#-open-source-status--proprietary-components) for the complete inventory of protected components and their public guarantees.
 
 ## google-services.json
 

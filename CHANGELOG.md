@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [v1.5.0] - 2026-10-03
+
+### 🚀 Major Highlights
+
+- **✨ Fil d'Actualité Repensé (Next-Gen Social Feed & Cards)**:
+  - Nouvelles cartes de publication épurées au design moderne, avec gestion fluide des médias et intégration visuelle optimisée.
+  - Aperçus de liens externes (Instagram, YouTube, Web) instantanés sans blocage de threads UI.
+
+- **⚡ Réactions en Temps Réel & Synchronisation Instantanée (Real-Time Reactions)**:
+  - Panneau de réactions latéral synchronisé de manière réactive — les compteurs de réactions et de commentaires se mettent à jour instantanément sans recharger.
+
+- **🛡️ Moteur de Confiance Web of Trust Décentralisé (Web of Trust Engine)**:
+  - Système de certification à 4 piliers : certification face-à-face via QR Code cryptographique, score de réputation décentralisé, badges de vérification (Or, Bleu, Vert) intégrés aux profils.
+  - Support multilingue natif complet des badges (Français, Anglais, Arabe RTL).
+
+- **📲 Génération Dynamique des QR Codes de Partage (Dynamic Share QR Code)**:
+  - Les codes QR de partage d'application pointent désormais dynamiquement vers la dernière version officielle released.
+
+### 🔧 Bug Fixes & Security
+
+- **🔒 Authentification & Sécurité Administrateur**:
+  - Consolidation de la vérification cryptographique des rôles de supervision.
+- **📞 Stabilité du Journal d'Appels & Télécom**:
+  - Fiabilité renforcée de la synchronisation d'historique et des métadonnées d'appels WebRTC.
+
+---
+
 ## [v1.4.0] - 2026-09-30
 
 ### 🚀 Major Highlights
