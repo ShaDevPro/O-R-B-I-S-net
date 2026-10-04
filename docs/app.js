@@ -799,8 +799,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const ORBISNET_CONFIG = {
     apkDownloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/latest/download/O.R.B.I.S.apk",
     githubRepoUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net",
-    version: "1.4.0",
-    build: 140,
+    version: "1.5.0",
+    build: 150,
     size: "53 Mo",
     sha256: "4c366bac0e926ecfdd11c5fb7878faa3a08fada1582b96902554abd5384ba5d2"
   };
