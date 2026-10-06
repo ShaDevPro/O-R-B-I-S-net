@@ -132,6 +132,7 @@ export interface AppConfig {
   latestVersionName: string;
   forceUpdate: boolean;
   downloadUrl: string;
+  updateChannel?: "PLAY_STORE" | "DIRECT_APK";
   sha256?: string;
   apkSize?: string;
   releaseNotes: {
@@ -154,6 +155,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   latestVersionName: "1.5.0",
   forceUpdate: false,
   downloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/latest/download/O.R.B.I.S.apk",
+  updateChannel: "PLAY_STORE",
   sha256: "4c366bac0e926ecfdd11c5fb7878faa3a08fada1582b96902554abd5384ba5d2",
   apkSize: "53 Mo",
   releaseNotes: {
