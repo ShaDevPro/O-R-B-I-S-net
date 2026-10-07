@@ -149,15 +149,15 @@ export interface AppConfig {
 }
 
 export const DEFAULT_APP_CONFIG: AppConfig = {
-  minRequiredVersionCode: 100,
-  minRequiredVersionName: "1.0.0",
-  latestVersionCode: 150,
-  latestVersionName: "1.5.0",
-  forceUpdate: false,
+  minRequiredVersionCode: 160,
+  minRequiredVersionName: "1.6.0",
+  latestVersionCode: 160,
+  latestVersionName: "1.6.0",
+  forceUpdate: true,
   downloadUrl: "https://github.com/ShaDevPro/O-R-B-I-S-net/releases/latest/download/O.R.B.I.S.apk",
-  updateChannel: "PLAY_STORE",
-  sha256: "4c366bac0e926ecfdd11c5fb7878faa3a08fada1582b96902554abd5384ba5d2",
-  apkSize: "53 Mo",
+  updateChannel: "DIRECT_APK",
+  sha256: "0701385c0b301c4ae2ea09e8b183536d19ae1cfe9e81610b091cc7501915953b",
+  apkSize: "52 Mo",
   releaseNotes: {
     fr: "Version 1.4.0 : Optimisations majeures du fil d'actualité, aperçus fluides des liens externes sans blocage, navigation épurée dans le journal d'appels et stabilité renforcée.",
     en: "Version 1.4.0: Major feed performance optimizations, smooth external link previews without freezing, refined call history navigation, and enhanced stability.",

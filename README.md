@@ -101,11 +101,13 @@ Authentication uses your **phone number** — OrbisNet sends you a confirmation 
 ### 3. E2EE Voice & Video Calls — WebRTC + Android Telecom
 High-fidelity P2P calls via WebRTC (`JavaAudioDeviceModule`, hardware AEC/NS, H.264/Opus), integrated into the Android Telecom subsystem (`ConnectionService`) in `CAPABILITY_SELF_MANAGED` mode. Zero GSM, native Bluetooth/Car routing, immune to aggressive OEM overlays (Vivo, Honor, Xiaomi, Samsung). Short Authentication String (SAS) mutual validation eliminates MITM risk.
 
-### 4. Silent FCM Wake-Up — Serverless, Zero Duplicate
-High-priority Data-Only FCM impulse via Cloud Functions wakes sleeping devices (Doze Mode) instantly when a call arrives — no spurious notification banner, no duplicate ring, no missed call.
+### 4. Hybrid Offline Wake-Up — UnifiedPush (ntfy) & High-Priority Silent FCM
+Decentralized offline wakeup via **UnifiedPush** and open **ntfy** gateways, alongside serverless high-priority Data-Only FCM impulses. Wakes sleeping devices (Doze Mode) instantly upon receiving calls or encrypted messages with zero dependency on Google Play Services, zero spurious notification banners, and zero duplicate rings.
 
-### 5. OEM Diagnostics & Automatic Permissions
-Zero-configuration onboarding: native Android system dialogs handle all permissions at first launch. OEM Diagnostic screen auto-detects device model (Vivo, Honor, Xiaomi, Huawei, Samsung) and deep-links directly to the manufacturer's autostart manager. Full trilingual UI: **French, English, Arabic (RTL)**.
+### 5. Zero Intrusive Permissions & Just-In-Time Privacy
+Elimination of the default SMS application requirement. Drastically simplified initial onboarding: only SIM telephony identity verification and notifications are requested at startup.
+- **Just-In-Time Permissions**: Microphone, Camera, Contacts, and Media Storage are requested dynamically at the exact moment you place a call or share media. Fully compliant with Google Play Store policies and Android 13/14/15 runtime privacy standards.
+- **OEM Diagnostics**: Auto-detects device hardware (Vivo, Honor, Xiaomi, Huawei, Samsung) and deep-links directly to the manufacturer's autostart and battery optimization manager. Full trilingual UI: **French, English, Arabic (RTL)**.
 
 ### 6. Social Wall, 24h Stories & Decentralized Polls
 Public or friends-only posts on the Nostr network. 24h ephemeral stories with glowing halo, view counter and auto-deletion. Interactive polls with real-time vote counting and individual cryptographic signing per vote.
@@ -122,8 +124,12 @@ ZLIB Deflater-compressed audio, interactive tactile waveform player, precise pro
 - **Reply-LLM** (Smart Suggestions): 3 contextual quick-reply suggestions above the input field, local CPU inference in under 10 ms, multilingual (French, English, Arabic).
 - **Zero data leakage**: all neural inference runs on-device. No text, no vector, no signal ever leaves the phone.
 
-### 9. Edge Console — Forced Updates & Telemetry Only
-Stateless Vercel Edge API ([orbis-net.vercel.app](https://orbis-net.vercel.app)) used exclusively for two purposes: mandatory app update delivery (with SHA-256 APK integrity hashes) and strictly anonymous crash telemetry. Zero personal data. Zero message content. Zero user identifiers. The backend plays no role in messaging, identity, social feed or calls.
+### 9. Edge Console & Seamless In-App Updates (« Soft Update »)
+Stateless Vercel Edge API ([orbis-net.vercel.app](https://orbis-net.vercel.app)) providing transparent update delivery and strictly anonymous telemetry:
+- **Soft Background Updates**: Silent streaming download into private cache with automated cryptographic SHA-256 integrity verification before prompting.
+- **Non-Intrusive Prompting**: Expandable notification banner letting the user install with 1 tap via the native Android package installer when ready, eliminating disruptive blocking modals.
+- **Dual-Channel Distribution**: Seamless switching and distribution between the official Google Play Store and direct sovereign APK downloads.
+- **Zero-Knowledge Telemetry**: Strictly anonymous crash signals and version counters. Zero personal data, zero message content, zero IP logging. The backend plays no role in messaging, identity, social feed or calls.
 
 ### 10. Fortress Hardware Security
 - **Android KeyStore (TEE)**: private keys stored in the processor's hardware enclave — immune to ADB extraction.
@@ -162,11 +168,11 @@ graph TD
         WebRTCManager["OrbisWebRTCManager: JavaAudioDeviceModule + HW AEC/NS"]
         VideoEngine["H.264 Baseline P2P Multiplexed Video Stream"]
         TurnRelays["Resilient TURN Relays (0xchat, Google, Cloudflare)"]
-        FCMWakeup["OrbisFirebasePushHelper: Silent Doze Wake-Up Impulse"]
+        PushWakeup["Push Wakeup: UnifiedPush (ntfy) & High-Priority FCM"]
         TelecomService --> WebRTCManager
         WebRTCManager --> VideoEngine
         WebRTCManager --> TurnRelays
-        FCMWakeup -.-> TelecomService
+        PushWakeup -.-> TelecomService
     end
 
     subgraph Security_Core ["🔒 Cryptographic Fortress & Security"]
@@ -185,8 +191,8 @@ graph TD
     end
 
     subgraph Edge_Cloud ["☁️ Sovereign Edge Infrastructure (Vercel — Updates & Telemetry Only)"]
-        EdgeAPI["Vercel Edge API: Forced Update Notices & Security Alerts"]
-        IntegrityCheck["SHA-256 APK Integrity Check & Version Gate"]
+        EdgeAPI["Vercel Edge API: Soft Updates Delivery & Security Alerts"]
+        IntegrityCheck["SHA-256 APK Integrity Check & Dual-Channel Gate"]
         Telemetry["Anonymous Telemetry: Crash Signals & Usage Counters"]
     end
 
@@ -211,12 +217,13 @@ graph TD
 | **Identity & Signature** | **BIP-340 Schnorr / secp256k1** | Deterministic on-device keys, universal mathematical validation |
 | **Private Messaging** | **NIP-44 / NIP-04 (WebSockets wss)** | Authenticated E2EE via decentralized relays |
 | **Voice & Video Calls** | **WebRTC + Telecom + DTLS-SRTP** | Direct encrypted P2P stream, `SELF_MANAGED` routing, 0 GSM |
-| **Sleep Wake-Up** | **FCM Data-Only + WakeLock** | High-priority silent impulse, Doze bypass, 0 duplicate |
+| **Sleep Wake-Up** | **UnifiedPush (ntfy) + FCM Data-Only + WakeLock** | Decentralized push gateway & Doze bypass impulse, zero duplicate |
 | **At-Rest Storage** | **Android KeyStore (TEE)** | Hardware enclave — immune to ADB memory extraction |
 | **Vault Backups** | **PBKDF2 (100 000 iterations)** | Slow-hash with 128-bit random salt |
 | **Neural AI Engines** | **Native Kotlin Vector Engine** | 100% local CPU — 0 telemetry, sealed adaptive weights |
 | **Anti-Coercion Defense** | **Duress PIN & Decoy Profile** | Decoy unlock + silent cryptographic key destruction |
-| **Edge Infrastructure** | **Vercel Edge Network + SHA-256** | Forced updates & anonymous telemetry only — 0 personal data |
+| **Privacy & Permissions** | **Just-In-Time Permissions Model** | Zero default SMS role, dynamic runtime requests for media/calls, Google Play compliant |
+| **Edge Infrastructure & Updates** | **Vercel Edge Network + SHA-256 Soft Updates** | Silent background streaming download, cryptographic checksum verification, dual-channel Play Store & Direct APK |
 
 ---
 
@@ -353,14 +360,16 @@ The `/backend` directory contains the complete Next.js / TypeScript edge service
 | **OS** | Android 8.0 Oreo (API 26) → Android 16 (API 36–37) |
 | **Validated OEMs** | Samsung (One UI 6–8), Vivo (FunTouch/OriginOS), Honor (MagicUI), Huawei (EMUI), Xiaomi/Redmi (MIUI/HyperOS) |
 | **Dual SIM** | ✅ **Fully supported** — each SIM line is a separate independent OrbisNet account |
+| **Channels** | Dual-channel: Google Play Store & Direct APK ([GitHub Releases](https://github.com/ShaDevPro/O-R-B-I-S-net/releases)) |
+| **Privacy / Perms** | **Zero Intrusive Permissions** — No default SMS required, Just-In-Time dynamic prompts |
 | **iOS / iPhone** | 🚫 **Not supported — incompatible by technical design** |
 | **Network** | Wi-Fi or Mobile Data (4G / 5G). **No SMS plan or call credit required.** |
 
 ### 🚀 Quick Install
 
-1. **Get the APK** — from [GitHub Releases](https://github.com/ShaDevPro/O-R-B-I-S-net/releases) or [orbis-net.vercel.app](https://orbis-net.vercel.app)
-2. **Install & Approve Permissions** — open the `.apk`, allow installation, approve native Android system dialogs (Microphone, Camera, Notifications, Battery)
-3. **Register** — enter your phone number, re-send the confirmation SMS to yourself to validate SIM ownership, and your cryptographic `npub` key pair is generated and sealed on your device. Scan a contact's QR code to start communicating instantly
+1. **Get OrbisNet** — from Google Play Store, [GitHub Releases](https://github.com/ShaDevPro/O-R-B-I-S-net/releases), or [orbis-net.vercel.app](https://orbis-net.vercel.app)
+2. **Simplified Onboarding** — launch the app; only SIM telephony verification and notifications are requested initially. Microphone, Camera, and Storage permissions are strictly requested dynamically Just-In-Time when initiating a call or sending media.
+3. **Register** — enter your phone number, re-send the confirmation SMS to yourself to validate SIM ownership, and your cryptographic `npub` key pair is generated and sealed on your device. Scan a contact's QR code to start communicating instantly.
 
 ---
 
@@ -386,6 +395,10 @@ Contributions are welcome on the open layers of this repository:
 | ✅ Released | E2EE voice & video calls (WebRTC + Telecom) |
 | ✅ Released | Nostr messaging (NIP-04, NIP-44) |
 | ✅ Released | 24h ephemeral stories, social wall, polls |
+| ✅ Released | Zero Intrusive Permissions & Just-In-Time Privacy (Google Play compliant) |
+| ✅ Released | UnifiedPush & ntfy decentralized offline wakeup |
+| ✅ Released | Seamless background in-app updates with SHA-256 verification (Dual-channel) |
+| ✅ Released | Refreshed official brand icon & trilingual localization (FR / EN / AR RTL) |
 | 🔄 Beta / Experimental | Guard-LLM anti-scam & Reply-LLM suggestions *(functional but incomplete — actively evolving)* |
 | ✅ Released | OEM autostart diagnostics (Vivo, Honor, Xiaomi, Samsung) |
 | ✅ Released | Duress PIN & decoy profile |
@@ -401,6 +414,12 @@ Contributions are welcome on the open layers of this repository:
 
 **Q: Do I need a phone number to use OrbisNet?**
 Yes — authentication requires a phone number. OrbisNet sends you an SMS confirmation that you re-send to yourself, validating SIM ownership without any central server or third-party database. No password, no email, no cloud account is ever created.
+
+**Q: Does OrbisNet require being set as the default SMS app?**
+No. As of v1.6.0, OrbisNet has completely eliminated the default SMS app requirement. Telephony permissions are used strictly for SIM ownership validation without intercepting your personal SMS. All media and call permissions follow a strict Just-In-Time privacy model.
+
+**Q: How do in-app updates work without intrusive dialogs?**
+OrbisNet v1.6.0 introduces soft in-app updates: when an update is published, the APK is downloaded discreetly in the background into the application's private cache and verified against its SHA-256 cryptographic checksum. A non-blocking banner notifies you when it is ready, allowing 1-tap installation at your convenience.
 
 **Q: Are my messages stored on a server?**
 No. Messages are end-to-end encrypted and relayed through Nostr nodes. Only the sender and recipient can decrypt them.
