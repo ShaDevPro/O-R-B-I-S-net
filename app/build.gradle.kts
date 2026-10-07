@@ -1,16 +1,7 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
-}
-
-// ── Signing config (reads from keystore.properties — never committed) ─────────
-val keystorePropsFile = rootProject.file("keystore.properties")
-val keystoreProps = Properties()
-if (keystorePropsFile.exists()) {
-    keystorePropsFile.inputStream().use { keystoreProps.load(it) }
 }
 
 android {
@@ -21,26 +12,16 @@ android {
         applicationId = "com.sha.orbisnet"
         minSdk = 24
         targetSdk = 36
-        versionCode = 150
-        versionName = "1.5.0"
+        versionCode = 160
+        versionName = "1.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file(keystoreProps.getProperty("storeFile") ?: "orbis_keystore")
-            storePassword = keystoreProps.getProperty("storePassword") ?: ""
-            keyAlias = keystoreProps.getProperty("keyAlias") ?: ""
-            keyPassword = keystoreProps.getProperty("keyPassword") ?: ""
-        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -50,7 +31,6 @@ android {
             isMinifyEnabled = false
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -64,16 +44,7 @@ android {
     }
 }
 
-
 dependencies {
-    // ─────────────────────────────────────────────────────────────────
-    // CERVEAU PROPRIÉTAIRE — Fichiers sources dans app/ (gitignorés, jamais poussés)
-    // NostrSyncManager.kt + NostrProtocolEngine.kt compilent directement ici
-    // Maquettes piégées disponibles dans docs/stubs/ (référence publique uniquement)
-    // AAR optionnel : si app/libs/ contient un .aar, il est chargé automatiquement
-    // ─────────────────────────────────────────────────────────────────
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
