@@ -802,7 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
     version: "1.6.0",
     build: 160,
     size: "52 Mo",
-    sha256: "f9ee19fb86de9068bf96ce3f850ac48308a746648b96db2d688391ee5f89599e"
+    sha256: "473663ef6a62e8f4b77827fd123ca955136bcc3060efba1e5b69e2a492234e7f"
   };
 
   function buildQrUrl(targetUrl) {
